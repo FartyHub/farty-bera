@@ -7,7 +7,8 @@
     "web": "npx nx run web:serve --skip-nx-cache",
     "lint:web": "npx nx run web:lint --skip-nx-cache",
     "lint:all": "npx nx run-many -t lint -p web --skip-nx-cache",
-    "prepare": "husky"
+    "prepare": "husky",
+    "create-env": "printenv > "
   },
   "private": true,
   "dependencies": {
