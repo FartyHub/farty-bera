@@ -8,7 +8,8 @@
     "lint:web": "npx nx run web:lint --skip-nx-cache",
     "lint:all": "npx nx run-many -t lint -p web --skip-nx-cache",
     "prepare": "husky",
-    "create-env": "printenv > "
+    "create-env": "printenv > ",
+    "update-cors": "gcloud storage buckets update gs://farty-bera --cors-file=cors-config.json"
   },
   "private": true,
   "dependencies": {
