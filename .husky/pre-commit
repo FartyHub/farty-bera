@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo -e "===\n>> Checking lint..."
+npm run lint:all
