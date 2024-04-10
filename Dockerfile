@@ -14,7 +14,7 @@ RUN npm install --legacy-peer-deps
 COPY . .
 
 # Build the Next.js application
-RUN npm run build
+RUN npx nx build web --prod
 
 # Expose the port Next.js runs on
 EXPOSE 3000
