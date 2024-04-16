@@ -1,0 +1,14 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "webpack.config.js",
+  "scripts": {
+    "migration:run": "npx ts-node ./node_modules/.bin/typeorm migration:run -d typeorm.config.ts",
+    "seed:run": "npx ts-node ./node_modules/.bin/typeorm migration:run -d typeorm.seed.config.ts",
+    "start": "node main.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

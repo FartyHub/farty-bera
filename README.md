@@ -40,6 +40,45 @@ npx nx run-many -t <target1> <target2> -p <proj1> <proj2>
 
 Targets can be defined in the `package.json` or `projects.json`. Learn more [in the docs](https://nx.dev/features/run-tasks).
 
+## Documentation
+
+### New Environment Setup
+
+1. Make a new gcp project
+2. Add necessary secrets to github in settings
+
+## Usage
+
+### Generating a new NestJs Resource
+
+- `npm run generate:api-resource -- --name=resource-name`
+
+### Generating api-lib for client
+
+- `npm run update-sources`
+
+### Migration commands
+
+#### Generate Migration file
+
+- `npx nx run api:migration-generate src/db/migrations/<NameOfTheMigrationFile>`
+
+#### Run Migrations
+
+- `npx nx run api:migration-run`
+
+#### Revert Migrations
+
+- `npx nx run api:migration-revert`
+
+#### Show Migrations
+
+- `npx nx run api:migration-show`
+
+#### Drop Schema
+
+- `npx nx run api:schema-drop`
+
 ## Set up CI!
 
 Nx comes with local caching already built-in (check your `nx.json`). On CI you might want to go a step further.

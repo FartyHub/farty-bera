@@ -8,6 +8,8 @@ steps:
     args: ['nx', 'build', 'web', '--prod']
     env:
       - 'NEXT_PUBLIC_PROJECT_ID=${_NEXT_PUBLIC_PROJECT_ID}'
+      - 'NEXT_PUBLIC_API_BASE_URL=${_NEXT_PUBLIC_API_BASE_URL}'
+      - 'NEXT_PUBLIC_X_API_KEY=${_NEXT_PUBLIC_X_API_KEY}'
 
   - name: 'gcr.io/cloud-builders/npm'
     args: ['run', 'create-env', 'dist/apps/web/.env.local']
@@ -21,7 +23,7 @@ steps:
       - '-e'
       - '-c'
       - |
-        cp apps/web/app.production.yaml dist/apps/web/app.yaml
+        cp apps/web/app.yaml dist/apps/web/app.yaml
 
   - name: 'gcr.io/cloud-builders/gcloud'
     args: ['app', 'deploy', 'app.yaml']
