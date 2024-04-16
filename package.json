@@ -10,7 +10,7 @@
     "api": "npx nx run api:serve --skip-nx-cache",
     "lint:api": "npx nx run api:lint --skip-nx-cache",
     "lint:web": "npx nx run web:lint --skip-nx-cache",
-    "lint:all": "npx nx run-many -t lint -p web --skip-nx-cache",
+    "lint:all": "npx nx run-many -t lint -p api web --skip-nx-cache",
     "prepare": "husky",
     "create-env": "printenv > ",
     "migration-run": "npx nx run api:migration-run --skip-nx-cache",
