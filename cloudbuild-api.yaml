@@ -31,7 +31,7 @@ steps:
       - '-e'
       - '-c'
       - |
-        cp apps/api/src/app.yaml dist/apps/api/app.yaml
+        cp apps/api/app.yaml dist/apps/api/app.yaml
 
   - name: 'gcr.io/cloud-builders/gcloud'
     args: ['app', 'deploy', 'app.yaml']
