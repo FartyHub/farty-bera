@@ -15,7 +15,7 @@ export function CommonLayout({ children, className }: Props) {
   return (
     <div
       className={clsx(
-        'h-screen w-full bg-gradient-to-b from-[#D3CCBA] to-[#C9C3AD] md:w-4/5 mx-auto p-2 md:p-10',
+        'h-screen w-full bg-gradient-to-b from-[#D3CCBA] to-[#C9C3AD] p-2 md:p-10',
         className,
       )}
     >
