@@ -1,15 +1,11 @@
-import { useWeb3Modal } from '@web3modal/wagmi/react';
 import clsx from 'clsx';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 import OutsideClickHandler from 'react-outside-click-handler';
-import { useAccount } from 'wagmi';
 
 import { DISCORD_URL, TELEGRAM_URL, X_URL } from '../../constants';
 import { useApplications } from '../../contexts';
 import { Application } from '../../types';
-import { truncateMiddle } from '../../utils';
 import { Button } from '../atoms';
 
 type Props = {
@@ -27,7 +23,7 @@ function Tab({ disabled, iconUrl, link, title }: TabProps) {
   return (
     <Link
       className={clsx(
-        'flex items-center gap-1 p-2 rounded-none first:border-none border-t-groove hover:bg-[#5B3200] hover:text-white whitespace-nowrap',
+        'flex items-center gap-1 p-2 rounded-none first:border-none border-t-groove hover:bg-[#C86F02] hover:text-white whitespace-nowrap',
         disabled ? 'cursor-not-allowed' : 'cursor-pointer',
       )}
       href={disabled ? '#' : link}
@@ -40,9 +36,6 @@ function Tab({ disabled, iconUrl, link, title }: TabProps) {
 }
 
 export function Footer({ className }: Props) {
-  const { open } = useWeb3Modal();
-  const { address } = useAccount();
-  const router = useRouter();
   const { applications, setApplications } = useApplications();
   const [hasTabs, setHasTabs] = useState<boolean>(false);
 
@@ -72,7 +65,7 @@ export function Footer({ className }: Props) {
       )}
     >
       {hasTabs && (
-        <div className="absolute bottom-[40px] left-1 flex flex-col px-1 bg-[#B8C0C1] border-outset z-[100]">
+        <div className="absolute bottom-[40px] left-1 flex flex-col bg-[#B8C0C1] border-outset z-[100]">
           <OutsideClickHandler
             onOutsideClick={() => {
               setHasTabs(false);
@@ -104,6 +97,7 @@ export function Footer({ className }: Props) {
       )}
       <Button
         className="flex items-center"
+        selected={hasTabs}
         type="primary"
         onClick={handleToggleTabs}
       >
@@ -124,8 +118,8 @@ export function Footer({ className }: Props) {
         src="/images/discord-icon.svg"
         onClick={() => handleClickSocial(DISCORD_URL)}
       />
-      <div className="border-l-groove h-full" />
       <div className="border-outset h-3/4" />
+      <div className="border-l-groove h-full" />
       {applications.map((application) => (
         <Button
           key={application.name}

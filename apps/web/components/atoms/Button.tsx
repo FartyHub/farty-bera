@@ -11,6 +11,7 @@ type Props = {
   className?: string;
   disabled?: boolean;
   onClick: () => void;
+  selected?: boolean;
   type: 'primary' | 'secondary';
 };
 
@@ -19,12 +20,14 @@ export function Button({
   className,
   disabled,
   onClick,
+  selected,
   type,
 }: Props) {
   return (
     <button
       className={clsx(
-        'border-outset active:border-inset shadow-black shadow-sm p-0.5',
+        'border-outset active:border-inset shadow-black shadow-sm p-0.5 outline-none',
+        selected && 'border-dotted border-black',
         disabled && 'cursor-not-allowed !text-[#808080]',
         TYPE_CLASSES[type],
         className,

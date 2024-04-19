@@ -52,13 +52,19 @@ export function DesktopApp({ application }: Props): JSX.Element {
     <div
       className={clsx(
         'flex flex-col items-center gap-2 text-center justify-center cursor-default',
-        isFocused ? 'bg-blue-500/75' : 'bg-transparent',
       )}
       onClick={handleOnClick}
       onDoubleClick={handleOnDoubleClick}
     >
       <img alt={name} className="size-12" src={iconUrl} />
-      <span className="text-white text-sm whitespace-break-spaces">{name}</span>
+      <span
+        className={clsx(
+          'text-white text-sm whitespace-break-spaces border',
+          isFocused ? 'bg-[#C86F02] border-dotted' : 'border-transparent',
+        )}
+      >
+        {name}
+      </span>
     </div>
   );
 }
