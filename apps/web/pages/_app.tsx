@@ -4,7 +4,7 @@ import './styles.css';
 import { cookieToInitialState } from 'wagmi';
 
 import { config } from '../config';
-import { Web3ModalProvider } from '../contexts';
+import { ApplicationsProvider, Web3ModalProvider } from '../contexts';
 
 export function getCookie(name: string) {
   if (typeof document === 'undefined') return;
@@ -27,9 +27,11 @@ function CustomApp({ Component, pageProps }: AppProps) {
         <title>Farty Bera</title>
       </Head>
       <Web3ModalProvider initialState={initialState}>
-        <main>
-          <Component {...pageProps} />
-        </main>
+        <ApplicationsProvider>
+          <main>
+            <Component {...pageProps} />
+          </main>
+        </ApplicationsProvider>
       </Web3ModalProvider>
     </>
   );

@@ -273,7 +273,8 @@
         ],
         "space-in-parens": ["error", "never"],
         "tailwindcss/classnames-order": "off",
-        "tailwindcss/no-custom-classname": "off"
+        "tailwindcss/no-custom-classname": "off",
+        "@next/next/no-img-element": "off"
       }
     },
     {

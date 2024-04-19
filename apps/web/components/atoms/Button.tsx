@@ -2,8 +2,8 @@ import clsx from 'clsx';
 import { ReactNode } from 'react';
 
 const TYPE_CLASSES = {
-  primary: 'bg-[#C96920] text-white',
-  secondary: 'bg-[#FFF9F2] text-[#C96920]',
+  primary: 'bg-[#B8C0C1] shadow-md',
+  secondary: 'bg-transparent',
 };
 
 type Props = {
@@ -24,8 +24,8 @@ export function Button({
   return (
     <button
       className={clsx(
-        'px-[18px] py-2 rounded-[4px]',
-        disabled && 'cursor-not-allowed opacity-50',
+        'border-outset active:border-inset shadow-black shadow-sm p-0.5',
+        disabled && 'cursor-not-allowed !text-[#808080]',
         TYPE_CLASSES[type],
         className,
       )}

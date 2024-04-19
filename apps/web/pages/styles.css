@@ -3,14 +3,59 @@
 @tailwind utilities;
 @import url(../assets/fonts/circular-std/stylesheet.css);
 @import url(../assets/fonts/fredoka/stylesheet.css);
+@import url(../assets/fonts/microsoft-sans-serif/stylesheet.css);
 
 @layer base {
   html {
-    font-family: 'Circular Std', system-ui, sans-serif;
-    background-color: #ebceb8;
+    font-family: 'MS Sans Serif', system-ui, sans-serif;
+    background-color: #e3e3e3;
   }
 
   .font-outline-4 {
     -webkit-text-stroke: 4px #843e2f;
+  }
+
+  .border-inset {
+    border: 2px inset #ffffff;
+  }
+
+  .border-inset-black {
+    border: 2px inset #000000;
+  }
+
+  .border-outset {
+    border: 2px outset #ffffff;
+  }
+
+  .border-ridge {
+    border: 2px ridge #ffffff;
+  }
+
+  .border-groove {
+    border: 2px groove #ffffff;
+  }
+
+  .border-t-groove {
+    border-top: 2px groove #ffffff;
+  }
+
+  .border-l-groove {
+    border-left: 2px groove #ffffff;
+  }
+
+  .box-border {
+    border: 15px inset #918878;
+    border-right: 15px inset #918878;
+    border-bottom: 15px outset #918878;
+    border-left: 15px outset #918878;
+  }
+
+  @media (min-width: 768px) {
+    .box-border {
+      border: 30px inset #918878;
+      border-right: 30px inset #918878;
+      border-bottom: 30px outset #918878;
+      border-left: 30px outset #918878;
+    }
   }
 }

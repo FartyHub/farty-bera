@@ -1,10 +1,15 @@
-import { CommonLayout, ConnectSection, FartyBeraGame } from '../components';
+import { CommonLayout, DesktopApp, FartyBeraGame } from '../components';
+import { ApplicationData } from '../constants';
+
+const apps = Array.from(Object.values(ApplicationData));
 
 export default function Index() {
   return (
     <CommonLayout className="gap-4">
-      <ConnectSection />
       <FartyBeraGame />
+      {apps.map((app) => (
+        <DesktopApp key={app.name} application={app} />
+      ))}
     </CommonLayout>
   );
 }

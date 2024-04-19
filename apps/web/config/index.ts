@@ -7,10 +7,10 @@ export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 if (!projectId) throw new Error('Project ID is not defined');
 
 const metadata = {
-  description: 'Web3Modal Example',
-  icons: ['https://avatars.githubusercontent.com/u/37784886'],
-  name: 'Web3Modal',
-  url: 'https://web3modal.com',
+  description: 'Farty Bera',
+  icons: ['/images/farty-logo.svg'],
+  name: 'FartyBera',
+  url: 'https://www.fartybera.xyz',
 };
 
 const chains = [mainnet, sepolia] as const;
