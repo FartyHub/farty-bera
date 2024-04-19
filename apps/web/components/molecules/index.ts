@@ -1,2 +1,2 @@
-export * from './ConnectSection';
 export * from './FartyBeraGame';
+export * from './StatsWindow';

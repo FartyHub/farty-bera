@@ -9,7 +9,7 @@ type Props = {
 };
 
 export function DesktopApp({ application }: Props): JSX.Element {
-  const { disabled, iconUrl, name } = application;
+  const { desktopIconUrl, disabled, name } = application;
   const {
     applications,
     focusedApplication,
@@ -56,7 +56,7 @@ export function DesktopApp({ application }: Props): JSX.Element {
       onClick={handleOnClick}
       onDoubleClick={handleOnDoubleClick}
     >
-      <img alt={name} className="size-12" src={iconUrl} />
+      <img alt={name} className="h-12 w-auto" src={desktopIconUrl} />
       <span
         className={clsx(
           'text-white text-sm whitespace-break-spaces border',

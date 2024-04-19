@@ -1,12 +1,18 @@
 [
   {
-    "origin": ["https://web-2v6afafamq-ue.a.run.app"],
+    "origin": ["https://www.fartybera.xyz"],
     "method": ["GET"],
     "responseHeader": ["Content-Type"],
     "maxAgeSeconds": 3600
   },
   {
-    "origin": ["https://farty-bera.ue.r.appspot.com"],
+    "origin": ["https://fartybera.xyz"],
+    "method": ["GET"],
+    "responseHeader": ["Content-Type"],
+    "maxAgeSeconds": 3600
+  },
+  {
+    "origin": ["https://farty-bera-420304.ue.r.appspot.com/"],
     "method": ["GET"],
     "responseHeader": ["Content-Type"],
     "maxAgeSeconds": 3600

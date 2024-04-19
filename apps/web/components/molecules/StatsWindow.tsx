@@ -10,21 +10,14 @@ type Props = {
   className?: string;
 };
 
-export function FartyBeraGame({ className }: Props) {
-  const { isLoaded, unityProvider, unload } = useUnityContext({
-    codeUrl: 'https://storage.googleapis.com/farty-bera-build/web.wasm',
-    dataUrl: 'https://storage.googleapis.com/farty-bera-build/web.data',
-    frameworkUrl:
-      'https://storage.googleapis.com/farty-bera-build/web.framework.js',
-    loaderUrl: 'https://storage.googleapis.com/farty-bera-build/web-loader.js',
-  });
+export function StatsWindow({ className }: Props) {
   const { applications } = useApplications();
   const application =
     applications.find((app) => app.name === Applications.FARTY_BERA) ||
     ApplicationData[Applications.FARTY_BERA];
 
   return (
-    <Window application={application} onClose={unload}>
+    <Window application={application}>
       <div className="flex flex-col p-1 pt-0.5 border-outset gap-2 justify-between h-full">
         <div
           className={clsx(
@@ -32,15 +25,7 @@ export function FartyBeraGame({ className }: Props) {
             application.fullScreen ? 'size-full' : 'w-[50vw] h-[25vw]',
           )}
         >
-          <Spinner className={clsx(isLoaded ? 'hidden' : 'visible')} />
-          <Unity
-            className={clsx(
-              'size-full',
-              isLoaded ? 'visible' : 'hidden',
-              className,
-            )}
-            unityProvider={unityProvider}
-          />
+          {/* {} */}
         </div>
         <div className="flex justify-between items-center">
           <div className="flex gap-[11px]">

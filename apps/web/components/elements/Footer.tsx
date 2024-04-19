@@ -3,7 +3,12 @@ import Link from 'next/link';
 import { useState } from 'react';
 import OutsideClickHandler from 'react-outside-click-handler';
 
-import { DISCORD_URL, TELEGRAM_URL, X_URL } from '../../constants';
+import {
+  DISCORD_URL,
+  TELEGRAM_URL,
+  WHITE_PAPER_URL,
+  X_URL,
+} from '../../constants';
 import { useApplications } from '../../contexts';
 import { Application } from '../../types';
 import { Button } from '../atoms';
@@ -87,9 +92,8 @@ export function Footer({ className }: Props) {
               title="Telegram"
             />
             <Tab
-              disabled
               iconUrl="/images/document-icon.svg"
-              link=""
+              link={WHITE_PAPER_URL}
               title="White Paper"
             />
           </OutsideClickHandler>
@@ -120,21 +124,23 @@ export function Footer({ className }: Props) {
       />
       <div className="border-outset h-3/4" />
       <div className="border-l-groove h-full" />
-      {applications.map((application) => (
-        <Button
-          key={application.name}
-          className="flex items-center"
-          type="primary"
-          onClick={() => handleClickTab(application)}
-        >
-          <img
-            alt={application.name}
-            className="h-[19px]"
-            src={application.iconUrl}
-          />
-          <span className="font-normal text-[13px]">{application.name}</span>
-        </Button>
-      ))}
+      {applications
+        .filter((application) => !application.system)
+        .map((application) => (
+          <Button
+            key={application.name}
+            className="flex items-center"
+            type="primary"
+            onClick={() => handleClickTab(application)}
+          >
+            <img
+              alt={application.name}
+              className="h-[19px]"
+              src={application.iconUrl}
+            />
+            <span className="font-normal text-[13px]">{application.name}</span>
+          </Button>
+        ))}
     </footer>
   );
 }

@@ -16,7 +16,7 @@
     "migration-run": "npx nx run api:migration-run --skip-nx-cache",
     "generate:api-resource": "npx nx generate @nestjs/schematics:resource --language=ts --path=api/src/app --sourceRoot=apps --no-interactive",
     "update-sources": "curl http://localhost:3000/api-docs-json > api-docs.json && npx nx run api-lib:generate-sources --skip-nx-cache",
-    "update-cors": "gcloud storage buckets update gs://farty-bera --cors-file=cors-config.json"
+    "update-cors": "gcloud storage buckets update gs://farty-bera-build --cors-file=cors-config.json"
   },
   "private": true,
   "dependencies": {

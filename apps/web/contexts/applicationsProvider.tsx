@@ -4,6 +4,7 @@ import React, {
   SetStateAction,
   createContext,
   useContext,
+  useMemo,
   useState,
 } from 'react';
 
@@ -25,20 +26,29 @@ export function useApplications() {
   return useContext(ApplicationsContext);
 }
 
-export function ApplicationsProvider({ children }: { children: ReactNode }) {
-  const [applications, setApplications] = useState<Application[]>([]);
+export function ApplicationsProvider({
+  children,
+  initialState,
+}: {
+  children: ReactNode;
+  initialState: Application[];
+}) {
+  const [applications, setApplications] = useState<Application[]>(initialState);
   const [focusedApplication, setFocusedApplication] =
     useState<Application | null>(null);
 
+  const values = useMemo(
+    () => ({
+      applications,
+      focusedApplication,
+      setApplications,
+      setFocusedApplication,
+    }),
+    [applications, focusedApplication],
+  );
+
   return (
-    <ApplicationsContext.Provider
-      value={{
-        applications,
-        focusedApplication,
-        setApplications,
-        setFocusedApplication,
-      }}
-    >
+    <ApplicationsContext.Provider value={values}>
       {children}
     </ApplicationsContext.Provider>
   );

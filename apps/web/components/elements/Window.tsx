@@ -9,16 +9,17 @@ type Props = {
   application: Application;
   children: ReactNode;
   className?: string;
+  onClose?: () => Promise<void>;
 };
 
-export function Window({ application, children, className }: Props) {
+export function Window({ application, children, className, onClose }: Props) {
   const {
     applications,
     focusedApplication,
     setApplications,
     setFocusedApplication,
   } = useApplications();
-  const { fullScreen, iconUrl, minimized, name, zIndex } =
+  const { fullScreen, minimized, name, zIndex } =
     applications.find((app) => app.name === application.name) || application;
   const isFocused = focusedApplication?.name === application.name;
   const isOnApplications = applications.some(
@@ -43,7 +44,8 @@ export function Window({ application, children, className }: Props) {
     );
   }
 
-  function handleClose() {
+  async function handleClose() {
+    await onClose?.();
     setApplications(
       applications.filter((app) => app.name !== application.name),
     );
@@ -53,7 +55,7 @@ export function Window({ application, children, className }: Props) {
     }
   }
 
-  if (!isOnApplications || minimized) {
+  if (!isOnApplications) {
     return null;
   }
 
@@ -61,6 +63,7 @@ export function Window({ application, children, className }: Props) {
     <div
       className={clsx(
         'absolute flex flex-col border-outset bg-[#DFDFDF]',
+        minimized ? 'hidden' : 'visible',
         fullScreen
           ? 'top-0 left-0 size-full'
           : 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
@@ -70,7 +73,11 @@ export function Window({ application, children, className }: Props) {
     >
       <div className="flex justify-between p-2 gap-2 bg-gradient-to-r from-[#C76E00] to-[#FFBC5B]">
         <div className="flex gap-2">
-          <img alt={name} className="size-5" src={iconUrl} />
+          <img
+            alt={name}
+            className="size-5"
+            src="/images/farty-bera-logo.svg"
+          />
           <span className="text-white text-base">{name}</span>
         </div>
         <div className="flex gap-1">

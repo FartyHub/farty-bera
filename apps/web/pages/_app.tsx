@@ -4,6 +4,7 @@ import './styles.css';
 import { cookieToInitialState } from 'wagmi';
 
 import { config } from '../config';
+import { ApplicationData, Applications } from '../constants';
 import { ApplicationsProvider, Web3ModalProvider } from '../contexts';
 
 export function getCookie(name: string) {
@@ -27,7 +28,9 @@ function CustomApp({ Component, pageProps }: AppProps) {
         <title>Farty Bera</title>
       </Head>
       <Web3ModalProvider initialState={initialState}>
-        <ApplicationsProvider>
+        <ApplicationsProvider
+          initialState={[ApplicationData[Applications.STATS]]}
+        >
           <main>
             <Component {...pageProps} />
           </main>
