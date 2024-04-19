@@ -4,6 +4,7 @@ export type Application = {
   disabled: boolean;
   fullScreen: boolean;
   iconUrl: string;
+  id: string;
   minimized: boolean;
   name: string;
   system?: boolean;

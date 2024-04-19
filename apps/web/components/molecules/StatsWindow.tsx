@@ -1,53 +1,129 @@
+import { useWeb3Modal } from '@web3modal/wagmi/react';
 import clsx from 'clsx';
-import { Unity, useUnityContext } from 'react-unity-webgl';
+import { useAccount } from 'wagmi';
 
-import { ApplicationData, Applications } from '../../constants';
+import { ApplicationData, Applications, X_URL } from '../../constants';
 import { useApplications } from '../../contexts';
-import { Spinner } from '../atoms';
+import { calculateScore, truncateMiddle } from '../../utils';
+import { Button } from '../atoms';
 import { Window } from '../elements';
 
-type Props = {
-  className?: string;
-};
+// TODO
+// eslint-disable-next-line no-magic-numbers
+const MOCK_SCORE = calculateScore(250, 200);
+const MOCK_INVITE_CODE = '123456';
+const SCORE_THRESHOLD = 100;
 
-export function StatsWindow({ className }: Props) {
+export function StatsWindow() {
+  const { address, isConnected } = useAccount();
+  const { open } = useWeb3Modal();
   const { applications } = useApplications();
   const application =
-    applications.find((app) => app.name === Applications.FARTY_BERA) ||
-    ApplicationData[Applications.FARTY_BERA];
+    applications.find((app) => app.id === Applications.STATS) ||
+    ApplicationData[Applications.STATS];
+
+  function handleClickFollow() {
+    window.open(X_URL, '_blank');
+  }
+
+  function handleCopyAddress() {
+    navigator.clipboard.writeText(address ?? '');
+  }
 
   return (
-    <Window application={application}>
-      <div className="flex flex-col p-1 pt-0.5 border-outset gap-2 justify-between h-full">
-        <div
-          className={clsx(
-            'border-inset-black flex items-center justify-center',
-            application.fullScreen ? 'size-full' : 'w-[50vw] h-[25vw]',
-          )}
-        >
-          {/* {} */}
-        </div>
-        <div className="flex justify-between items-center">
-          <div className="flex gap-[11px]">
-            <img
-              alt={application.name}
-              className="size-10"
-              src="/images/farty-bera-logo.png"
-            />
-            <div className="flex flex-col">
-              <span className="font-bold text-base">{application.name}</span>
-              <span className="font-normal text-[13px]">
-                Created by {application.creator}
+    <Window application={application} className="w-[320px] top-2 right-2">
+      <div className="flex flex-col p-[13.6px] gap-3 text-sm">
+        {isConnected ? (
+          <>
+            <div className="flex gap-1 items-center ">
+              <img
+                alt="bera"
+                className="w-[28px] mr-1"
+                role="button"
+                src="/images/bera-logo.png"
+                onClick={() => open()}
+              />
+              <span className="text-base font-bold">
+                {truncateMiddle(address ?? '')}
               </span>
+              <img
+                alt="copy"
+                className="size-4 cursor-pointer"
+                role="button"
+                src="/images/copy-icon.svg"
+                onClick={handleCopyAddress}
+              />
             </div>
-          </div>
-          <div className="flex flex-col text-base text-right">
-            <span className="font-bold">Highest Score</span>
-            <span className="font-normal">
-              {/* TODO */}
-              {0}
-            </span>
-          </div>
+            <div className="flex gap-1 text-xs items-center">
+              <img
+                alt="honey"
+                className="size-[15px]"
+                src="/images/honey-icon.svg"
+              />
+              <span className="font-bold">Score: </span>
+              {MOCK_SCORE}
+            </div>
+            {MOCK_SCORE >= SCORE_THRESHOLD && (
+              <div className="flex gap-1 text-xs items-center">
+                <img
+                  alt="invite"
+                  className="size-[15px]"
+                  src="/images/invite-icon.svg"
+                />
+                <span className="font-bold">Invite Code: </span>
+                {MOCK_INVITE_CODE}
+              </div>
+            )}
+            <p className="text-[13px]">
+              You are one of the earliest! Thanks for testing us out. Ooga
+              booga. Keep playing.
+            </p>
+          </>
+        ) : (
+          <>
+            <img
+              alt="bear"
+              className="w-[60px] h-auto"
+              src="/images/not-connected-bear.png"
+            />
+            <div className="flex flex-col gap-3">
+              <p>Welcome to Farty Bera.</p>
+              <p>
+                Farty is a new gaming platform on Bera. Not just any game, but
+                the casual fun quirky little games.
+              </p>
+              <p>
+                We are all about bringing the fun of casual games like Miniclips
+                to Berachain.
+              </p>
+            </div>
+          </>
+        )}
+        <div className="flex items-center justify-center gap-1">
+          <Button
+            className={clsx(
+              'flex items-center justify-center gap-1 px-5 py-2',
+              isConnected && 'w-full',
+            )}
+            type="primary"
+            onClick={handleClickFollow}
+          >
+            Follow us on{' '}
+            <img
+              alt="twitter"
+              className="size-[14.7px]"
+              src="/images/x-icon.svg"
+            />
+          </Button>
+          {!isConnected && (
+            <Button
+              className="flex px-5 py-2 justify-center"
+              type="primary"
+              onClick={() => open()}
+            >
+              Connect Wallet
+            </Button>
+          )}
         </div>
       </div>
     </Window>

@@ -23,6 +23,10 @@
     border: 2px inset #000000;
   }
 
+  .border-inset-gray {
+    border: 2px inset #808080;
+  }
+
   .border-outset {
     border: 2px outset #ffffff;
   }

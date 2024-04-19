@@ -55,7 +55,7 @@ export function Footer({ className }: Props) {
   function handleClickTab(app: Application) {
     setApplications(
       applications.map((application) =>
-        application.name === app.name
+        application.id === app.id
           ? { ...application, minimized: false }
           : application,
       ),
@@ -113,12 +113,14 @@ export function Footer({ className }: Props) {
       <img
         alt="x"
         className="h-1/2 cursor-pointer"
+        role="button"
         src="/images/x-icon.svg"
         onClick={() => handleClickSocial(X_URL)}
       />
       <img
         alt="discord"
         className="h-1/2 cursor-pointer"
+        role="button"
         src="/images/discord-icon.svg"
         onClick={() => handleClickSocial(DISCORD_URL)}
       />
@@ -128,7 +130,7 @@ export function Footer({ className }: Props) {
         .filter((application) => !application.system)
         .map((application) => (
           <Button
-            key={application.name}
+            key={application.id}
             className="flex items-center"
             type="primary"
             onClick={() => handleClickTab(application)}

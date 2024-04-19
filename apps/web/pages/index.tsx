@@ -12,6 +12,7 @@ export default function Index() {
   return (
     <CommonLayout className="gap-4">
       <FartyBeraGame />
+      <StatsWindow />
       {apps
         .filter((app) => !app.system)
         .map((app) => (

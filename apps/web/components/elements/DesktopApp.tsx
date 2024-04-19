@@ -16,20 +16,18 @@ export function DesktopApp({ application }: Props): JSX.Element {
     setApplications,
     setFocusedApplication,
   } = useApplications();
-  const isFocused = focusedApplication?.name === application.name;
+  const isFocused = focusedApplication?.id === application.id;
 
   function handleOnDoubleClick() {
     if (disabled) {
       return;
     }
 
-    if (applications.some((app) => app.name === application.name)) {
+    if (applications.some((app) => app.id === application.id)) {
       const maxIndex = Math.max(...applications.map((app) => app.zIndex));
       setApplications(
         applications.map((app) =>
-          app.name === application.name
-            ? { ...app, zIndex: maxIndex + 1 }
-            : app,
+          app.id === application.id ? { ...app, zIndex: maxIndex + 1 } : app,
         ),
       );
     } else {
@@ -53,6 +51,7 @@ export function DesktopApp({ application }: Props): JSX.Element {
       className={clsx(
         'flex flex-col items-center gap-2 text-center justify-center cursor-default',
       )}
+      role="button"
       onClick={handleOnClick}
       onDoubleClick={handleOnDoubleClick}
     >

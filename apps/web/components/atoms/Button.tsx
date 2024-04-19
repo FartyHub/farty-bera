@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { ReactNode } from 'react';
+import { MouseEvent, ReactNode } from 'react';
 
 const TYPE_CLASSES = {
   primary: 'bg-[#B8C0C1] shadow-md',
@@ -10,7 +10,7 @@ type Props = {
   children: ReactNode;
   className?: string;
   disabled?: boolean;
-  onClick: () => void;
+  onClick: (event?: MouseEvent<HTMLButtonElement>) => void;
   selected?: boolean;
   type: 'primary' | 'secondary';
 };

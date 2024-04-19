@@ -1,31 +1,114 @@
 import clsx from 'clsx';
+import { useEffect, useState } from 'react';
 import { Unity, useUnityContext } from 'react-unity-webgl';
+import { useAccount } from 'wagmi';
 
 import { ApplicationData, Applications } from '../../constants';
 import { useApplications } from '../../contexts';
 import { Spinner } from '../atoms';
 import { Window } from '../elements';
 
-type Props = {
-  className?: string;
-};
+import { ConnectWindow } from './ConnectWindow';
+import { InviteCodeWindow } from './InviteCodeWindow';
 
-export function FartyBeraGame({ className }: Props) {
-  const { isLoaded, unityProvider, unload } = useUnityContext({
+export function FartyBeraGame() {
+  const {
+    isLoaded,
+    unityProvider,
+    UNSAFE__unityInstance: unityInstance,
+  } = useUnityContext({
     codeUrl: 'https://storage.googleapis.com/farty-bera-build/web.wasm',
     dataUrl: 'https://storage.googleapis.com/farty-bera-build/web.data',
     frameworkUrl:
       'https://storage.googleapis.com/farty-bera-build/web.framework.js',
     loaderUrl: 'https://storage.googleapis.com/farty-bera-build/web-loader.js',
   });
-  const { applications } = useApplications();
+  const { applications, setApplications } = useApplications();
+  const { isConnected } = useAccount();
   const application =
-    applications.find((app) => app.name === Applications.FARTY_BERA) ||
+    applications.find((app) => app.id === Applications.FARTY_BERA) ||
     ApplicationData[Applications.FARTY_BERA];
 
+  // TODO
+  const [isInvited, setIsInvited] = useState<boolean>(false);
+  const hasNoAccess = !isConnected || !isInvited;
+
+  useEffect(() => {
+    if (isInvited) {
+      return;
+    }
+
+    const hasFartyBera = applications.some(
+      (app) => app.id === Applications.FARTY_BERA,
+    );
+    const hasConnectWallet = applications.some(
+      (app) => app.id === Applications.CONNECT_WALLET,
+    );
+    const hasInviteCode = applications.some(
+      (app) => app.id === Applications.INVITE_CODE,
+    );
+    const maxIndex = Math.max(...applications.map((app) => app.zIndex));
+
+    if (!isConnected && hasFartyBera && !hasConnectWallet) {
+      setIsInvited(false);
+      setApplications([
+        ...applications,
+        {
+          ...ApplicationData[Applications.CONNECT_WALLET],
+          zIndex: maxIndex + 1,
+        },
+      ]);
+    } else if (isConnected && hasConnectWallet) {
+      setApplications(
+        applications.filter((app) => app.id !== Applications.CONNECT_WALLET),
+      );
+    }
+
+    if (isConnected && !hasInviteCode && !isInvited) {
+      setApplications([
+        ...applications,
+        {
+          ...ApplicationData[Applications.INVITE_CODE],
+          zIndex: maxIndex + 1,
+        },
+      ]);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [applications.length, isInvited, isConnected]);
+
+  async function handleUnityQuit() {
+    await unityInstance?.Quit();
+  }
+
+  async function handleCloseWindow() {
+    await handleUnityQuit();
+    setApplications(
+      applications.filter(
+        (app) =>
+          app.id !== Applications.CONNECT_WALLET &&
+          app.id !== Applications.FARTY_BERA &&
+          app.id !== Applications.INVITE_CODE,
+      ),
+    );
+  }
+
+  async function handleSuccessInvite() {
+    setIsInvited(true);
+    setApplications(
+      applications.filter((app) => app.id !== Applications.INVITE_CODE),
+    );
+  }
+
   return (
-    <Window application={application} onClose={unload}>
-      <div className="flex flex-col p-1 pt-0.5 border-outset gap-2 justify-between h-full">
+    <Window center application={application} onClose={handleUnityQuit}>
+      <div
+        className="flex flex-col p-1 pt-0.5 border-outset gap-2 justify-between h-full"
+        style={{
+          filter: hasNoAccess ? 'blur(8px)' : 'none',
+          pointerEvents: hasNoAccess ? 'none' : 'auto',
+        }}
+      >
         <div
           className={clsx(
             'border-inset-black flex items-center justify-center',
@@ -34,18 +117,19 @@ export function FartyBeraGame({ className }: Props) {
         >
           <Spinner className={clsx(isLoaded ? 'hidden' : 'visible')} />
           <Unity
-            className={clsx(
-              'size-full',
-              isLoaded ? 'visible' : 'hidden',
-              className,
-            )}
+            className={clsx('size-full', isLoaded ? 'visible' : 'hidden')}
+            style={{
+              height: '100%',
+              width: '100%',
+            }}
+            tabIndex={1}
             unityProvider={unityProvider}
           />
         </div>
         <div className="flex justify-between items-center">
           <div className="flex gap-[11px]">
             <img
-              alt={application.name}
+              alt={application.id}
               className="size-10"
               src="/images/farty-bera-logo.png"
             />
@@ -65,6 +149,13 @@ export function FartyBeraGame({ className }: Props) {
           </div>
         </div>
       </div>
+      {!isConnected && <ConnectWindow onClose={handleCloseWindow} />}
+      {!isInvited && (
+        <InviteCodeWindow
+          onClose={handleCloseWindow}
+          onSuccess={handleSuccessInvite}
+        />
+      )}
     </Window>
   );
 }

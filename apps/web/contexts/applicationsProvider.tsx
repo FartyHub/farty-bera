@@ -1,3 +1,4 @@
+import { uniqBy } from 'lodash';
 import React, {
   Dispatch,
   ReactNode,
@@ -13,7 +14,7 @@ import { Application } from '../types';
 const ApplicationsContext = createContext<{
   applications: Application[];
   focusedApplication: Application | null;
-  setApplications: Dispatch<SetStateAction<Application[]>>;
+  setApplications: (newApplications: Application[]) => void;
   setFocusedApplication: Dispatch<SetStateAction<Application | null>>;
 }>({
   applications: [],
@@ -37,11 +38,15 @@ export function ApplicationsProvider({
   const [focusedApplication, setFocusedApplication] =
     useState<Application | null>(null);
 
+  function handleSetApplications(newApplications: Application[]) {
+    setApplications(uniqBy(newApplications, 'id'));
+  }
+
   const values = useMemo(
     () => ({
       applications,
       focusedApplication,
-      setApplications,
+      setApplications: handleSetApplications,
       setFocusedApplication,
     }),
     [applications, focusedApplication],
