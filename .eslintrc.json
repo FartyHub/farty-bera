@@ -198,7 +198,6 @@
         ],
         "prefer-arrow-callback": "warn",
         "prefer-const": "error",
-        "prettier/prettier": "error",
         "quotes": ["error", "single", { "avoidEscape": true }],
         "react-hooks/exhaustive-deps": "warn",
         "react-hooks/rules-of-hooks": "error",
@@ -274,7 +273,13 @@
         "space-in-parens": ["error", "never"],
         "tailwindcss/classnames-order": "off",
         "tailwindcss/no-custom-classname": "off",
-        "@next/next/no-img-element": "off"
+        "@next/next/no-img-element": "off",
+        "prettier/prettier": [
+          "error",
+          {
+            "endOfLine": "auto"
+          }
+        ]
       }
     },
     {
