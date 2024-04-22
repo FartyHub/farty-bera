@@ -42,7 +42,7 @@ steps:
     args:
       - -c
       - |
-        gcloud app versions list --format="value(version.id)" --sort-by="~version.createTime" --service="api" | tail -n +40 | xargs -r gcloud app versions delete --quiet
+        gcloud app versions list --format="value(version.id)" --sort-by="~version.createTime" --service="api-backend" | tail -n +40 | xargs -r gcloud app versions delete --quiet
 
 timeout: 1800s
 options:
