@@ -11,6 +11,9 @@ import { User, UserModule } from './user';
 
 const defaultDBOptions = {
   autoLoadEntities: true,
+  extra: {
+    socketPath: process.env.DB_HOST,
+  },
   host: process.env.DB_HOST,
   namingStrategy: new SnakeNamingStrategy(),
   password: process.env.DB_PASSWORD,

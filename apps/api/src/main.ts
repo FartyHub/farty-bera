@@ -9,7 +9,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 
 import { AppModule } from './app/app.module';
-import { Environment } from './enums';
 import { transformValidationErrors } from './utils';
 
 async function bootstrap() {
@@ -39,16 +38,14 @@ async function bootstrap() {
     }),
   );
 
-  if (process.env.ENVIRONMENT === Environment.Development) {
-    const openAPIOptions = new DocumentBuilder()
-      .setTitle('Farty Bera API')
-      .setDescription('Farty Bera API Specification')
-      .setVersion('0.1')
-      .build();
+  const openAPIOptions = new DocumentBuilder()
+    .setTitle('Farty Bera API')
+    .setDescription('Farty Bera API Specification')
+    .setVersion('0.1')
+    .build();
 
-    const openAPIDocument = SwaggerModule.createDocument(app, openAPIOptions);
-    SwaggerModule.setup('api-docs', app, openAPIDocument);
-  }
+  const openAPIDocument = SwaggerModule.createDocument(app, openAPIOptions);
+  SwaggerModule.setup('api-docs', app, openAPIDocument);
 
   // eslint-disable-next-line no-magic-numbers
   const port = process.env.PORT || 3000;
