@@ -16,5 +16,4 @@ handlers:
     script: auto
 
 vpc_access_connector:
-  name: projects/farty-bera-420304/locations/us-east1/connectors/api-connector
-  egress_setting: all-traffic
+  name: projects/farty-bera-420304/locations/us-east1/connectors/appengine-farty-connector
