@@ -26,7 +26,7 @@ export function CommonLayout({ children, className }: Props) {
           src="/images/ooga-booga.png"
         />
         <div
-          className="grid grid-rows-4 grid-flow-col grid-cols-6 size-full gap-3 relative p-5"
+          className="grid grid-rows-6 grid-flow-col grid-cols-6 size-full gap-1 relative p-5"
           onClick={() => setFocusedApplication(null)}
         >
           {children}

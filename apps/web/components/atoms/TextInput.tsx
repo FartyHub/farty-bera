@@ -1,3 +1,4 @@
+/* eslint-disable no-magic-numbers */
 type Props = {
   error?: string;
   label: string;
@@ -18,6 +19,17 @@ export function TextInput({
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') {
       onSubmit?.();
+    }
+
+    if (e.key === 'Backspace') {
+      setValue(value.slice(0, -1));
+    }
+
+    if (
+      (e.keyCode >= 48 && e.keyCode <= 57) ||
+      (e.keyCode >= 65 && e.keyCode <= 90)
+    ) {
+      setValue(value + e.key);
     }
   }
 

@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 import { Application } from '../types';
 
 export enum Applications {
@@ -8,6 +9,11 @@ export enum Applications {
   LEADERBOARD = 'Leaderboard',
   STATS = 'Stats',
 }
+
+export const UNDER_DEVELOPMENT = [
+  Applications.LEADERBOARD,
+  Applications.GAME_EXPLORER,
+];
 
 export const ApplicationData: {
   [key in Applications]: Application;
@@ -22,6 +28,7 @@ export const ApplicationData: {
     minimized: false,
     name: 'BM, Ser',
     system: true,
+    title: 'BM, Ser',
     zIndex: 1,
   },
   [Applications.FARTY_BERA]: {
@@ -33,26 +40,31 @@ export const ApplicationData: {
     id: Applications.FARTY_BERA,
     minimized: false,
     name: 'Farty Bera',
+    title: 'Farty Bera',
     zIndex: 2,
   },
   [Applications.LEADERBOARD]: {
     desktopIconUrl: '/images/leaderboard-desktop-icon.png',
-    disabled: true,
+    disabled: false,
     fullScreen: false,
     iconUrl: '/images/leaderboard-icon.svg',
     id: Applications.LEADERBOARD,
     minimized: false,
     name: 'Leaderboard (Coming Soon)',
+    system: true,
+    title: 'Under Construction',
     zIndex: 3,
   },
   [Applications.GAME_EXPLORER]: {
     desktopIconUrl: '/images/explorer-desktop-icon.png',
-    disabled: true,
+    disabled: false,
     fullScreen: false,
     iconUrl: '/images/explorer-icon.svg',
     id: Applications.GAME_EXPLORER,
     minimized: false,
     name: 'Game Explorer (Coming Soon)',
+    system: true,
+    title: 'Under Construction',
     zIndex: 4,
   },
   [Applications.CONNECT_WALLET]: {
@@ -65,6 +77,7 @@ export const ApplicationData: {
     minimized: false,
     name: 'Connect Wallet',
     system: true,
+    title: 'Connect Wallet',
     zIndex: 5,
   },
   [Applications.INVITE_CODE]: {
@@ -77,6 +90,7 @@ export const ApplicationData: {
     minimized: false,
     name: 'BM, Ser',
     system: true,
+    title: 'BM, Ser',
     zIndex: 6,
   },
 };

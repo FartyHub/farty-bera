@@ -14,6 +14,7 @@ import { InviteCodeWindow } from './InviteCodeWindow';
 export function FartyBeraGame() {
   const {
     isLoaded,
+    sendMessage,
     unityProvider,
     UNSAFE__unityInstance: unityInstance,
   } = useUnityContext({
@@ -21,10 +22,10 @@ export function FartyBeraGame() {
     dataUrl: 'https://storage.googleapis.com/farty-bera-build/web.data',
     frameworkUrl:
       'https://storage.googleapis.com/farty-bera-build/web.framework.js',
-    loaderUrl: 'https://storage.googleapis.com/farty-bera-build/web-loader.js',
+    loaderUrl: 'https://storage.googleapis.com/farty-bera-build/web.loader.js',
   });
   const { applications, setApplications } = useApplications();
-  const { isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
   const application =
     applications.find((app) => app.id === Applications.FARTY_BERA) ||
     ApplicationData[Applications.FARTY_BERA];
@@ -32,6 +33,16 @@ export function FartyBeraGame() {
   // TODO
   const [isInvited, setIsInvited] = useState<boolean>(false);
   const hasNoAccess = !isConnected || !isInvited;
+
+  useEffect(
+    () => {
+      if (isLoaded) {
+        // TODO
+        sendMessage('GameManager', 'getuseraddress', address);
+      }
+    }, // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isLoaded],
+  );
 
   useEffect(() => {
     if (isInvited) {

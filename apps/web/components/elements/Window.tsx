@@ -26,7 +26,7 @@ export function Window({
     setApplications,
     setFocusedApplication,
   } = useApplications();
-  const { fullScreen, minimized, name, zIndex } =
+  const { fullScreen, minimized, name, title, zIndex } =
     applications.find((app) => app.id === application.id) || application;
   const isFocused = focusedApplication?.id === application.id;
   const isOnApplications = applications.some(
@@ -96,7 +96,7 @@ export function Window({
       <div className="flex justify-between p-2 gap-2 bg-gradient-to-r from-[#C76E00] to-[#FFBC5B]">
         <div className="flex gap-2">
           <img alt={name} className="size-5" src="/images/bera-logo.png" />
-          <span className="text-white text-base">{name}</span>
+          <span className="text-white text-base">{title}</span>
         </div>
         {!application.system && (
           <div className="flex gap-1">

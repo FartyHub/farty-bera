@@ -1,12 +1,15 @@
+import { Applications } from '../constants';
+
 export type Application = {
   creator?: string;
   desktopIconUrl: string;
   disabled: boolean;
   fullScreen: boolean;
   iconUrl: string;
-  id: string;
+  id: Applications;
   minimized: boolean;
   name: string;
   system?: boolean;
+  title?: string;
   zIndex: number;
 };
