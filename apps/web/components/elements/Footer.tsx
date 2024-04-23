@@ -71,7 +71,7 @@ export function Footer({ className }: Props) {
   return (
     <footer
       className={clsx(
-        'flex items-left bg-[#B8C0C1] border-outset justify-between',
+        'flex items-left bg-[#B8C0C1] border-outset justify-between md:unset absolute bottom-0 w-full',
         className,
       )}
     >

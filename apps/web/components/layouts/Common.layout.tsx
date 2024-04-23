@@ -31,6 +31,11 @@ export function CommonLayout({ children, className }: Props) {
         >
           {children}
         </div>
+        <img
+          alt="mascot"
+          className="absolute bottom-10 right-0 h-[30vh] z-0"
+          src="https://storage.googleapis.com/farty-bera-build/mascot.gif"
+        />
         <Footer />
       </div>
     </div>

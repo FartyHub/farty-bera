@@ -122,7 +122,7 @@ export function FartyBeraGame() {
         <div
           className={clsx(
             'border-inset-black flex items-center justify-center',
-            application.fullScreen ? 'size-full' : 'w-[50vw] h-[25vw]',
+            application.fullScreen ? 'size-full' : 'w-[100vh] h-[60vh]',
           )}
         >
           <Spinner className={clsx(isLoaded ? 'hidden' : 'visible')} />
