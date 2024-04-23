@@ -37,8 +37,7 @@ export function FartyBeraGame() {
   useEffect(
     () => {
       if (isLoaded) {
-        // TODO
-        sendMessage('GameManager', 'getuseraddress', address);
+        sendMessage('GameController', 'getuseraddress', address);
       }
     }, // eslint-disable-next-line react-hooks/exhaustive-deps
     [isLoaded],
