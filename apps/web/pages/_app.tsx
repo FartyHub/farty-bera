@@ -56,8 +56,8 @@ function CustomApp({ Component, pageProps }: AppProps) {
               onEnded={handleVideoEnded}
             >
               <source
-                src="https://storage.googleapis.com/farty-bera-build/intro.mp4"
-                type="video/mp4"
+                src="https://storage.googleapis.com/farty-bera-build/intro.webm"
+                type="video/webm"
               />
             </video>
             {!hasVideoEnded ? null : <Component {...pageProps} />}

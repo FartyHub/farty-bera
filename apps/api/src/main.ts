@@ -7,9 +7,12 @@ import {
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
+import dotenv from 'dotenv';
 
 import { AppModule } from './app/app.module';
 import { transformValidationErrors } from './utils';
+
+dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

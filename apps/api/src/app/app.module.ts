@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -25,13 +25,13 @@ const defaultDBOptions = {
 @Module({
   controllers: [AppController],
   imports: [
-    TypeOrmModule.forFeature([User]),
     TypeOrmModule.forRoot({
       ...defaultDBOptions,
       database: process.env.DB_DATABASE,
       entities: [User],
       type: 'postgres',
     }),
+    TypeOrmModule.forFeature([User]),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -42,6 +42,7 @@ const defaultDBOptions = {
       provide: APP_GUARD,
       useClass: JwtGuard,
     },
+    Logger,
     AppService,
   ],
 })
