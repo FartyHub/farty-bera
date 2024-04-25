@@ -31,9 +31,8 @@ export class ScoreService {
     );
 
     try {
-      const { address, ...rest } = createScoreDto;
-      const score = this.scoresRepository.create(rest);
-      const user = await this.userService.findOne(address);
+      const score = this.scoresRepository.create(createScoreDto);
+      const user = await this.userService.findOne(createScoreDto.userAddress);
 
       if (
         user.fartyHighScore < score.value &&
@@ -42,7 +41,7 @@ export class ScoreService {
         user.fartyHighScore = score.value;
       }
 
-      await this.userService.update(address, user);
+      await this.userService.update(createScoreDto.userAddress, user);
 
       return await this.scoresRepository.save(score);
     } catch (error) {

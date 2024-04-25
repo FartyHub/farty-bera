@@ -8,11 +8,14 @@ export class CreateScoreDto {
   @IsNumber()
   value: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    enum: Applications,
+    enumName: 'Applications',
+  })
   @IsEnum(Applications)
   game: Applications;
 
   @ApiProperty()
   @IsString()
-  address: string;
+  userAddress: string;
 }

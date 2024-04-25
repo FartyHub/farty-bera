@@ -12,7 +12,10 @@ export class Score extends BaseEntity {
   value: number;
 
   @Column({ enum: Applications, type: 'enum' })
-  @ApiProperty()
+  @ApiProperty({
+    enum: Applications,
+    enumName: 'Applications',
+  })
   @IsEnum(Applications)
   game: Applications;
 

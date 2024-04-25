@@ -8,6 +8,7 @@ import { User } from '@farty-bera/api-lib';
 
 import { ApplicationData, Applications } from '../../constants';
 import { useApplications, useUser } from '../../contexts';
+import { useCreateScore } from '../../hooks';
 import { Spinner } from '../atoms';
 import { Window } from '../elements';
 
@@ -34,8 +35,9 @@ export function FartyBeraGame() {
     // loaderUrl: 'build/web.loader.js',
   });
   const { applications, setApplications } = useApplications();
-  const { address, isConnected } = useAccount();
+  const { address = '', isConnected } = useAccount();
   const { setUser, user = {} as User } = useUser();
+  const { mutate: addScore } = useCreateScore();
   const application =
     applications.find((app) => app.id === Applications.FARTY_BERA) ||
     ApplicationData[Applications.FARTY_BERA];
@@ -45,6 +47,11 @@ export function FartyBeraGame() {
 
   const handleSetScore = useCallback(
     (newScore: number) => {
+      addScore({
+        game: Applications.FARTY_BERA,
+        userAddress: address,
+        value: newScore,
+      });
       setUser({
         fartyGamesPlayed: (user.fartyGamesPlayed ?? 0) + 1,
         fartyHighScore: Math.max(user.fartyHighScore ?? 0, newScore),

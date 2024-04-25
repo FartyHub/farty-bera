@@ -26,6 +26,19 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 /**
  * 
  * @export
+ * @enum {string}
+ */
+
+export const Applications = {
+    FartyBera: 'Farty Bera'
+} as const;
+
+export type Applications = typeof Applications[keyof typeof Applications];
+
+
+/**
+ * 
+ * @export
  * @interface CheckInviteCodeDto
  */
 export interface CheckInviteCodeDto {
@@ -56,17 +69,19 @@ export interface CreateScoreDto {
     'value': number;
     /**
      * 
-     * @type {object}
+     * @type {Applications}
      * @memberof CreateScoreDto
      */
-    'game': object;
+    'game': Applications;
     /**
      * 
      * @type {string}
      * @memberof CreateScoreDto
      */
-    'address': string;
+    'userAddress': string;
 }
+
+
 /**
  * 
  * @export
@@ -124,10 +139,10 @@ export interface Score {
     'value': number;
     /**
      * 
-     * @type {object}
+     * @type {Applications}
      * @memberof Score
      */
-    'game': object;
+    'game': Applications;
     /**
      * 
      * @type {string}
@@ -135,6 +150,8 @@ export interface Score {
      */
     'userAddress': string;
 }
+
+
 /**
  * 
  * @export
@@ -149,17 +166,19 @@ export interface UpdateScoreDto {
     'value'?: number;
     /**
      * 
-     * @type {object}
+     * @type {Applications}
      * @memberof UpdateScoreDto
      */
-    'game'?: object;
+    'game'?: Applications;
     /**
      * 
      * @type {string}
      * @memberof UpdateScoreDto
      */
-    'address'?: string;
+    'userAddress'?: string;
 }
+
+
 /**
  * 
  * @export
