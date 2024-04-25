@@ -2,6 +2,7 @@
 type Props = {
   error?: string;
   label: string;
+  loading?: boolean;
   onSubmit?: () => void;
   placeholder?: string;
   setValue: (value: string) => void;
@@ -12,6 +13,7 @@ type Props = {
 export function TextInput({
   error,
   label,
+  loading,
   onSubmit,
   placeholder,
   setValue,
@@ -19,6 +21,10 @@ export function TextInput({
   value,
 }: Props) {
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (loading) {
+      return;
+    }
+
     if (e.key === 'Enter') {
       onSubmit?.();
     }

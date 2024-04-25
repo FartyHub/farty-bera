@@ -26,6 +26,50 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 /**
  * 
  * @export
+ * @interface CheckInviteCodeDto
+ */
+export interface CheckInviteCodeDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CheckInviteCodeDto
+     */
+    'address': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CheckInviteCodeDto
+     */
+    'inviteCode': string;
+}
+/**
+ * 
+ * @export
+ * @interface CreateScoreDto
+ */
+export interface CreateScoreDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof CreateScoreDto
+     */
+    'value': number;
+    /**
+     * 
+     * @type {object}
+     * @memberof CreateScoreDto
+     */
+    'game': object;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateScoreDto
+     */
+    'address': string;
+}
+/**
+ * 
+ * @export
  * @interface CreateUserDto
  */
 export interface CreateUserDto {
@@ -45,9 +89,107 @@ export interface CreateUserDto {
 /**
  * 
  * @export
+ * @interface Score
+ */
+export interface Score {
+    /**
+     * 
+     * @type {string}
+     * @memberof Score
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Score
+     */
+    'createdAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Score
+     */
+    'updatedAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Score
+     */
+    'deletedAt': string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof Score
+     */
+    'value': number;
+    /**
+     * 
+     * @type {object}
+     * @memberof Score
+     */
+    'game': object;
+    /**
+     * 
+     * @type {string}
+     * @memberof Score
+     */
+    'userAddress': string;
+}
+/**
+ * 
+ * @export
+ * @interface UpdateScoreDto
+ */
+export interface UpdateScoreDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateScoreDto
+     */
+    'value'?: number;
+    /**
+     * 
+     * @type {object}
+     * @memberof UpdateScoreDto
+     */
+    'game'?: object;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateScoreDto
+     */
+    'address'?: string;
+}
+/**
+ * 
+ * @export
  * @interface UpdateUserDto
  */
 export interface UpdateUserDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateUserDto
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateUserDto
+     */
+    'createdAt'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateUserDto
+     */
+    'updatedAt'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateUserDto
+     */
+    'deletedAt'?: string | null;
     /**
      * 
      * @type {string}
@@ -59,13 +201,110 @@ export interface UpdateUserDto {
      * @type {string}
      * @memberof UpdateUserDto
      */
-    'usedInviteCode'?: string;
+    'inviteCode'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateUserDto
+     */
+    'inviteCodeLimit'?: number;
     /**
      * 
      * @type {string}
      * @memberof UpdateUserDto
      */
-    'deletedAt'?: string;
+    'usedInviteCode'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateUserDto
+     */
+    'fartyHighScore'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateUserDto
+     */
+    'fartyGamesPlayed'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateUserDto
+     */
+    'honeyScore'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface User
+ */
+export interface User {
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    'createdAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    'updatedAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    'deletedAt': string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    'address': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    'inviteCode': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof User
+     */
+    'inviteCodeLimit'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    'usedInviteCode'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof User
+     */
+    'fartyHighScore': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof User
+     */
+    'fartyGamesPlayed': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof User
+     */
+    'honeyScore': number;
 }
 
 /**
@@ -160,6 +399,487 @@ export class DefaultApi extends BaseAPI {
      */
     public appControllerGetData(options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).appControllerGetData(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * InviteCodeApi - axios parameter creator
+ * @export
+ */
+export const InviteCodeApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {CheckInviteCodeDto} checkInviteCodeDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        inviteCodeControllerCheckInviteCode: async (checkInviteCodeDto: CheckInviteCodeDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'checkInviteCodeDto' is not null or undefined
+            assertParamExists('inviteCodeControllerCheckInviteCode', 'checkInviteCodeDto', checkInviteCodeDto)
+            const localVarPath = `/api/invite-code`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(checkInviteCodeDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * InviteCodeApi - functional programming interface
+ * @export
+ */
+export const InviteCodeApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = InviteCodeApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {CheckInviteCodeDto} checkInviteCodeDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async inviteCodeControllerCheckInviteCode(checkInviteCodeDto: CheckInviteCodeDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.inviteCodeControllerCheckInviteCode(checkInviteCodeDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['InviteCodeApi.inviteCodeControllerCheckInviteCode']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * InviteCodeApi - factory interface
+ * @export
+ */
+export const InviteCodeApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = InviteCodeApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {CheckInviteCodeDto} checkInviteCodeDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        inviteCodeControllerCheckInviteCode(checkInviteCodeDto: CheckInviteCodeDto, options?: any): AxiosPromise<User> {
+            return localVarFp.inviteCodeControllerCheckInviteCode(checkInviteCodeDto, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * InviteCodeApi - object-oriented interface
+ * @export
+ * @class InviteCodeApi
+ * @extends {BaseAPI}
+ */
+export class InviteCodeApi extends BaseAPI {
+    /**
+     * 
+     * @param {CheckInviteCodeDto} checkInviteCodeDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InviteCodeApi
+     */
+    public inviteCodeControllerCheckInviteCode(checkInviteCodeDto: CheckInviteCodeDto, options?: RawAxiosRequestConfig) {
+        return InviteCodeApiFp(this.configuration).inviteCodeControllerCheckInviteCode(checkInviteCodeDto, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * ScoresApi - axios parameter creator
+ * @export
+ */
+export const ScoresApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {CreateScoreDto} createScoreDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        scoreControllerCreate: async (createScoreDto: CreateScoreDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createScoreDto' is not null or undefined
+            assertParamExists('scoreControllerCreate', 'createScoreDto', createScoreDto)
+            const localVarPath = `/api/scores`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createScoreDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} address 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        scoreControllerFindAll: async (address: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('scoreControllerFindAll', 'address', address)
+            const localVarPath = `/api/scores/{address}`
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        scoreControllerFindOne: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('scoreControllerFindOne', 'id', id)
+            const localVarPath = `/api/scores/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        scoreControllerRemove: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('scoreControllerRemove', 'id', id)
+            const localVarPath = `/api/scores/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {UpdateScoreDto} updateScoreDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        scoreControllerUpdate: async (id: string, updateScoreDto: UpdateScoreDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('scoreControllerUpdate', 'id', id)
+            // verify required parameter 'updateScoreDto' is not null or undefined
+            assertParamExists('scoreControllerUpdate', 'updateScoreDto', updateScoreDto)
+            const localVarPath = `/api/scores/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updateScoreDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ScoresApi - functional programming interface
+ * @export
+ */
+export const ScoresApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ScoresApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {CreateScoreDto} createScoreDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async scoreControllerCreate(createScoreDto: CreateScoreDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Score>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.scoreControllerCreate(createScoreDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ScoresApi.scoreControllerCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} address 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async scoreControllerFindAll(address: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Score>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.scoreControllerFindAll(address, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ScoresApi.scoreControllerFindAll']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async scoreControllerFindOne(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Score>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.scoreControllerFindOne(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ScoresApi.scoreControllerFindOne']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async scoreControllerRemove(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<boolean>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.scoreControllerRemove(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ScoresApi.scoreControllerRemove']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {UpdateScoreDto} updateScoreDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async scoreControllerUpdate(id: string, updateScoreDto: UpdateScoreDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Score>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.scoreControllerUpdate(id, updateScoreDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ScoresApi.scoreControllerUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ScoresApi - factory interface
+ * @export
+ */
+export const ScoresApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ScoresApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {CreateScoreDto} createScoreDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        scoreControllerCreate(createScoreDto: CreateScoreDto, options?: any): AxiosPromise<Score> {
+            return localVarFp.scoreControllerCreate(createScoreDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} address 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        scoreControllerFindAll(address: string, options?: any): AxiosPromise<Array<Score>> {
+            return localVarFp.scoreControllerFindAll(address, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        scoreControllerFindOne(id: string, options?: any): AxiosPromise<Score> {
+            return localVarFp.scoreControllerFindOne(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        scoreControllerRemove(id: string, options?: any): AxiosPromise<boolean> {
+            return localVarFp.scoreControllerRemove(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {UpdateScoreDto} updateScoreDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        scoreControllerUpdate(id: string, updateScoreDto: UpdateScoreDto, options?: any): AxiosPromise<Score> {
+            return localVarFp.scoreControllerUpdate(id, updateScoreDto, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ScoresApi - object-oriented interface
+ * @export
+ * @class ScoresApi
+ * @extends {BaseAPI}
+ */
+export class ScoresApi extends BaseAPI {
+    /**
+     * 
+     * @param {CreateScoreDto} createScoreDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ScoresApi
+     */
+    public scoreControllerCreate(createScoreDto: CreateScoreDto, options?: RawAxiosRequestConfig) {
+        return ScoresApiFp(this.configuration).scoreControllerCreate(createScoreDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} address 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ScoresApi
+     */
+    public scoreControllerFindAll(address: string, options?: RawAxiosRequestConfig) {
+        return ScoresApiFp(this.configuration).scoreControllerFindAll(address, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ScoresApi
+     */
+    public scoreControllerFindOne(id: string, options?: RawAxiosRequestConfig) {
+        return ScoresApiFp(this.configuration).scoreControllerFindOne(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ScoresApi
+     */
+    public scoreControllerRemove(id: string, options?: RawAxiosRequestConfig) {
+        return ScoresApiFp(this.configuration).scoreControllerRemove(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} id 
+     * @param {UpdateScoreDto} updateScoreDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ScoresApi
+     */
+    public scoreControllerUpdate(id: string, updateScoreDto: UpdateScoreDto, options?: RawAxiosRequestConfig) {
+        return ScoresApiFp(this.configuration).scoreControllerUpdate(id, updateScoreDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -274,6 +994,39 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        userControllerGenerateInviteCode: async (address: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('userControllerGenerateInviteCode', 'address', address)
+            const localVarPath = `/api/users/invite-code{address}`
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} address 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         userControllerRemove: async (address: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'address' is not null or undefined
             assertParamExists('userControllerRemove', 'address', address)
@@ -356,7 +1109,7 @@ export const UsersApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userControllerCreate(createUserDto: CreateUserDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async userControllerCreate(createUserDto: CreateUserDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerCreate(createUserDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UsersApi.userControllerCreate']?.[localVarOperationServerIndex]?.url;
@@ -367,7 +1120,7 @@ export const UsersApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userControllerFindAll(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async userControllerFindAll(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<User>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerFindAll(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UsersApi.userControllerFindAll']?.[localVarOperationServerIndex]?.url;
@@ -379,7 +1132,7 @@ export const UsersApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userControllerFindOne(address: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async userControllerFindOne(address: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerFindOne(address, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UsersApi.userControllerFindOne']?.[localVarOperationServerIndex]?.url;
@@ -391,7 +1144,19 @@ export const UsersApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userControllerRemove(address: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async userControllerGenerateInviteCode(address: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerGenerateInviteCode(address, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UsersApi.userControllerGenerateInviteCode']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} address 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async userControllerRemove(address: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<boolean>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerRemove(address, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UsersApi.userControllerRemove']?.[localVarOperationServerIndex]?.url;
@@ -404,7 +1169,7 @@ export const UsersApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userControllerUpdate(address: string, updateUserDto: UpdateUserDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async userControllerUpdate(address: string, updateUserDto: UpdateUserDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerUpdate(address, updateUserDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UsersApi.userControllerUpdate']?.[localVarOperationServerIndex]?.url;
@@ -426,7 +1191,7 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerCreate(createUserDto: CreateUserDto, options?: any): AxiosPromise<void> {
+        userControllerCreate(createUserDto: CreateUserDto, options?: any): AxiosPromise<User> {
             return localVarFp.userControllerCreate(createUserDto, options).then((request) => request(axios, basePath));
         },
         /**
@@ -434,7 +1199,7 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerFindAll(options?: any): AxiosPromise<void> {
+        userControllerFindAll(options?: any): AxiosPromise<Array<User>> {
             return localVarFp.userControllerFindAll(options).then((request) => request(axios, basePath));
         },
         /**
@@ -443,7 +1208,7 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerFindOne(address: string, options?: any): AxiosPromise<void> {
+        userControllerFindOne(address: string, options?: any): AxiosPromise<User> {
             return localVarFp.userControllerFindOne(address, options).then((request) => request(axios, basePath));
         },
         /**
@@ -452,7 +1217,16 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerRemove(address: string, options?: any): AxiosPromise<void> {
+        userControllerGenerateInviteCode(address: string, options?: any): AxiosPromise<string> {
+            return localVarFp.userControllerGenerateInviteCode(address, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} address 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userControllerRemove(address: string, options?: any): AxiosPromise<boolean> {
             return localVarFp.userControllerRemove(address, options).then((request) => request(axios, basePath));
         },
         /**
@@ -462,7 +1236,7 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerUpdate(address: string, updateUserDto: UpdateUserDto, options?: any): AxiosPromise<void> {
+        userControllerUpdate(address: string, updateUserDto: UpdateUserDto, options?: any): AxiosPromise<User> {
             return localVarFp.userControllerUpdate(address, updateUserDto, options).then((request) => request(axios, basePath));
         },
     };
@@ -505,6 +1279,17 @@ export class UsersApi extends BaseAPI {
      */
     public userControllerFindOne(address: string, options?: RawAxiosRequestConfig) {
         return UsersApiFp(this.configuration).userControllerFindOne(address, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} address 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersApi
+     */
+    public userControllerGenerateInviteCode(address: string, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).userControllerGenerateInviteCode(address, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

@@ -7,6 +7,9 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { JwtGuard } from './common';
+import { InviteCodeModule } from './invite-code';
+import { ProjectInvite, ProjectInviteModule } from './project-invite';
+import { Score, ScoreModule } from './score';
 import { User, UserModule } from './user';
 
 const defaultDBOptions = {
@@ -28,7 +31,7 @@ const defaultDBOptions = {
     TypeOrmModule.forRoot({
       ...defaultDBOptions,
       database: process.env.DB_DATABASE,
-      entities: [User],
+      entities: [User, Score, ProjectInvite],
       type: 'postgres',
     }),
     TypeOrmModule.forFeature([User]),
@@ -36,6 +39,9 @@ const defaultDBOptions = {
       isGlobal: true,
     }),
     UserModule,
+    ScoreModule,
+    ProjectInviteModule,
+    InviteCodeModule,
   ],
   providers: [
     {

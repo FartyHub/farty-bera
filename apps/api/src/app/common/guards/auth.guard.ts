@@ -12,7 +12,6 @@ import { Reflector } from '@nestjs/core';
 import { ConfigKeys } from '../constants';
 
 const IS_PUBLIC_KEY = 'isPublic';
-const IS_API_KEY = 'isApiKey';
 
 @Injectable()
 export class JwtGuard implements CanActivate {
@@ -34,16 +33,11 @@ export class JwtGuard implements CanActivate {
         return true;
       }
 
-      const isApiKey = this.reflector.getAllAndOverride<boolean>(IS_API_KEY, [
-        context.getHandler(),
-        context.getClass(),
-      ]);
-
       const request = context.switchToHttp().getRequest();
 
       const requestApiKey = request.get('x-api-key');
 
-      if (isApiKey && requestApiKey) {
+      if (requestApiKey) {
         this.logger.log(
           '[API] Using API key from auth header: ',
           requestApiKey,
@@ -67,4 +61,3 @@ export class JwtGuard implements CanActivate {
 }
 
 export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
-export const ApiKey = () => SetMetadata(IS_API_KEY, true);

@@ -4,8 +4,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { Unity, useUnityContext } from 'react-unity-webgl';
 import { useAccount } from 'wagmi';
 
+import { User } from '@farty-bera/api-lib';
+
 import { ApplicationData, Applications } from '../../constants';
-import { useApplications } from '../../contexts';
+import { useApplications, useUser } from '../../contexts';
 import { Spinner } from '../atoms';
 import { Window } from '../elements';
 
@@ -33,18 +35,24 @@ export function FartyBeraGame() {
   });
   const { applications, setApplications } = useApplications();
   const { address, isConnected } = useAccount();
+  const { setUser, user = {} as User } = useUser();
   const application =
     applications.find((app) => app.id === Applications.FARTY_BERA) ||
     ApplicationData[Applications.FARTY_BERA];
 
-  // TODO
-  const [isInvited, setIsInvited] = useState<boolean>(false);
-  const [score, setScore] = useState<number>(0);
+  const [isInvited, setIsInvited] = useState<boolean>(!!user.usedInviteCode);
   const hasNoAccess = !isConnected || !isInvited;
 
-  const handleSetScore = useCallback((newScore: number) => {
-    setScore(score < newScore ? newScore : score);
-  }, []);
+  const handleSetScore = useCallback(
+    (newScore: number) => {
+      setUser({
+        fartyGamesPlayed: (user.fartyGamesPlayed ?? 0) + 1,
+        fartyHighScore: Math.max(user.fartyHighScore ?? 0, newScore),
+      });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [user],
+  );
 
   useEffect(() => {
     // @ts-expect-error
@@ -174,10 +182,7 @@ export function FartyBeraGame() {
           </div>
           <div className="flex flex-col text-base text-right">
             <span className="font-bold">Highest Score</span>
-            <span className="font-normal">
-              {/* TODO */}
-              {score}
-            </span>
+            <span className="font-normal">{user.fartyHighScore ?? 0}</span>
           </div>
         </div>
       </div>

@@ -10,6 +10,7 @@ type Props = {
   children: ReactNode;
   className?: string;
   disabled?: boolean;
+  loading?: boolean;
   onClick: (event?: MouseEvent<HTMLButtonElement>) => void;
   selected?: boolean;
   type: 'primary' | 'secondary';
@@ -19,6 +20,7 @@ export function Button({
   children,
   className,
   disabled,
+  loading,
   onClick,
   selected,
   type,
@@ -28,13 +30,18 @@ export function Button({
       className={clsx(
         'border-outset active:border-inset shadow-black shadow-sm p-0.5 outline-none',
         selected && 'border-dotted border-black',
-        disabled && 'cursor-not-allowed !text-[#808080]',
+        (disabled || loading) && 'cursor-not-allowed !text-[#808080]',
         TYPE_CLASSES[type],
         className,
       )}
+      disabled={disabled || loading}
       onClick={onClick}
     >
-      {children}
+      {loading ? (
+        <div className="size-5 border-2 rounded-full border-t-[#C76E00] animate-spin" />
+      ) : (
+        children
+      )}
     </button>
   );
 }

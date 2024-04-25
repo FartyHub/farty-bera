@@ -7,10 +7,11 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 
 @ApiTags('Users')
@@ -19,30 +20,41 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  @ApiOkResponse({ type: User })
+  create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.userService.create(createUserDto);
   }
 
   @Get()
-  findAll() {
+  @ApiOkResponse({ type: [User] })
+  findAll(): Promise<User[]> {
     return this.userService.findAll();
   }
 
   @Get(':address')
-  findOne(@Param('address') address: string) {
+  @ApiOkResponse({ type: User })
+  findOne(@Param('address') address: string): Promise<User> {
     return this.userService.findOne(address);
   }
 
   @Patch(':address')
+  @ApiOkResponse({ type: User })
   update(
     @Param('address') address: string,
     @Body() updateUserDto: UpdateUserDto,
-  ) {
+  ): Promise<User> {
     return this.userService.update(address, updateUserDto);
   }
 
   @Delete(':address')
-  remove(@Param('address') address: string) {
+  @ApiOkResponse({ type: Boolean })
+  remove(@Param('address') address: string): Promise<boolean> {
     return this.userService.remove(address);
+  }
+
+  @Get('invite-code:address')
+  @ApiOkResponse({ type: String })
+  generateInviteCode(@Param('address') address: string): Promise<string> {
+    return this.userService.generateInviteCode(address);
   }
 }

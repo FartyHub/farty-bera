@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useAccount } from 'wagmi';
 
 import { ApplicationData, Applications } from '../../constants';
+import { useUser } from '../../contexts';
+import { useCheckInviteCode } from '../../hooks';
 import { Button, TextInput } from '../atoms';
 import { Window } from '../elements';
 
@@ -12,27 +14,34 @@ type Props = {
   onSuccess?: () => void;
 };
 
-const MOCK_CODE = '123456';
-
 export function InviteCodeWindow({ isGameLoaded, onClose, onSuccess }: Props) {
-  const { isConnected } = useAccount();
+  const { address = '', isConnected } = useAccount();
+  const { setUser } = useUser();
   const [code, setCode] = useState<string>('');
   const [error, setError] = useState<string>('');
   const application = ApplicationData[Applications.INVITE_CODE];
+  const { isPending: isChecking, mutate: checkInviteCode } = useCheckInviteCode(
+    {
+      onError: (checkError) => {
+        setError(checkError.message);
+      },
+      onSuccess: (data) => {
+        setUser(data);
+        setError('');
+        onSuccess?.();
+      },
+    },
+  );
 
   async function handleOnClose() {
     await onClose?.();
   }
 
   function handleConfirmCode() {
-    if (code !== MOCK_CODE) {
-      setError('The code you input is invalid. Please try again.');
-
-      return;
-    }
-
-    setError('');
-    onSuccess?.();
+    checkInviteCode({
+      address,
+      inviteCode: code,
+    });
   }
 
   return (
@@ -49,6 +58,7 @@ export function InviteCodeWindow({ isGameLoaded, onClose, onSuccess }: Props) {
         <TextInput
           error={error}
           label="Invite Code"
+          loading={isChecking}
           placeholder="Invite code goes here"
           setValue={setCode}
           shouldUseKeyDown={isGameLoaded}
@@ -68,6 +78,7 @@ export function InviteCodeWindow({ isGameLoaded, onClose, onSuccess }: Props) {
           </Button>
           <Button
             className="flex flex-1 px-5 py-2 justify-center"
+            loading={isChecking}
             type="primary"
             onClick={handleConfirmCode}
           >

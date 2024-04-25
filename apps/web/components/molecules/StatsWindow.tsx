@@ -2,22 +2,26 @@ import { useWeb3Modal } from '@web3modal/wagmi/react';
 import clsx from 'clsx';
 import { useAccount } from 'wagmi';
 
+import { User } from '@farty-bera/api-lib';
+
 import { ApplicationData, Applications, X_URL } from '../../constants';
-import { useApplications } from '../../contexts';
-import { calculateScore, truncateMiddle } from '../../utils';
+import { useApplications, useUser } from '../../contexts';
+import { truncateMiddle } from '../../utils';
 import { Button } from '../atoms';
 import { Window } from '../elements';
 
-// TODO
-// eslint-disable-next-line no-magic-numbers
-const MOCK_SCORE = calculateScore(250, 200);
-const MOCK_INVITE_CODE = '123456';
 const SCORE_THRESHOLD = 100;
 
 export function StatsWindow() {
   const { address, isConnected } = useAccount();
   const { open } = useWeb3Modal();
   const { applications } = useApplications();
+  const {
+    user = {
+      honeyScore: 0,
+      inviteCode: '',
+    } as User,
+  } = useUser();
   const application =
     applications.find((app) => app.id === Applications.STATS) ||
     ApplicationData[Applications.STATS];
@@ -61,9 +65,9 @@ export function StatsWindow() {
                 src="/images/honey-icon.svg"
               />
               <span className="font-bold">Score: </span>
-              {MOCK_SCORE}
+              {user?.honeyScore ?? 0}
             </div>
-            {MOCK_SCORE >= SCORE_THRESHOLD && (
+            {user?.honeyScore >= SCORE_THRESHOLD && (
               <div className="flex gap-1 text-xs items-center">
                 <img
                   alt="invite"
@@ -71,7 +75,7 @@ export function StatsWindow() {
                   src="/images/invite-icon.svg"
                 />
                 <span className="font-bold">Invite Code: </span>
-                {MOCK_INVITE_CODE}
+                {user?.inviteCode ?? ''}
               </div>
             )}
             <p className="text-[13px]">

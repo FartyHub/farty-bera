@@ -7,10 +7,11 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { generateRandomText } from '../../utils';
+import { calculateHoneyScore, generateRandomText } from '../../utils';
 
-import { CreateUserDto, UpdateUserDto } from './dto';
-import { User } from './entities';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
@@ -26,9 +27,6 @@ export class UserService {
 
     try {
       const user = this.usersRepository.create(createUserDto);
-      const inviteCode = generateRandomText(6);
-
-      user.inviteCode = inviteCode;
 
       return this.usersRepository.save(user);
     } catch (error) {
@@ -44,11 +42,11 @@ export class UserService {
     return this.usersRepository.find();
   }
 
-  findOne(address: string) {
+  async findOne(address: string) {
     this.logger.log(`[GET_USER] ${address}`);
 
     try {
-      return this.usersRepository.findOneOrFail({ where: { address } });
+      return await this.usersRepository.findOneOrFail({ where: { address } });
     } catch (error) {
       this.logger.error(`[GET_USER] ${error.message}`);
 
@@ -61,10 +59,19 @@ export class UserService {
 
     try {
       const user = await this.findOne(address);
-      const newUser = {
+      const newUser = this.usersRepository.create({
         ...user,
         ...updateUserDto,
-      };
+      });
+
+      newUser.honeyScore = calculateHoneyScore(
+        newUser.fartyGamesPlayed,
+        newUser.fartyHighScore,
+      );
+
+      if (newUser.honeyScore >= 100) {
+        newUser.inviteCode = generateRandomText(6);
+      }
 
       await this.usersRepository.save(newUser);
 
@@ -85,6 +92,25 @@ export class UserService {
       return true;
     } catch (error) {
       this.logger.error(`[DELETE_USER] ${error.message}`);
+
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  async generateInviteCode(address: string) {
+    this.logger.log(`[GENERATE_INVITE_CODE] ${address}`);
+
+    try {
+      const user = await this.findOne(address);
+      const inviteCode = generateRandomText(6);
+
+      user.inviteCode = inviteCode;
+
+      await this.usersRepository.save(user);
+
+      return inviteCode;
+    } catch (error) {
+      this.logger.error(`[GENERATE_INVITE_CODE] ${error.message}`);
 
       throw new InternalServerErrorException(error.message);
     }

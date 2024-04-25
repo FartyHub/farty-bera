@@ -1,10 +1,5 @@
-import { ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { IsDate } from 'class-validator';
+import { PartialType } from '@nestjs/swagger';
 
-import { CreateUserDto } from './create-user.dto';
+import { User } from '../entities/user.entity';
 
-export class UpdateUserDto extends PartialType(CreateUserDto) {
-  @ApiPropertyOptional()
-  @IsDate()
-  deletedAt: Date;
-}
+export class UpdateUserDto extends PartialType(User) {}
