@@ -43,7 +43,7 @@ export function FartyBeraGame() {
   const hasNoAccess = !isConnected || !isInvited;
 
   const handleSetScore = useCallback((newScore: number) => {
-    setScore(newScore);
+    setScore(score < newScore ? newScore : score);
   }, []);
 
   useEffect(() => {
