@@ -14,6 +14,8 @@ dotenv.config();
 import { AppModule } from './app/app.module';
 import { transformValidationErrors } from './utils';
 
+console.log(process.env);
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const globalPrefix = 'api';
@@ -21,7 +23,6 @@ async function bootstrap() {
 
   app.use(cookieParser());
   app.enableCors({
-    credentials: true,
     origin: process.env.ALLOW_ORIGINS?.split(','),
   });
   app.useGlobalPipes(
