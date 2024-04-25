@@ -7,13 +7,14 @@ import { Button, TextInput } from '../atoms';
 import { Window } from '../elements';
 
 type Props = {
+  isGameLoaded: boolean;
   onClose?: () => Promise<void>;
   onSuccess?: () => void;
 };
 
 const MOCK_CODE = '123456';
 
-export function InviteCodeWindow({ onClose, onSuccess }: Props) {
+export function InviteCodeWindow({ isGameLoaded, onClose, onSuccess }: Props) {
   const { isConnected } = useAccount();
   const [code, setCode] = useState<string>('');
   const [error, setError] = useState<string>('');
@@ -50,6 +51,7 @@ export function InviteCodeWindow({ onClose, onSuccess }: Props) {
           label="Invite Code"
           placeholder="Invite code goes here"
           setValue={setCode}
+          shouldUseKeyDown={isGameLoaded}
           value={code}
           onSubmit={handleConfirmCode}
         />

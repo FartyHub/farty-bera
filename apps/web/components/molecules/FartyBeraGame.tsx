@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import clsx from 'clsx';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Unity, useUnityContext } from 'react-unity-webgl';
 import { useAccount } from 'wagmi';
 
@@ -13,7 +14,9 @@ import { InviteCodeWindow } from './InviteCodeWindow';
 
 export function FartyBeraGame() {
   const {
+    addEventListener,
     isLoaded,
+    removeEventListener,
     sendMessage,
     unityProvider,
     UNSAFE__unityInstance: unityInstance,
@@ -23,6 +26,10 @@ export function FartyBeraGame() {
     frameworkUrl:
       'https://storage.googleapis.com/farty-bera-build/web.framework.js',
     loaderUrl: 'https://storage.googleapis.com/farty-bera-build/web.loader.js',
+    // codeUrl: 'build/web.wasm',
+    // dataUrl: 'build/web.data',
+    // frameworkUrl: 'build/web.framework.js',
+    // loaderUrl: 'build/web.loader.js',
   });
   const { applications, setApplications } = useApplications();
   const { address, isConnected } = useAccount();
@@ -32,7 +39,22 @@ export function FartyBeraGame() {
 
   // TODO
   const [isInvited, setIsInvited] = useState<boolean>(false);
+  const [score, setScore] = useState<number>(0);
   const hasNoAccess = !isConnected || !isInvited;
+
+  const handleSetScore = useCallback((newScore: number) => {
+    setScore(newScore);
+  }, []);
+
+  useEffect(() => {
+    // @ts-expect-error
+    addEventListener('SetScore', handleSetScore);
+
+    return () => {
+      // @ts-expect-error
+      removeEventListener('SetScore', handleSetScore);
+    };
+  }, [addEventListener, removeEventListener, handleSetScore]);
 
   useEffect(
     () => {
@@ -154,7 +176,7 @@ export function FartyBeraGame() {
             <span className="font-bold">Highest Score</span>
             <span className="font-normal">
               {/* TODO */}
-              {0}
+              {score}
             </span>
           </div>
         </div>
@@ -162,6 +184,7 @@ export function FartyBeraGame() {
       {!isConnected && <ConnectWindow onClose={handleCloseWindow} />}
       {!isInvited && (
         <InviteCodeWindow
+          isGameLoaded={isLoaded}
           onClose={handleCloseWindow}
           onSuccess={handleSuccessInvite}
         />

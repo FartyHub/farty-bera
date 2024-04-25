@@ -5,6 +5,7 @@ type Props = {
   onSubmit?: () => void;
   placeholder?: string;
   setValue: (value: string) => void;
+  shouldUseKeyDown?: boolean;
   value: string;
 };
 
@@ -14,11 +15,16 @@ export function TextInput({
   onSubmit,
   placeholder,
   setValue,
+  shouldUseKeyDown,
   value,
 }: Props) {
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') {
       onSubmit?.();
+    }
+
+    if (!shouldUseKeyDown) {
+      return;
     }
 
     if (e.key === 'Backspace') {
