@@ -58,6 +58,31 @@ export interface CheckInviteCodeDto {
 /**
  * 
  * @export
+ * @interface CreateProjectInviteDto
+ */
+export interface CreateProjectInviteDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateProjectInviteDto
+     */
+    'inviteCode': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateProjectInviteDto
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof CreateProjectInviteDto
+     */
+    'inviteCodeLimit'?: number;
+}
+/**
+ * 
+ * @export
  * @interface CreateScoreDto
  */
 export interface CreateScoreDto {
@@ -100,6 +125,55 @@ export interface CreateUserDto {
      * @memberof CreateUserDto
      */
     'usedInviteCode'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface ProjectInvite
+ */
+export interface ProjectInvite {
+    /**
+     * 
+     * @type {string}
+     * @memberof ProjectInvite
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProjectInvite
+     */
+    'createdAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProjectInvite
+     */
+    'updatedAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProjectInvite
+     */
+    'deletedAt': string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProjectInvite
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProjectInvite
+     */
+    'inviteCode': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ProjectInvite
+     */
+    'inviteCodeLimit': number;
 }
 /**
  * 
@@ -524,6 +598,112 @@ export class InviteCodeApi extends BaseAPI {
      */
     public inviteCodeControllerCheckInviteCode(checkInviteCodeDto: CheckInviteCodeDto, options?: RawAxiosRequestConfig) {
         return InviteCodeApiFp(this.configuration).inviteCodeControllerCheckInviteCode(checkInviteCodeDto, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * ProjectInvitesApi - axios parameter creator
+ * @export
+ */
+export const ProjectInvitesApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {CreateProjectInviteDto} createProjectInviteDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        projectInviteControllerCreate: async (createProjectInviteDto: CreateProjectInviteDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createProjectInviteDto' is not null or undefined
+            assertParamExists('projectInviteControllerCreate', 'createProjectInviteDto', createProjectInviteDto)
+            const localVarPath = `/api/project-invites`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createProjectInviteDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ProjectInvitesApi - functional programming interface
+ * @export
+ */
+export const ProjectInvitesApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ProjectInvitesApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {CreateProjectInviteDto} createProjectInviteDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async projectInviteControllerCreate(createProjectInviteDto: CreateProjectInviteDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProjectInvite>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.projectInviteControllerCreate(createProjectInviteDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ProjectInvitesApi.projectInviteControllerCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ProjectInvitesApi - factory interface
+ * @export
+ */
+export const ProjectInvitesApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ProjectInvitesApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {CreateProjectInviteDto} createProjectInviteDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        projectInviteControllerCreate(createProjectInviteDto: CreateProjectInviteDto, options?: any): AxiosPromise<ProjectInvite> {
+            return localVarFp.projectInviteControllerCreate(createProjectInviteDto, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ProjectInvitesApi - object-oriented interface
+ * @export
+ * @class ProjectInvitesApi
+ * @extends {BaseAPI}
+ */
+export class ProjectInvitesApi extends BaseAPI {
+    /**
+     * 
+     * @param {CreateProjectInviteDto} createProjectInviteDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProjectInvitesApi
+     */
+    public projectInviteControllerCreate(createProjectInviteDto: CreateProjectInviteDto, options?: RawAxiosRequestConfig) {
+        return ProjectInvitesApiFp(this.configuration).projectInviteControllerCreate(createProjectInviteDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
