@@ -136,7 +136,8 @@ export function Footer({ className }: Props) {
         {applications
           .filter(
             (application) =>
-              !application.system || UNDER_DEVELOPMENT.includes(application.id),
+              (!application.softHide && !application.system) ||
+              UNDER_DEVELOPMENT.includes(application.id),
           )
           .map((application) => (
             <Button

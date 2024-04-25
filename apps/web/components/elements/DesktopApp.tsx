@@ -27,7 +27,9 @@ export function DesktopApp({ application }: Props): JSX.Element {
       const maxIndex = Math.max(...applications.map((app) => app.zIndex));
       setApplications(
         applications.map((app) =>
-          app.id === application.id ? { ...app, zIndex: maxIndex + 1 } : app,
+          app.id === application.id
+            ? { ...app, softHide: false, zIndex: maxIndex + 1 }
+            : app,
         ),
       );
     } else {

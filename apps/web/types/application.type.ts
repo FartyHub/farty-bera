@@ -9,6 +9,7 @@ export type Application = {
   id: Applications;
   minimized: boolean;
   name: string;
+  softHide?: boolean;
   system?: boolean;
   title?: string;
   zIndex: number;

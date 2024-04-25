@@ -22,7 +22,6 @@ export function FartyBeraGame() {
     removeEventListener,
     sendMessage,
     unityProvider,
-    UNSAFE__unityInstance: unityInstance,
   } = useUnityContext({
     codeUrl: 'https://storage.googleapis.com/farty-bera-build/web.wasm',
     dataUrl: 'https://storage.googleapis.com/farty-bera-build/web.data',
@@ -43,7 +42,7 @@ export function FartyBeraGame() {
     ApplicationData[Applications.FARTY_BERA];
 
   const [isInvited, setIsInvited] = useState<boolean>(!!user.usedInviteCode);
-  const hasNoAccess = !isConnected || !isInvited;
+  const hasNoAccess = !isConnected || !isInvited || !user.usedInviteCode;
 
   const handleSetScore = useCallback(
     (newScore: number) => {
@@ -81,10 +80,13 @@ export function FartyBeraGame() {
   );
 
   useEffect(() => {
-    if (isInvited) {
-      return;
+    if (!isInvited && user.usedInviteCode) {
+      setIsInvited(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user.usedInviteCode]);
 
+  useEffect(() => {
     const hasFartyBera = applications.some(
       (app) => app.id === Applications.FARTY_BERA,
     );
@@ -97,9 +99,8 @@ export function FartyBeraGame() {
     const maxIndex = Math.max(...applications.map((app) => app.zIndex));
 
     if (!isConnected && hasFartyBera && !hasConnectWallet) {
-      setIsInvited(false);
       setApplications([
-        ...applications,
+        ...applications.filter((app) => app.id !== Applications.INVITE_CODE),
         {
           ...ApplicationData[Applications.CONNECT_WALLET],
           zIndex: maxIndex + 1,
@@ -109,6 +110,10 @@ export function FartyBeraGame() {
       setApplications(
         applications.filter((app) => app.id !== Applications.CONNECT_WALLET),
       );
+    }
+
+    if (isInvited || user.usedInviteCode) {
+      return;
     }
 
     if (isConnected && !hasInviteCode && !isInvited) {
@@ -122,21 +127,26 @@ export function FartyBeraGame() {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [applications.length, isInvited, isConnected]);
-
-  async function handleUnityQuit() {
-    await unityInstance?.Quit();
-  }
+  }, [applications.length, isInvited, isConnected, user.usedInviteCode]);
 
   async function handleCloseWindow() {
-    await handleUnityQuit();
     setApplications(
-      applications.filter(
-        (app) =>
-          app.id !== Applications.CONNECT_WALLET &&
-          app.id !== Applications.FARTY_BERA &&
-          app.id !== Applications.INVITE_CODE,
-      ),
+      applications
+        .filter(
+          (app) =>
+            app.id !== Applications.CONNECT_WALLET &&
+            app.id !== Applications.INVITE_CODE,
+        )
+        .map((app) => {
+          if (app.id === Applications.FARTY_BERA) {
+            return {
+              ...app,
+              softHide: true,
+            };
+          }
+
+          return app;
+        }),
     );
   }
 
@@ -148,7 +158,7 @@ export function FartyBeraGame() {
   }
 
   return (
-    <Window center application={application} onClose={handleUnityQuit}>
+    <Window center application={application} onClose={handleCloseWindow}>
       <div
         className="flex flex-col p-1 pt-0.5 border-outset gap-2 justify-between h-full"
         style={{

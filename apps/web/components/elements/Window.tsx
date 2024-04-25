@@ -26,7 +26,7 @@ export function Window({
     setApplications,
     setFocusedApplication,
   } = useApplications();
-  const { fullScreen, minimized, name, title, zIndex } =
+  const { fullScreen, minimized, name, softHide, title, zIndex } =
     applications.find((app) => app.id === application.id) || application;
   const isFocused = focusedApplication?.id === application.id;
   const isOnApplications = applications.some(
@@ -68,8 +68,12 @@ export function Window({
 
   async function handleClose(event?: MouseEvent<HTMLButtonElement>) {
     event?.stopPropagation();
-    await onClose?.();
-    setApplications(applications.filter((app) => app.id !== application.id));
+
+    if (onClose) {
+      await onClose();
+    } else {
+      setApplications(applications.filter((app) => app.id !== application.id));
+    }
 
     if (isFocused) {
       setFocusedApplication(null);
@@ -84,7 +88,7 @@ export function Window({
     <div
       className={clsx(
         'absolute flex flex-col border-outset bg-[#DFDFDF]',
-        minimized ? 'hidden' : 'visible',
+        minimized || softHide ? 'hidden' : 'visible',
         fullScreen && 'top-0 left-0 size-full',
         center && 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
         className,
