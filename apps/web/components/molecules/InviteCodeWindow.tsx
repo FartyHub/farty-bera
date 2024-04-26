@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { useState } from 'react';
+import { MouseEvent, useState } from 'react';
 import { useAccount } from 'wagmi';
 
 import { ApplicationData, Applications } from '../../constants';
@@ -10,7 +10,7 @@ import { Window } from '../elements';
 
 type Props = {
   isGameLoaded: boolean;
-  onClose?: () => Promise<void>;
+  onClose?: (event?: MouseEvent<HTMLButtonElement>) => Promise<void>;
   onSuccess?: () => void;
 };
 
@@ -33,8 +33,8 @@ export function InviteCodeWindow({ isGameLoaded, onClose, onSuccess }: Props) {
     },
   );
 
-  async function handleOnClose() {
-    await onClose?.();
+  async function handleOnClose(event?: MouseEvent<HTMLButtonElement>) {
+    await onClose?.(event);
   }
 
   function handleConfirmCode() {

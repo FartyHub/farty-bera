@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import clsx from 'clsx';
-import { useCallback, useEffect, useState } from 'react';
+import { MouseEvent, useCallback, useEffect, useState } from 'react';
 import { Unity, useUnityContext } from 'react-unity-webgl';
 import { useAccount } from 'wagmi';
 
@@ -56,7 +57,6 @@ export function FartyBeraGame() {
         fartyHighScore: Math.max(user.fartyHighScore ?? 0, newScore),
       });
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [user],
   );
 
@@ -70,20 +70,20 @@ export function FartyBeraGame() {
     };
   }, [addEventListener, removeEventListener, handleSetScore]);
 
-  useEffect(
-    () => {
-      if (isLoaded) {
-        sendMessage('GameController', 'getuseraddress', address);
-      }
-    }, // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isLoaded],
-  );
+  useEffect(() => {
+    if (isLoaded) {
+      sendMessage('GameController', 'getuseraddress', address);
+    }
+  }, [isLoaded]);
+
+  useEffect(() => {
+    sendMessage('GameController', 'changeSounds', application.softHide ? 0 : 1);
+  }, [application.softHide]);
 
   useEffect(() => {
     if (!isInvited && user.usedInviteCode) {
       setIsInvited(true);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.usedInviteCode]);
 
   useEffect(() => {
@@ -125,11 +125,10 @@ export function FartyBeraGame() {
         },
       ]);
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [applications.length, isInvited, isConnected, user.usedInviteCode]);
 
-  async function handleCloseWindow() {
+  async function handleCloseWindow(event?: MouseEvent<HTMLButtonElement>) {
+    event?.stopPropagation();
     setApplications(
       applications
         .filter(

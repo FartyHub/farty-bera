@@ -1,5 +1,6 @@
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import clsx from 'clsx';
+import { MouseEvent } from 'react';
 import { useAccount } from 'wagmi';
 
 import { ApplicationData, Applications } from '../../constants';
@@ -7,7 +8,7 @@ import { Button } from '../atoms';
 import { Window } from '../elements';
 
 type Props = {
-  onClose?: () => Promise<void>;
+  onClose?: (event?: MouseEvent<HTMLButtonElement>) => Promise<void>;
 };
 
 export function ConnectWindow({ onClose }: Props) {
@@ -15,8 +16,8 @@ export function ConnectWindow({ onClose }: Props) {
   const { open } = useWeb3Modal();
   const application = ApplicationData[Applications.CONNECT_WALLET];
 
-  async function handleOnClose() {
-    await onClose?.();
+  async function handleOnClose(event?: MouseEvent<HTMLButtonElement>) {
+    await onClose?.(event);
   }
 
   return (
