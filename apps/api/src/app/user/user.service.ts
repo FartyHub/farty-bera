@@ -13,6 +13,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 
+const SCORE_THRESHOLD = 35;
+
 @Injectable()
 export class UserService {
   private readonly logger: Logger = new Logger(UserService.name);
@@ -69,7 +71,7 @@ export class UserService {
         newUser.fartyHighScore,
       );
 
-      if (newUser.honeyScore >= 100) {
+      if (newUser.honeyScore >= SCORE_THRESHOLD) {
         newUser.inviteCode = generateRandomText(6);
       }
 

@@ -10,7 +10,7 @@ import { truncateMiddle } from '../../utils';
 import { Button } from '../atoms';
 import { Window } from '../elements';
 
-const SCORE_THRESHOLD = 100;
+const SCORE_THRESHOLD = 35;
 
 export function StatsWindow() {
   const { address, isConnected } = useAccount();
