@@ -6,11 +6,14 @@ import { User } from '@farty-bera/api-lib';
 
 import { ApplicationData, Applications, X_URL } from '../../constants';
 import { useApplications, useUser } from '../../contexts';
+import { useCreateProjectInvite } from '../../hooks';
 import { truncateMiddle } from '../../utils';
 import { Button } from '../atoms';
 import { Window } from '../elements';
 
 const SCORE_THRESHOLD = 35;
+
+// const CODES = [];
 
 export function StatsWindow() {
   const { address, isConnected } = useAccount();
@@ -25,6 +28,17 @@ export function StatsWindow() {
   const application =
     applications.find((app) => app.id === Applications.STATS) ||
     ApplicationData[Applications.STATS];
+
+  // const { isPending, mutate } = useCreateProjectInvite();
+  // const open = () => {
+  //   CODES.forEach(async (code) => {
+  //     try {
+  //       mutate({ inviteCode: code });
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   });
+  // };
 
   function handleClickFollow() {
     window.open(X_URL, '_blank');
@@ -122,6 +136,7 @@ export function StatsWindow() {
           {!isConnected && (
             <Button
               className="flex px-5 py-2 justify-center"
+              // loading={isPending}
               type="primary"
               onClick={() => open()}
             >

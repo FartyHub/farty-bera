@@ -85,7 +85,7 @@ export function Footer({ className }: Props) {
             >
               <Tab
                 iconUrl="/images/x-icon.svg"
-                link="https://twitter.com/bera_farty"
+                link={X_URL}
                 title="X (Twitter)"
               />
               <Tab
