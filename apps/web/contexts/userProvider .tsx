@@ -14,9 +14,11 @@ import { useUpdateUser } from '../hooks';
 import { createUser, getUser } from '../services';
 
 const UserContext = createContext<{
+  isLoading: boolean;
   setUser: (newUser: UpdateUserDto) => void;
   user?: User;
 }>({
+  isLoading: false,
   setUser: () => {},
 });
 
@@ -27,7 +29,7 @@ export function useUser() {
 export function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | undefined>();
   const { address } = useAccount();
-  const { mutate: updateUser } = useUpdateUser({
+  const { isPending, mutate: updateUser } = useUpdateUser({
     onSuccess: (newUser) => {
       setUser(newUser);
     },
@@ -63,11 +65,12 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   const values = useMemo(
     () => ({
+      isLoading: isPending,
       setUser: handleSetUser,
       user,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [user],
+    [user, isPending],
   );
 
   useEffect(() => {

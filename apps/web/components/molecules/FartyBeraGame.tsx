@@ -10,7 +10,7 @@ import { User } from '@farty-bera/api-lib';
 import { ApplicationData, Applications } from '../../constants';
 import { useApplications, useUser } from '../../contexts';
 import { useCreateScore } from '../../hooks';
-import { Spinner } from '../atoms';
+import { Button, Spinner } from '../atoms';
 import { Window } from '../elements';
 
 import { ConnectWindow } from './ConnectWindow';
@@ -156,6 +156,27 @@ export function FartyBeraGame() {
     );
   }
 
+  async function handleShareHighScore(isTwitter?: boolean) {
+    const shareUrl = `${window.location.origin}/?id=${user.id}`;
+    const shareText = `I am so farty! I just hit a new high score of 34 in the Farty Bera game. Bet you can't beat that!${isTwitter ? '%0a' : '\n'}${shareUrl}`;
+
+    if (isTwitter) {
+      window.open(
+        `https://twitter.com/intent/post?text=${shareText}`,
+        '_blank',
+      );
+    } else {
+      navigator.clipboard.writeText(shareText);
+      // eslint-disable-next-line no-alert
+      alert('Share message copied to clipboard!');
+
+      window.open(
+        'https://discord.com/channels/1227137926849363978/1227137926849363981',
+        '_blank',
+      );
+    }
+  }
+
   return (
     <Window center application={application} onClose={handleCloseWindow}>
       <div
@@ -196,9 +217,26 @@ export function FartyBeraGame() {
               </span>
             </div>
           </div>
-          <div className="flex flex-col text-base text-right">
-            <span className="font-bold">Highest Score</span>
-            <span className="font-normal">{user.fartyHighScore ?? 0}</span>
+          <div className="flex items-center gap-8">
+            <div className="flex text-base text-right flex-nowrap gap-2">
+              <span className="font-bold">Highest Score</span>
+              <span className="font-normal">{user.fartyHighScore ?? 0}</span>
+            </div>
+            <div className="flex items-center gap-2 mr-2">
+              <Button type="primary" onClick={() => handleShareHighScore(true)}>
+                <div className="flex flex-nowrap items-center gap-1">
+                  Share on
+                  <img
+                    alt="x icon"
+                    className="size-4"
+                    src="images/x-icon.svg"
+                  />
+                </div>
+              </Button>
+              <Button type="primary" onClick={() => handleShareHighScore()}>
+                Share on Discord
+              </Button>
+            </div>
           </div>
         </div>
       </div>
