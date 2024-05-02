@@ -7,7 +7,7 @@ import { useAccount } from 'wagmi';
 
 import { User } from '@farty-bera/api-lib';
 
-import { ApplicationData, Applications } from '../../constants';
+import { ApplicationData, Applications, X_URL } from '../../constants';
 import { useApplications, useUser } from '../../contexts';
 import { useCreateScore } from '../../hooks';
 import { Button, Spinner } from '../atoms';
@@ -158,7 +158,8 @@ export function FartyBeraGame() {
 
   async function handleShareHighScore(isTwitter?: boolean) {
     const shareUrl = `${window.location.origin}/?id=${user.id}`;
-    const shareText = `I am so farty! I just hit a new high score of 34 in the Farty Bera game. Bet you can't beat that!${isTwitter ? '%0a' : '\n'}${shareUrl}`;
+    // eslint-disable-next-line sonarjs/no-nested-template-literals
+    const shareText = `I am so farty! I just hit a new high score of ${user.fartyHighScore} in the Farty Bera game ${isTwitter ? '@fartybera ' : `[@fartybera](${X_URL})`}. Bet you can't beat that!${isTwitter ? '%0a' : '\n'}${shareUrl}`;
 
     if (isTwitter) {
       window.open(
