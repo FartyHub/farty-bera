@@ -4,7 +4,7 @@ import { useAccount } from 'wagmi';
 
 import { ApplicationData, Applications } from '../../constants';
 import { useUser } from '../../contexts';
-import { useCheckInviteCode } from '../../hooks';
+import { useCheckInviteCode, useTouchDevice } from '../../hooks';
 import { Button, TextInput } from '../atoms';
 import { Window } from '../elements';
 
@@ -17,6 +17,7 @@ type Props = {
 export function InviteCodeWindow({ isGameLoaded, onClose, onSuccess }: Props) {
   const { address = '', isConnected } = useAccount();
   const { setUser } = useUser();
+  const { isTouch } = useTouchDevice();
   const [code, setCode] = useState<string>('');
   const [error, setError] = useState<string>('');
   const application = ApplicationData[Applications.INVITE_CODE];
@@ -45,7 +46,11 @@ export function InviteCodeWindow({ isGameLoaded, onClose, onSuccess }: Props) {
   }
 
   return (
-    <Window center application={application} className="w-[360px]">
+    <Window
+      center
+      application={application}
+      className={clsx(isTouch ? 'w-[80vw]' : 'w-[360px]')}
+    >
       <div className="flex flex-col p-3 gap-3 text-sm">
         <img alt="bear" className="w-8 h-auto" src="/images/warning-icon.svg" />
         <div className="text-[13px]">
@@ -65,7 +70,7 @@ export function InviteCodeWindow({ isGameLoaded, onClose, onSuccess }: Props) {
           value={code}
           onSubmit={handleConfirmCode}
         />
-        <div className="flex items-center gap-1">
+        <div className="flex items-stretch gap-1">
           <Button
             className={clsx(
               'flex flex-1 items-center justify-center gap-1 px-5 py-2',
@@ -77,7 +82,7 @@ export function InviteCodeWindow({ isGameLoaded, onClose, onSuccess }: Props) {
             I don&apos;t have it, bye
           </Button>
           <Button
-            className="flex flex-1 px-5 py-2 justify-center"
+            className="flex flex-1 px-5 py-2 justify-center items-center"
             loading={isChecking}
             type="primary"
             onClick={handleConfirmCode}

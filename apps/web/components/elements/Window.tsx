@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import { MouseEvent, ReactNode } from 'react';
 
 import { useApplications } from '../../contexts';
+import { useTouchDevice } from '../../hooks';
 import { Application } from '../../types';
 import { Button } from '../atoms';
 
@@ -26,6 +27,7 @@ export function Window({
     setApplications,
     setFocusedApplication,
   } = useApplications();
+  const { isTouch } = useTouchDevice();
   const { fullScreen, minimized, name, softHide, title, zIndex } =
     applications.find((app) => app.id === application.id) || application;
   const isFocused = focusedApplication?.id === application.id;
@@ -104,12 +106,17 @@ export function Window({
         </div>
         {!application.system && (
           <div className="flex gap-1">
-            <Button type="primary" onClick={handleMinimized}>
-              <img alt="minimize" src="/images/minimize-icon.svg" />
-            </Button>
-            <Button type="primary" onClick={handleMaximized}>
-              <img alt="full screen" src="/images/full-screen-icon.svg" />
-            </Button>
+            {!isTouch && (
+              <>
+                <Button type="primary" onClick={handleMinimized}>
+                  <img alt="minimize" src="/images/minimize-icon.svg" />
+                </Button>
+
+                <Button type="primary" onClick={handleMaximized}>
+                  <img alt="full screen" src="/images/full-screen-icon.svg" />
+                </Button>
+              </>
+            )}
             <Button type="primary" onClick={handleClose}>
               <img alt="close" src="/images/close-icon.svg" />
             </Button>

@@ -4,6 +4,7 @@ import { MouseEvent } from 'react';
 import { useAccount } from 'wagmi';
 
 import { ApplicationData, Applications } from '../../constants';
+import { useTouchDevice } from '../../hooks';
 import { Button } from '../atoms';
 import { Window } from '../elements';
 
@@ -13,6 +14,7 @@ type Props = {
 
 export function ConnectWindow({ onClose }: Props) {
   const { isConnected } = useAccount();
+  const { isTouch } = useTouchDevice();
   const { open } = useWeb3Modal();
   const application = ApplicationData[Applications.CONNECT_WALLET];
 
@@ -21,7 +23,11 @@ export function ConnectWindow({ onClose }: Props) {
   }
 
   return (
-    <Window center application={application} className="w-[360px]">
+    <Window
+      center
+      application={application}
+      className={clsx(isTouch ? 'w-[80vw]' : 'w-[360px]')}
+    >
       <div className="flex flex-col p-3 gap-3 text-sm">
         <img alt="bear" className="w-8 h-auto" src="/images/warning-icon.svg" />
         <div className="text-[13px]">

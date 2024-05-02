@@ -17,7 +17,7 @@
     "generate:api-resource": "npx nx generate @nestjs/schematics:resource --language=ts --path=api/src/app --sourceRoot=apps --no-interactive",
     "update-sources-windows": "curl http://localhost:3000/api-docs-json > api-docs.json && npx openapi-generator-cli generate -i api-docs.json -g typescript-axios -o libs/api-lib/src",
     "update-sources": "curl http://localhost:3000/api-docs-json > api-docs.json && npx nx run api-lib:generate-sources --skip-nx-cache",
-    "update-cors": "gcloud storage buckets update gs://farty-bera-build --cors-file=cors-config.json"
+    "update-cors": "gcloud config configurations activate farty && gcloud storage buckets update gs://farty-bera-build --cors-file=cors-config.json"
   },
   "private": true,
   "dependencies": {
@@ -41,6 +41,7 @@
     "next": "14.0.4",
     "pg": "^8.11.5",
     "react": "18.2.0",
+    "react-device-detect": "^2.2.3",
     "react-dom": "18.2.0",
     "react-outside-click-handler": "^1.3.0",
     "react-unity-webgl": "^9.5.1",

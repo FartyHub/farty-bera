@@ -6,7 +6,7 @@ import { User } from '@farty-bera/api-lib';
 
 import { ApplicationData, Applications, X_URL } from '../../constants';
 import { useApplications, useUser } from '../../contexts';
-import { useCreateProjectInvite } from '../../hooks';
+import { useCreateProjectInvite, useTouchDevice } from '../../hooks';
 import { truncateMiddle } from '../../utils';
 import { Button } from '../atoms';
 import { Window } from '../elements';
@@ -25,6 +25,7 @@ export function StatsWindow() {
       inviteCode: '',
     } as User,
   } = useUser();
+  const { isTouch } = useTouchDevice();
   const application =
     applications.find((app) => app.id === Applications.STATS) ||
     ApplicationData[Applications.STATS];
@@ -49,7 +50,10 @@ export function StatsWindow() {
   }
 
   return (
-    <Window application={application} className="w-[320px] top-2 right-2">
+    <Window
+      application={application}
+      className={clsx('w-[320px] top-2 right-2', isTouch && 'hidden')}
+    >
       <div className="flex flex-col p-[13.6px] gap-3 text-sm">
         {isConnected ? (
           <>

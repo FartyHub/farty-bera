@@ -9,7 +9,7 @@ import { User } from '@farty-bera/api-lib';
 
 import { ApplicationData, Applications, X_URL } from '../../constants';
 import { useApplications, useUser } from '../../contexts';
-import { useCreateScore } from '../../hooks';
+import { useCreateScore, useTouchDevice } from '../../hooks';
 import { Button, Spinner } from '../atoms';
 import { Window } from '../elements';
 
@@ -38,6 +38,7 @@ export function FartyBeraGame() {
   const { address = '', isConnected } = useAccount();
   const { setUser, user = {} as User } = useUser();
   const { mutate: addScore } = useCreateScore();
+  const { isTouch } = useTouchDevice();
   const application =
     applications.find((app) => app.id === Applications.FARTY_BERA) ||
     ApplicationData[Applications.FARTY_BERA];
@@ -167,14 +168,22 @@ export function FartyBeraGame() {
         '_blank',
       );
     } else {
-      navigator.clipboard.writeText(shareText);
-      // eslint-disable-next-line no-alert
-      alert('Share message copied to clipboard!');
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(shareText);
+        // eslint-disable-next-line no-alert
+        alert('Share message copied to clipboard!');
+      }
 
-      window.open(
-        'https://discord.com/channels/1227137926849363978/1227137926849363981',
-        '_blank',
-      );
+      if (isTouch) {
+        window.open(
+          'discord://discordapp.com/channels/1227137926849363978/1227137926849363981',
+        );
+      } else {
+        window.open(
+          'https://discord.com/channels/1227137926849363978/1227137926849363981',
+          '_blank',
+        );
+      }
     }
   }
 
@@ -205,28 +214,34 @@ export function FartyBeraGame() {
           />
         </div>
         <div className="flex justify-between items-center">
-          <div className="flex gap-[11px]">
-            <img
-              alt={application.id}
-              className="size-10"
-              src="/images/farty-bera-logo.png"
-            />
-            <div className="flex flex-col">
-              <span className="font-bold text-base">{application.name}</span>
-              <span className="font-normal text-[13px]">
-                Created by {application.creator}
-              </span>
+          {!isTouch && (
+            <div className="flex gap-[11px]">
+              <img
+                alt={application.id}
+                className="size-10"
+                src="/images/farty-bera-logo.png"
+              />
+              <div className="flex flex-col">
+                <span className="font-bold text-base">{application.name}</span>
+                <span className="font-normal text-[13px]">
+                  Created by {application.creator}
+                </span>
+              </div>
             </div>
-          </div>
-          <div className="flex items-center gap-8">
-            <div className="flex text-base text-right flex-nowrap gap-2">
-              <span className="font-bold">Highest Score</span>
+          )}
+          <div className="flex items-center gap-2 md:gap-8">
+            <div className="flex flex-col md:flex-row text-base text-right md:flex-nowrap gap-2 items-center">
+              <span className="font-bold whitespace-nowrap">Highest Score</span>
               <span className="font-normal">{user.fartyHighScore ?? 0}</span>
             </div>
-            <div className="flex items-center gap-2 mr-2">
-              <Button type="primary" onClick={() => handleShareHighScore(true)}>
-                <div className="flex flex-nowrap items-center gap-1">
-                  Share on
+            <div className="flex items-stretch gap-2 md:mr-2">
+              <Button
+                className="px-2"
+                type="primary"
+                onClick={() => handleShareHighScore(true)}
+              >
+                <div className="flex flex-col md:flex-row items-center gap-1">
+                  <span className="whitespace-nowrap">Share on</span>
                   <img
                     alt="x icon"
                     className="size-4"

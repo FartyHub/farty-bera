@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { ReactNode } from 'react';
 
-import { useApplications } from '../../contexts';
+import { useTouchDevice } from '../../hooks';
 import { Footer } from '../elements';
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
 };
 
 export function CommonLayout({ children, className }: Props) {
-  const { setFocusedApplication } = useApplications();
+  const { isTouch } = useTouchDevice();
 
   return (
     <div
@@ -25,15 +25,15 @@ export function CommonLayout({ children, className }: Props) {
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[50vh] z-[-1]"
           src="/images/ooga-booga.png"
         />
-        <div
-          className="grid grid-rows-6 grid-flow-col grid-cols-6 size-full gap-1 relative p-5"
-          onClick={() => setFocusedApplication(null)}
-        >
+        <div className="grid grid-rows-6 grid-cols-2 md:grid-flow-col md:grid-cols-6 size-full gap-1 relative p-5 items-baseline">
           {children}
         </div>
         <img
           alt="mascot"
-          className="absolute bottom-10 right-0 h-[30vh] z-0"
+          className={clsx(
+            'absolute right-0 h-[30vh] z-0',
+            isTouch ? 'bottom-11' : 'bottom-10',
+          )}
           src="https://storage.googleapis.com/farty-bera-build/mascot.gif"
         />
         <Footer />

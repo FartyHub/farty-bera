@@ -1,7 +1,11 @@
 import clsx from 'clsx';
 import { MouseEvent } from 'react';
+import OutsideClickHandler from 'react-outside-click-handler';
+
+import { Applications } from '@farty-bera/api-lib';
 
 import { useApplications } from '../../contexts';
+import { useTouchDevice } from '../../hooks';
 import { Application } from '../../types';
 
 type Props = {
@@ -16,6 +20,7 @@ export function DesktopApp({ application }: Props): JSX.Element {
     setApplications,
     setFocusedApplication,
   } = useApplications();
+  const { isTouch } = useTouchDevice();
   const isFocused = focusedApplication?.id === application.id;
 
   function handleOnDoubleClick() {
@@ -28,7 +33,13 @@ export function DesktopApp({ application }: Props): JSX.Element {
       setApplications(
         applications.map((app) =>
           app.id === application.id
-            ? { ...app, softHide: false, zIndex: maxIndex + 1 }
+            ? {
+                ...app,
+                fullScreen:
+                  isTouch && application.id === Applications.FartyBera,
+                softHide: false,
+                zIndex: maxIndex + 1,
+              }
             : app,
         ),
       );
@@ -37,35 +48,44 @@ export function DesktopApp({ application }: Props): JSX.Element {
         ...applications,
         {
           ...application,
+          fullScreen: isTouch && application.id === Applications.FartyBera,
           zIndex: applications.length + 1,
         },
       ]);
     }
   }
 
-  function handleOnClick(event: MouseEvent<HTMLDivElement>) {
+  function handleOnClick(event: MouseEvent<HTMLButtonElement>) {
     event.stopPropagation();
     setFocusedApplication(application);
   }
 
   return (
-    <div
-      className={clsx(
-        'flex flex-col items-center gap-2 text-center justify-center cursor-default',
-      )}
-      role="button"
-      onClick={handleOnClick}
-      onDoubleClick={handleOnDoubleClick}
-    >
-      <img alt={name} className="h-12 w-auto" src={desktopIconUrl} />
-      <span
-        className={clsx(
-          'text-white text-sm whitespace-break-spaces border',
-          isFocused ? 'bg-[#C86F02] border-dotted' : 'border-transparent',
-        )}
+    <div className={clsx('flex items-center text-center justify-center')}>
+      <OutsideClickHandler
+        onOutsideClick={() => {
+          setFocusedApplication(null);
+        }}
       >
-        {name}
-      </span>
+        <button
+          className={clsx(
+            'flex flex-col items-center gap-2 text-center justify-center cursor-default',
+          )}
+          onClick={handleOnClick}
+          onDoubleClick={handleOnDoubleClick}
+          onTouchEnd={handleOnDoubleClick}
+        >
+          <img alt={name} className="h-12 w-auto" src={desktopIconUrl} />
+          <span
+            className={clsx(
+              'text-white text-sm whitespace-break-spaces border',
+              isFocused ? 'bg-[#C86F02] border-dotted' : 'border-transparent',
+            )}
+          >
+            {name}
+          </span>
+        </button>
+      </OutsideClickHandler>
     </div>
   );
 }

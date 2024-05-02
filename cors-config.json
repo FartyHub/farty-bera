@@ -22,5 +22,11 @@
     "method": ["GET"],
     "responseHeader": ["Content-Type"],
     "maxAgeSeconds": 3600
+  },
+  {
+    "origin": ["http://192.168.254.142:4200"],
+    "method": ["GET"],
+    "responseHeader": ["Content-Type"],
+    "maxAgeSeconds": 3600
   }
 ]
