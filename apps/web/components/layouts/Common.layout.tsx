@@ -32,7 +32,7 @@ export function CommonLayout({ children, className }: Props) {
           alt="mascot"
           className={clsx(
             'absolute right-0 h-[30vh] z-0',
-            isTouch ? 'bottom-11' : 'bottom-10',
+            isTouch ? 'bottom-12' : 'bottom-10',
           )}
           src="https://storage.googleapis.com/farty-bera-build/mascot.gif"
         />

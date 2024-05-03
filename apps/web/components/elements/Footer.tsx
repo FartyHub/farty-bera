@@ -87,7 +87,7 @@ export function Footer({ className }: Props) {
   return (
     <footer>
       {isTouch ? (
-        <div className="flex items-center justify-center gap-1">
+        <div className="flex items-center justify-center gap-1 bg-[#B8C0C1] border-outset">
           <Button
             className={clsx(
               'flex items-center justify-center gap-1 px-5 py-2',

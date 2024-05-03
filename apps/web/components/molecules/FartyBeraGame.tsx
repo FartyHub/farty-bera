@@ -229,18 +229,18 @@ export function FartyBeraGame() {
               </div>
             </div>
           )}
-          <div className="flex items-center gap-2 md:gap-8">
+          <div className="flex flex-1 md:flex-none justify-between md:justify-normal items-center gap-2 md:gap-8">
             <div className="flex flex-col md:flex-row text-base text-right md:flex-nowrap gap-2 items-center">
               <span className="font-bold whitespace-nowrap">Highest Score</span>
               <span className="font-normal">{user.fartyHighScore ?? 0}</span>
             </div>
             <div className="flex items-stretch gap-2 md:mr-2">
               <Button
-                className="px-2"
+                className="px-1"
                 type="primary"
                 onClick={() => handleShareHighScore(true)}
               >
-                <div className="flex flex-col md:flex-row items-center gap-1">
+                <div className="flex md:flex-row items-center gap-1 flex-nowrap">
                   <span className="whitespace-nowrap">Share on</span>
                   <img
                     alt="x icon"
@@ -249,7 +249,11 @@ export function FartyBeraGame() {
                   />
                 </div>
               </Button>
-              <Button type="primary" onClick={() => handleShareHighScore()}>
+              <Button
+                className="px-1"
+                type="primary"
+                onClick={() => handleShareHighScore()}
+              >
                 Share on Discord
               </Button>
             </div>
