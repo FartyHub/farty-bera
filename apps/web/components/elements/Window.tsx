@@ -92,6 +92,7 @@ export function Window({
         'absolute flex flex-col border-outset bg-[#DFDFDF]',
         minimized || softHide ? 'hidden' : 'visible',
         fullScreen && 'top-0 left-0 size-full',
+        isTouch && fullScreen && 'h-screen w-screen mt-4',
         center && 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
         className,
       )}
