@@ -6,7 +6,7 @@ import {
   DesktopApp,
   FartyBeraGame,
   GameExplorerWip,
-  LeaderboardWip,
+  Leaderboard,
   StatsWindow,
 } from '../components';
 import { ApplicationData, UNDER_DEVELOPMENT } from '../constants';
@@ -62,7 +62,7 @@ export default function Index({
       <CommonLayout className="gap-4">
         <FartyBeraGame />
         <StatsWindow />
-        <LeaderboardWip />
+        <Leaderboard />
         <GameExplorerWip />
         {apps
           .filter((app) => !app.system || UNDER_DEVELOPMENT.includes(app.id))

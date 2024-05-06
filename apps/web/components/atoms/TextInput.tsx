@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import clsx from 'clsx';
+import { DetailedHTMLProps, InputHTMLAttributes, useState } from 'react';
 
 /* eslint-disable no-magic-numbers */
-type Props = {
+type Props = InputHTMLAttributes<HTMLInputElement> & {
   error?: string;
-  label: string;
+  errorClassName?: string;
+  label?: string;
   loading?: boolean;
   onSubmit?: () => void;
   placeholder?: string;
@@ -13,7 +15,9 @@ type Props = {
 };
 
 export function TextInput({
+  className,
   error,
+  errorClassName,
   label,
   loading,
   onSubmit,
@@ -21,6 +25,7 @@ export function TextInput({
   setValue,
   shouldUseKeyDown,
   value,
+  ...rest
 }: Props) {
   const [holdKeys, setHoldKeys] = useState<string[]>([]);
 
@@ -41,19 +46,21 @@ export function TextInput({
       return;
     }
 
+    const valueProp = value as string;
+
     if (e.key === 'Backspace') {
       if (e.currentTarget?.selectionStart !== e.currentTarget?.selectionEnd) {
         setValue('');
       } else {
         setValue(
-          value.slice(0, (e.currentTarget?.selectionStart ?? 1) - 1) +
-            value.slice(e.currentTarget?.selectionStart ?? 1),
+          valueProp.slice(0, (e.currentTarget?.selectionStart ?? 1) - 1) +
+            valueProp.slice(e.currentTarget?.selectionStart ?? 1),
         );
       }
     } else if (e.key === 'Delete') {
       setValue(
-        value.slice(0, e.currentTarget?.selectionStart ?? 0) +
-          value.slice(e.currentTarget?.selectionEnd ?? value.length),
+        valueProp.slice(0, e.currentTarget?.selectionStart ?? 0) +
+          valueProp.slice(e.currentTarget?.selectionEnd ?? valueProp.length),
       );
     } else if (e.key === 'ArrowRight') {
       e.currentTarget.selectionStart =
@@ -75,20 +82,20 @@ export function TextInput({
       const selection = value.slice(
         e.currentTarget?.selectionStart ?? 0,
         e.currentTarget?.selectionEnd ?? value.length,
-      );
+      ) as string;
       navigator.clipboard.writeText(selection);
       setValue(
-        value.slice(0, e.currentTarget?.selectionStart ?? 0) +
-          value.slice(e.currentTarget?.selectionEnd ?? value.length),
+        valueProp.slice(0, e.currentTarget?.selectionStart ?? 0) +
+          valueProp.slice(e.currentTarget?.selectionEnd ?? valueProp.length),
       );
     } else if (
       (e.keyCode >= 48 && e.keyCode <= 57) ||
       (e.keyCode >= 65 && e.keyCode <= 90)
     ) {
       setValue(
-        value.slice(0, e.currentTarget?.selectionStart ?? 0) +
+        valueProp.slice(0, e.currentTarget?.selectionStart ?? 0) +
           e.key +
-          value.slice(e.currentTarget?.selectionEnd ?? value.length),
+          valueProp.slice(e.currentTarget?.selectionEnd ?? valueProp.length),
       );
     }
   }
@@ -108,14 +115,20 @@ export function TextInput({
       <label id="invite-code">{label}</label>
       <input
         aria-labelledby="invite-code"
-        className="border-inset-gray outline-none px-[6px] py-1"
+        className={clsx(
+          'border-inset-gray outline-none px-[6px] py-1',
+          className,
+        )}
         placeholder={placeholder}
         value={value}
         onChange={handleChanged}
         onKeyDown={handleKeyDown}
         onKeyUp={handleKeyUp}
+        {...rest}
       />
-      {error && <span className="text-[#EB5757]">{error}</span>}
+      {error && (
+        <span className={clsx('text-[#EB5757]', errorClassName)}>{error}</span>
+      )}
     </div>
   );
 }

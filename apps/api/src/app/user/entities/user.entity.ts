@@ -43,4 +43,10 @@ export class User extends BaseEntity {
   @ApiProperty()
   @IsNumber()
   honeyScore: number;
+
+  @Column({ default: 'Farty Bera', type: 'text' })
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  displayName?: string;
 }

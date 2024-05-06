@@ -325,6 +325,12 @@ export interface UpdateUserDto {
      * @memberof UpdateUserDto
      */
     'honeyScore'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateUserDto
+     */
+    'displayName'?: string;
 }
 /**
  * 
@@ -398,6 +404,12 @@ export interface User {
      * @memberof User
      */
     'honeyScore': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    'displayName'?: string;
 }
 
 /**
@@ -1156,6 +1168,35 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userControllerFindAllInvitedCount: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/users/invited-count`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {string} address 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1197,6 +1238,68 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             // verify required parameter 'address' is not null or undefined
             assertParamExists('userControllerGenerateInviteCode', 'address', address)
             const localVarPath = `/api/users/invite-code{address}`
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userControllerGetTopRanks: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/users/top-ranks`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} address 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userControllerGetUserRank: async (address: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('userControllerGetUserRank', 'address', address)
+            const localVarPath = `/api/users/user-rank/{address}`
                 .replace(`{${"address"}}`, encodeURIComponent(String(address)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1327,6 +1430,17 @@ export const UsersApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async userControllerFindAllInvitedCount(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<number>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerFindAllInvitedCount(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UsersApi.userControllerFindAllInvitedCount']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {string} address 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1347,6 +1461,29 @@ export const UsersApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerGenerateInviteCode(address, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UsersApi.userControllerGenerateInviteCode']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async userControllerGetTopRanks(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<User>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerGetTopRanks(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UsersApi.userControllerGetTopRanks']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} address 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async userControllerGetUserRank(address: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<number>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerGetUserRank(address, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UsersApi.userControllerGetUserRank']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -1403,6 +1540,14 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userControllerFindAllInvitedCount(options?: any): AxiosPromise<number> {
+            return localVarFp.userControllerFindAllInvitedCount(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {string} address 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1418,6 +1563,23 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
          */
         userControllerGenerateInviteCode(address: string, options?: any): AxiosPromise<string> {
             return localVarFp.userControllerGenerateInviteCode(address, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userControllerGetTopRanks(options?: any): AxiosPromise<Array<User>> {
+            return localVarFp.userControllerGetTopRanks(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} address 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userControllerGetUserRank(address: string, options?: any): AxiosPromise<number> {
+            return localVarFp.userControllerGetUserRank(address, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1471,6 +1633,16 @@ export class UsersApi extends BaseAPI {
 
     /**
      * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersApi
+     */
+    public userControllerFindAllInvitedCount(options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).userControllerFindAllInvitedCount(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {string} address 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1489,6 +1661,27 @@ export class UsersApi extends BaseAPI {
      */
     public userControllerGenerateInviteCode(address: string, options?: RawAxiosRequestConfig) {
         return UsersApiFp(this.configuration).userControllerGenerateInviteCode(address, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersApi
+     */
+    public userControllerGetTopRanks(options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).userControllerGetTopRanks(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} address 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersApi
+     */
+    public userControllerGetUserRank(address: string, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).userControllerGetUserRank(address, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

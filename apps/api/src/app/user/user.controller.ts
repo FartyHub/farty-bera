@@ -31,6 +31,30 @@ export class UserController {
     return this.userService.findAll();
   }
 
+  @Get('invited-count')
+  @ApiOkResponse({ type: Number })
+  findAllInvitedCount(): Promise<number> {
+    return this.userService.findAllInvitedCount();
+  }
+
+  @Get('invite-code:address')
+  @ApiOkResponse({ type: String })
+  generateInviteCode(@Param('address') address: string): Promise<string> {
+    return this.userService.generateInviteCode(address);
+  }
+
+  @Get('user-rank/:address')
+  @ApiOkResponse({ type: Number })
+  getUserRank(@Param('address') address: string): Promise<number> {
+    return this.userService.getUserRank(address);
+  }
+
+  @Get('top-ranks')
+  @ApiOkResponse({ type: [User] })
+  getTopRanks(): Promise<User[]> {
+    return this.userService.getTopRanks();
+  }
+
   @Get(':address')
   @ApiOkResponse({ type: User })
   findOne(@Param('address') address: string): Promise<User> {
@@ -50,11 +74,5 @@ export class UserController {
   @ApiOkResponse({ type: Boolean })
   remove(@Param('address') address: string): Promise<boolean> {
     return this.userService.remove(address);
-  }
-
-  @Get('invite-code:address')
-  @ApiOkResponse({ type: String })
-  generateInviteCode(@Param('address') address: string): Promise<string> {
-    return this.userService.generateInviteCode(address);
   }
 }

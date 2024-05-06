@@ -2,8 +2,7 @@ import clsx from 'clsx';
 import { MouseEvent } from 'react';
 import OutsideClickHandler from 'react-outside-click-handler';
 
-import { Applications } from '@farty-bera/api-lib';
-
+import { Applications } from '../../constants';
 import { useApplications } from '../../contexts';
 import { useTouchDevice } from '../../hooks';
 import { Application } from '../../types';
@@ -11,6 +10,11 @@ import { Application } from '../../types';
 type Props = {
   application: Application;
 };
+
+const FULL_SCREEN_MOBILE_APPS = [
+  Applications.FARTY_BERA,
+  Applications.LEADERBOARD,
+];
 
 export function DesktopApp({ application }: Props): JSX.Element {
   const { desktopIconUrl, disabled, name } = application;
@@ -36,7 +40,7 @@ export function DesktopApp({ application }: Props): JSX.Element {
             ? {
                 ...app,
                 fullScreen:
-                  isTouch && application.id === Applications.FartyBera,
+                  isTouch && FULL_SCREEN_MOBILE_APPS.includes(application.id),
                 softHide: false,
                 zIndex: maxIndex + 1,
               }
@@ -48,7 +52,8 @@ export function DesktopApp({ application }: Props): JSX.Element {
         ...applications,
         {
           ...application,
-          fullScreen: isTouch && application.id === Applications.FartyBera,
+          fullScreen:
+            isTouch && FULL_SCREEN_MOBILE_APPS.includes(application.id),
           zIndex: applications.length + 1,
         },
       ]);

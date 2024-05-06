@@ -50,9 +50,8 @@ export const ApplicationData: {
     iconUrl: '/images/leaderboard-icon.svg',
     id: Applications.LEADERBOARD,
     minimized: false,
-    name: 'Leaderboard (Coming Soon)',
-    system: true,
-    title: 'Under Construction',
+    name: 'Leaderboard',
+    title: 'Leaderboard',
     zIndex: 3,
   },
   [Applications.GAME_EXPLORER]: {

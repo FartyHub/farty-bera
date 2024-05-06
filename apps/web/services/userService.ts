@@ -22,6 +22,16 @@ export async function getUsers(): Promise<User[]> {
   }
 }
 
+export async function getInvitedUsersCount(): Promise<number> {
+  try {
+    const response = await usersApiClient.userControllerFindAllInvitedCount();
+
+    return response.data;
+  } catch (error) {
+    throw new Error(((error as AxiosError)?.response?.data as any)?.message);
+  }
+}
+
 export async function getUser(
   address: string,
   shouldError = true,
@@ -76,6 +86,26 @@ export async function generateInviteCode(address: string): Promise<string> {
   try {
     const response =
       await usersApiClient.userControllerGenerateInviteCode(address);
+
+    return response.data;
+  } catch (error) {
+    throw new Error(((error as AxiosError)?.response?.data as any)?.message);
+  }
+}
+
+export async function getUserRanking(address: string): Promise<number> {
+  try {
+    const response = await usersApiClient.userControllerGetUserRank(address);
+
+    return response.data;
+  } catch (error) {
+    throw new Error(((error as AxiosError)?.response?.data as any)?.message);
+  }
+}
+
+export async function getTopRanks(): Promise<User[]> {
+  try {
+    const response = await usersApiClient.userControllerGetTopRanks();
 
     return response.data;
   } catch (error) {

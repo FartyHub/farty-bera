@@ -1,5 +1,6 @@
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import clsx from 'clsx';
+import { format } from 'date-fns';
 import Link from 'next/link';
 import { MouseEvent, useState } from 'react';
 import OutsideClickHandler from 'react-outside-click-handler';
@@ -13,6 +14,7 @@ import {
   X_URL,
 } from '../../constants';
 import { useApplications } from '../../contexts';
+import { DateFormats } from '../../enums';
 import { useTouchDevice } from '../../hooks';
 import { Application } from '../../types';
 import { truncateMiddle } from '../../utils';
@@ -205,17 +207,7 @@ export function Footer({ className }: Props) {
               <div className="border-l-groove h-full" />
             </div>
             <div className="flex items-center border-inset-gray-100 p-2 text-xs">
-              {new Date()
-                .toLocaleString('en-US', {
-                  day: 'numeric',
-                  hour: 'numeric',
-                  hour12: true,
-                  minute: 'numeric',
-                  month: 'numeric',
-                  year: 'numeric',
-                })
-                .replace(/\//g, '.')
-                .replace(',', ' ')}
+              {format(new Date(), DateFormats.FULL_DATE_TIME_DOT)}
             </div>
           </div>
         </div>

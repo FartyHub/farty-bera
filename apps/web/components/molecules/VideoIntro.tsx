@@ -11,7 +11,7 @@ export function VideoIntro() {
   const { isTouch } = useTouchDevice();
 
   useEffect(() => {
-    if (isLoading) {
+    if (isLoading || !showVideo) {
       return;
     }
 
@@ -23,6 +23,7 @@ export function VideoIntro() {
     } else {
       setShowVideo(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, isLoading]);
 
   function handleVideoEnded() {

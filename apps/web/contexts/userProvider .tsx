@@ -1,5 +1,7 @@
 import React, {
+  Dispatch,
   ReactNode,
+  SetStateAction,
   createContext,
   useContext,
   useEffect,
@@ -14,24 +16,50 @@ import { useUpdateUser } from '../hooks';
 import { createUser, getUser } from '../services';
 
 const UserContext = createContext<{
+  error: string;
   isLoading: boolean;
+  setOnFailedUpdate: Dispatch<SetStateAction<(() => void) | undefined>>;
+  setOnSuccessfulUpdate: Dispatch<SetStateAction<(() => void) | undefined>>;
   setUser: (newUser: UpdateUserDto) => void;
   user?: User;
 }>({
+  error: '',
   isLoading: false,
+  setOnFailedUpdate: () => {},
+  setOnSuccessfulUpdate: () => {},
   setUser: () => {},
 });
 
 export function useUser() {
-  return useContext(UserContext);
+  const context = useContext(UserContext);
+
+  if (!context) {
+    throw new Error('useUser must be used within a UserProvider');
+  }
+
+  return context;
 }
 
 export function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | undefined>();
+  const [error, setError] = useState<string>('');
+  const [onSuccessfulUpdate, setOnSuccessfulUpdate] = useState<() => void>();
+  const [onFailedUpdate, setOnFailedUpdate] = useState<() => void>();
   const { address } = useAccount();
   const { isPending, mutate: updateUser } = useUpdateUser({
+    onError: (err) => {
+      setError(err.message);
+      onFailedUpdate?.();
+      setOnFailedUpdate(() => {});
+    },
     onSuccess: (newUser) => {
-      setUser(newUser);
+      setUser({
+        ...user,
+        ...newUser,
+      } as User);
+      setError('');
+      onSuccessfulUpdate?.();
+      setOnSuccessfulUpdate(() => {});
     },
   });
 
@@ -40,10 +68,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    setUser({
-      ...user,
-      ...newUser,
-    } as User);
     updateUser({
       address: address,
       updateUserDto: newUser,
@@ -65,16 +89,21 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   const values = useMemo(
     () => ({
+      error,
       isLoading: isPending,
+      setOnFailedUpdate,
+      setOnSuccessfulUpdate,
       setUser: handleSetUser,
       user,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [user, isPending],
+    [user, isPending, error, onSuccessfulUpdate, onFailedUpdate],
   );
 
   useEffect(() => {
     if (!address) {
+      setUser(undefined);
+
       return;
     }
 
