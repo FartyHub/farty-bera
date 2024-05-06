@@ -53,10 +53,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       setOnFailedUpdate(() => {});
     },
     onSuccess: (newUser) => {
-      setUser({
-        ...user,
-        ...newUser,
-      } as User);
+      setUser(newUser);
       setError('');
       onSuccessfulUpdate?.();
       setOnSuccessfulUpdate(() => {});

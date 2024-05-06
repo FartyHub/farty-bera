@@ -9,6 +9,7 @@ import { config } from '../config';
 import { ApplicationData, Applications } from '../constants';
 import {
   ApplicationsProvider,
+  FartyBeraProvider,
   UserProvider,
   Web3ModalProvider,
 } from '../contexts';
@@ -49,10 +50,12 @@ function CustomApp({ Component, pageProps }: AppProps) {
             <ApplicationsProvider
               initialState={[ApplicationData[Applications.STATS]]}
             >
-              <main>
-                <VideoIntro />
-                <Component {...pageProps} />
-              </main>
+              <FartyBeraProvider>
+                <main>
+                  <VideoIntro />
+                  <Component {...pageProps} />
+                </main>
+              </FartyBeraProvider>
             </ApplicationsProvider>
           </UserProvider>
         </QueryClientProvider>

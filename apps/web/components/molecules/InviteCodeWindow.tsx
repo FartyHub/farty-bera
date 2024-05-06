@@ -9,12 +9,11 @@ import { Button, TextInput } from '../atoms';
 import { Window } from '../elements';
 
 type Props = {
-  isGameLoaded: boolean;
   onClose?: (event?: MouseEvent<HTMLButtonElement>) => Promise<void>;
   onSuccess?: () => void;
 };
 
-export function InviteCodeWindow({ isGameLoaded, onClose, onSuccess }: Props) {
+export function InviteCodeWindow({ onClose, onSuccess }: Props) {
   const { address = '', isConnected } = useAccount();
   const { setUser } = useUser();
   const { isTouch } = useTouchDevice();
@@ -66,7 +65,6 @@ export function InviteCodeWindow({ isGameLoaded, onClose, onSuccess }: Props) {
           loading={isChecking}
           placeholder="Invite code goes here"
           setValue={setCode}
-          shouldUseKeyDown={isGameLoaded}
           value={code}
           onSubmit={handleConfirmCode}
         />

@@ -2,13 +2,13 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import clsx from 'clsx';
 import { MouseEvent, useCallback, useEffect, useState } from 'react';
-import { Unity, useUnityContext } from 'react-unity-webgl';
+import { Unity } from 'react-unity-webgl';
 import { useAccount } from 'wagmi';
 
 import { User } from '@farty-bera/api-lib';
 
 import { ApplicationData, Applications, X_URL } from '../../constants';
-import { useApplications, useUser } from '../../contexts';
+import { useApplications, useFartyBera, useUser } from '../../contexts';
 import { useCreateScore, useTouchDevice } from '../../hooks';
 import { Button, Spinner } from '../atoms';
 import { Window } from '../elements';
@@ -23,17 +23,7 @@ export function FartyBeraGame() {
     removeEventListener,
     sendMessage,
     unityProvider,
-  } = useUnityContext({
-    codeUrl: 'https://storage.googleapis.com/farty-bera-build/web.wasm',
-    dataUrl: 'https://storage.googleapis.com/farty-bera-build/web.data',
-    frameworkUrl:
-      'https://storage.googleapis.com/farty-bera-build/web.framework.js',
-    loaderUrl: 'https://storage.googleapis.com/farty-bera-build/web.loader.js',
-    // codeUrl: 'build/web.wasm',
-    // dataUrl: 'build/web.data',
-    // frameworkUrl: 'build/web.framework.js',
-    // loaderUrl: 'build/web.loader.js',
-  });
+  } = useFartyBera();
   const { applications, setApplications } = useApplications();
   const { address = '', isConnected } = useAccount();
   const { setUser, user = {} as User } = useUser();
@@ -62,11 +52,9 @@ export function FartyBeraGame() {
   );
 
   useEffect(() => {
-    // @ts-expect-error
     addEventListener('SetScore', handleSetScore);
 
     return () => {
-      // @ts-expect-error
       removeEventListener('SetScore', handleSetScore);
     };
   }, [addEventListener, removeEventListener, handleSetScore]);
@@ -263,7 +251,6 @@ export function FartyBeraGame() {
       {!isConnected && <ConnectWindow onClose={handleCloseWindow} />}
       {!isInvited && (
         <InviteCodeWindow
-          isGameLoaded={isLoaded}
           onClose={handleCloseWindow}
           onSuccess={handleSuccessInvite}
         />

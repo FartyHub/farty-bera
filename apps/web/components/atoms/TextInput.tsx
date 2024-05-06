@@ -1,6 +1,8 @@
 import clsx from 'clsx';
 import { InputHTMLAttributes, useState } from 'react';
 
+import { useFartyBera } from '../../contexts';
+
 /* eslint-disable no-magic-numbers */
 type Props = InputHTMLAttributes<HTMLInputElement> & {
   error?: string;
@@ -10,7 +12,6 @@ type Props = InputHTMLAttributes<HTMLInputElement> & {
   onSubmit?: () => void;
   placeholder?: string;
   setValue: (value: string) => void;
-  shouldUseKeyDown?: boolean;
   value: string;
 };
 
@@ -23,10 +24,10 @@ export function TextInput({
   onSubmit,
   placeholder,
   setValue,
-  shouldUseKeyDown,
   value,
   ...rest
 }: Props) {
+  const { isLoaded } = useFartyBera();
   const [holdKeys, setHoldKeys] = useState<string[]>([]);
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -42,11 +43,12 @@ export function TextInput({
       onSubmit?.();
     }
 
-    if (!shouldUseKeyDown) {
+    if (!isLoaded) {
       return;
     }
 
     const valueProp = value as string;
+    console.log('valueProp', e.key);
 
     if (e.key === 'Backspace') {
       if (e.currentTarget?.selectionStart !== e.currentTarget?.selectionEnd) {
@@ -90,7 +92,12 @@ export function TextInput({
       );
     } else if (
       (e.keyCode >= 48 && e.keyCode <= 57) ||
-      (e.keyCode >= 65 && e.keyCode <= 90)
+      (e.keyCode >= 65 && e.keyCode <= 90) ||
+      e.key === ' ' ||
+      e.key === '-' ||
+      e.key === '_' ||
+      e.key === '.' ||
+      e.key === '@'
     ) {
       setValue(
         valueProp.slice(0, e.currentTarget?.selectionStart ?? 0) +
@@ -107,6 +114,10 @@ export function TextInput({
   }
 
   function handleChanged(e: React.ChangeEvent<HTMLInputElement>) {
+    if (isLoaded) {
+      return;
+    }
+
     setValue(e.target.value);
   }
 

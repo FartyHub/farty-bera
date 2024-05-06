@@ -64,10 +64,7 @@ export function Leaderboard() {
     setName(user?.displayName ?? '');
     setOnSuccessfulUpdate(() => setIsEditingName(false));
     refetchUserRank();
-
-    if (!isInTopRanks) {
-      refetchTopRanks();
-    }
+    refetchTopRanks();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
