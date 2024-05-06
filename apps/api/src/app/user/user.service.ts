@@ -147,16 +147,8 @@ export class UserService {
 
       const usersBeforeCount = await this.usersRepository
         .createQueryBuilder('user')
-        .where('honey_score > :honeyScore', { honeyScore: user.honeyScore })
-        .orWhere(
-          'honey_score = :honeyScore AND farty_games_played < :fartyGamesPlayed',
-          {
-            honeyScore: user.honeyScore,
-            fartyGamesPlayed: user.fartyGamesPlayed,
-          },
-        )
-        .orWhere(
-          'honey_score = :honeyScore AND farty_games_played = :fartyGamesPlayed AND created_at < :createdAt',
+        .where(
+          'honey_score > :honeyScore OR (honey_score = :honeyScore AND farty_games_played > :fartyGamesPlayed) OR (honey_score = :honeyScore AND farty_games_played = :fartyGamesPlayed AND created_at < :createdAt)',
           {
             honeyScore: user.honeyScore,
             fartyGamesPlayed: user.fartyGamesPlayed,
@@ -183,7 +175,7 @@ export class UserService {
           fartyGamesPlayed: 'DESC',
           createdAt: 'ASC',
         },
-        take: 10,
+        take: 20,
       });
     } catch (error) {
       this.logger.error(`[GET_TOP_RANKS] ${error.message}`);

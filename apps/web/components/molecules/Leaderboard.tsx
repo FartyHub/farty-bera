@@ -6,7 +6,7 @@ import { useAccount } from 'wagmi';
 import { User } from '@farty-bera/api-lib';
 
 import { ApplicationData, Applications } from '../../constants';
-import { useUser } from '../../contexts';
+import { useApplications, useUser } from '../../contexts';
 import { DateFormats } from '../../enums';
 import {
   useGetInvitedUsersCount,
@@ -26,9 +26,12 @@ export function Leaderboard() {
     setUser,
     user: user = {} as User,
   } = useUser();
+  const { applications } = useApplications();
   const [name, setName] = useState<string>(user?.displayName ?? '');
   const [isEditingName, setIsEditingName] = useState<boolean>(false);
-  const application = ApplicationData[Applications.LEADERBOARD];
+  const application =
+    applications.find((app) => app.name === Applications.LEADERBOARD) ||
+    ApplicationData[Applications.LEADERBOARD];
 
   const { data: invitedUsersCount, isLoading: isGettingInvitedUsersCount } =
     useGetInvitedUsersCount();
@@ -205,7 +208,11 @@ export function Leaderboard() {
           data={tableData}
           highlightRow={isInTopRanks ? userRank - 1 : 0}
           isLoading={isLoading}
-          tableBodyClassName="md:max-h-[40vh] h-full"
+          tableBodyClassName={clsx(
+            application.fullScreen
+              ? 'leaderboard-table'
+              : 'h-full md:max-h-[40vh]',
+          )}
         />
         <div className="flex flex-1 justify-center whitespace-nowrap font-bold text-base">
           Total Farties Invited:{' '}

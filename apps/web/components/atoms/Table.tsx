@@ -114,7 +114,7 @@ export function Table<T extends { id: string }>(props: TableProps<T>) {
   return (
     <div
       className={clsx(
-        'w-full',
+        'w-full flex',
         isTouch && 'overflow-x-auto',
         containerClassName,
       )}

@@ -67,3 +67,7 @@
     }
   }
 }
+
+.leaderboard-table {
+  height: calc(100vh - 360px);
+}
