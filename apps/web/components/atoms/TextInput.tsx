@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { DetailedHTMLProps, InputHTMLAttributes, useState } from 'react';
+import { InputHTMLAttributes, useState } from 'react';
 
 /* eslint-disable no-magic-numbers */
 type Props = InputHTMLAttributes<HTMLInputElement> & {
