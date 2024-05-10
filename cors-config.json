@@ -28,5 +28,11 @@
     "method": ["GET"],
     "responseHeader": ["Content-Type"],
     "maxAgeSeconds": 3600
+  },
+  {
+    "origin": ["https://2f5119be55fe.ngrok.app"],
+    "method": ["GET"],
+    "responseHeader": ["Content-Type"],
+    "maxAgeSeconds": 3600
   }
 ]

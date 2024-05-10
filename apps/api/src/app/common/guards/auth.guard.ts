@@ -35,6 +35,19 @@ export class JwtGuard implements CanActivate {
 
       const request = context.switchToHttp().getRequest();
 
+      if (typeof request.get !== 'function') {
+        const telegramApiKey = this.configService.get<string>(
+          ConfigKeys.TelegramApiKey,
+        );
+        const argumentToken = context.getArgs()?.[0]?.telegram?.token;
+
+        if (telegramApiKey === argumentToken) {
+          return true;
+        } else {
+          throw new UnauthorizedException('Invalid access token');
+        }
+      }
+
       const requestApiKey = request.get('x-api-key');
 
       if (requestApiKey) {

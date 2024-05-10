@@ -229,6 +229,55 @@ export interface Score {
 /**
  * 
  * @export
+ * @interface SendTelegramGameScoreDto
+ */
+export interface SendTelegramGameScoreDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof SendTelegramGameScoreDto
+     */
+    'userId': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof SendTelegramGameScoreDto
+     */
+    'score': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof SendTelegramGameScoreDto
+     */
+    'inlineMessageId'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof SendTelegramGameScoreDto
+     */
+    'chatId'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof SendTelegramGameScoreDto
+     */
+    'messageId'?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SendTelegramGameScoreDto
+     */
+    'editMessage'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SendTelegramGameScoreDto
+     */
+    'force'?: boolean;
+}
+/**
+ * 
+ * @export
  * @interface UpdateScoreDto
  */
 export interface UpdateScoreDto {
@@ -1091,6 +1140,112 @@ export class ScoresApi extends BaseAPI {
      */
     public scoreControllerUpdate(id: string, updateScoreDto: UpdateScoreDto, options?: RawAxiosRequestConfig) {
         return ScoresApiFp(this.configuration).scoreControllerUpdate(id, updateScoreDto, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * TelegramApi - axios parameter creator
+ * @export
+ */
+export const TelegramApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {SendTelegramGameScoreDto} sendTelegramGameScoreDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        telegramControllerSendGameScore: async (sendTelegramGameScoreDto: SendTelegramGameScoreDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'sendTelegramGameScoreDto' is not null or undefined
+            assertParamExists('telegramControllerSendGameScore', 'sendTelegramGameScoreDto', sendTelegramGameScoreDto)
+            const localVarPath = `/api/telegram/send-game-score`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(sendTelegramGameScoreDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * TelegramApi - functional programming interface
+ * @export
+ */
+export const TelegramApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = TelegramApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {SendTelegramGameScoreDto} sendTelegramGameScoreDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async telegramControllerSendGameScore(sendTelegramGameScoreDto: SendTelegramGameScoreDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.telegramControllerSendGameScore(sendTelegramGameScoreDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TelegramApi.telegramControllerSendGameScore']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * TelegramApi - factory interface
+ * @export
+ */
+export const TelegramApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = TelegramApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {SendTelegramGameScoreDto} sendTelegramGameScoreDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        telegramControllerSendGameScore(sendTelegramGameScoreDto: SendTelegramGameScoreDto, options?: any): AxiosPromise<void> {
+            return localVarFp.telegramControllerSendGameScore(sendTelegramGameScoreDto, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * TelegramApi - object-oriented interface
+ * @export
+ * @class TelegramApi
+ * @extends {BaseAPI}
+ */
+export class TelegramApi extends BaseAPI {
+    /**
+     * 
+     * @param {SendTelegramGameScoreDto} sendTelegramGameScoreDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TelegramApi
+     */
+    public telegramControllerSendGameScore(sendTelegramGameScoreDto: SendTelegramGameScoreDto, options?: RawAxiosRequestConfig) {
+        return TelegramApiFp(this.configuration).telegramControllerSendGameScore(sendTelegramGameScoreDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

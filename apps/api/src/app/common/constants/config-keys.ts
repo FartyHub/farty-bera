@@ -7,4 +7,6 @@ export enum ConfigKeys {
   DBUsername = 'DB_USERNAME',
   Env = 'ENVIRONMENT',
   Salt = 'SALT',
+  TelegramApiKey = 'TELEGRAM_API_KEY',
+  WebUrl = 'WEB_URL',
 }

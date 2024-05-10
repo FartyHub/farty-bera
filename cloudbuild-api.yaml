@@ -19,6 +19,8 @@ steps:
       - 'SALT=${_SALT}'
       - 'X_API_KEY=${_X_API_KEY}'
       - 'ALLOW_ORIGINS=${_ALLOW_ORIGINS}'
+      - 'TELEGRAM_API_KEY=${_TELEGRAM_API_KEY}'
+      - 'WEB_URL=${_WEB_URL}'
 
   - name: 'gcr.io/cloud-builders/gcloud'
     id: COPY-STUFF

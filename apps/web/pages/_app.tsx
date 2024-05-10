@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import './styles.css';
+import Script from 'next/script';
 import { cookieToInitialState } from 'wagmi';
 
 import { VideoIntro } from '../components';
@@ -60,6 +61,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
           </UserProvider>
         </QueryClientProvider>
       </Web3ModalProvider>
+      <Script src="https://telegram.org/js/games.js" />
     </>
   );
 }

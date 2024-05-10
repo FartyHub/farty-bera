@@ -10,6 +10,7 @@ steps:
       - 'NEXT_PUBLIC_PROJECT_ID=${_NEXT_PUBLIC_PROJECT_ID}'
       - 'NEXT_PUBLIC_API_BASE_URL=${_NEXT_PUBLIC_API_BASE_URL}'
       - 'NEXT_PUBLIC_X_API_KEY=${_NEXT_PUBLIC_X_API_KEY}'
+      - 'NEXT_PUBLIC_BOT_ID=${_NEXT_PUBLIC_BOT_ID}'
 
   - name: 'gcr.io/cloud-builders/npm'
     args: ['run', 'create-env', 'dist/apps/web/.env.local']

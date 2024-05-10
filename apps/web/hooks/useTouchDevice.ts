@@ -46,5 +46,5 @@ export function useTouchDevice() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { isTouch };
+  return { isTouch, setIsTouch };
 }

@@ -2,14 +2,17 @@ import { Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { TelegrafModule } from 'nestjs-telegraf';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { JwtGuard } from './common';
+import { FartyBeraBotService } from './farty-bera-bot';
 import { InviteCodeModule } from './invite-code';
 import { ProjectInvite, ProjectInviteModule } from './project-invite';
 import { Score, ScoreModule } from './score';
+import { TelegramModule } from './telegram';
 import { User, UserModule } from './user';
 
 const defaultDBOptions = {
@@ -38,10 +41,15 @@ const defaultDBOptions = {
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    TelegrafModule.forRoot({
+      botName: 'fartyberabot',
+      token: process.env.TELEGRAM_API_KEY,
+    }),
     UserModule,
     ScoreModule,
     ProjectInviteModule,
     InviteCodeModule,
+    TelegramModule,
   ],
   providers: [
     {
@@ -50,6 +58,9 @@ const defaultDBOptions = {
     },
     Logger,
     AppService,
+    FartyBeraBotService,
   ],
 })
-export class AppModule {}
+export class AppModule {
+  // no op
+}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import clsx from 'clsx';
@@ -5,18 +6,23 @@ import { MouseEvent, useCallback, useEffect, useState } from 'react';
 import { Unity } from 'react-unity-webgl';
 import { useAccount } from 'wagmi';
 
-import { User } from '@farty-bera/api-lib';
+import { SendTelegramGameScoreDto, User } from '@farty-bera/api-lib';
 
 import { ApplicationData, Applications, X_URL } from '../../constants';
 import { useApplications, useFartyBera, useUser } from '../../contexts';
-import { useCreateScore, useTouchDevice } from '../../hooks';
+import { useCreateScore, useSendGameScore, useTouchDevice } from '../../hooks';
 import { Button, Spinner } from '../atoms';
 import { Window } from '../elements';
 
 import { ConnectWindow } from './ConnectWindow';
 import { InviteCodeWindow } from './InviteCodeWindow';
 
-export function FartyBeraGame() {
+type Props = {
+  isTelegram: boolean;
+  telegramMessageContext: SendTelegramGameScoreDto | null;
+};
+
+export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
   const {
     addEventListener,
     isLoaded,
@@ -28,27 +34,36 @@ export function FartyBeraGame() {
   const { address = '', isConnected } = useAccount();
   const { setUser, user = {} as User } = useUser();
   const { mutate: addScore } = useCreateScore();
+  const { mutate: sendGameScore } = useSendGameScore();
   const { isTouch } = useTouchDevice();
   const application =
     applications.find((app) => app.id === Applications.FARTY_BERA) ||
     ApplicationData[Applications.FARTY_BERA];
 
   const [isInvited, setIsInvited] = useState<boolean>(!!user.usedInviteCode);
-  const hasNoAccess = !isConnected || !isInvited || !user.usedInviteCode;
+  const hasNoAccess =
+    !isTelegram && (!isConnected || !isInvited || !user.usedInviteCode);
 
   const handleSetScore = useCallback(
     (newScore: number) => {
-      addScore({
-        game: Applications.FARTY_BERA,
-        userAddress: address,
-        value: newScore,
-      });
-      setUser({
-        fartyGamesPlayed: (user.fartyGamesPlayed ?? 0) + 1,
-        fartyHighScore: Math.max(user.fartyHighScore ?? 0, newScore),
-      });
+      if (isTelegram && telegramMessageContext) {
+        sendGameScore({
+          ...telegramMessageContext,
+          score: newScore,
+        });
+      } else {
+        addScore({
+          game: Applications.FARTY_BERA,
+          userAddress: address,
+          value: newScore,
+        });
+        setUser({
+          fartyGamesPlayed: (user.fartyGamesPlayed ?? 0) + 1,
+          fartyHighScore: Math.max(user.fartyHighScore ?? 0, newScore),
+        });
+      }
     },
-    [user],
+    [user, isTelegram, telegramMessageContext, address],
   );
 
   useEffect(() => {
@@ -87,6 +102,20 @@ export function FartyBeraGame() {
     );
     const maxIndex = Math.max(...applications.map((app) => app.zIndex));
 
+    if (isTelegram && !hasFartyBera) {
+      setApplications([
+        ...applications,
+        {
+          ...ApplicationData[Applications.FARTY_BERA],
+          fullScreen: true,
+          system: true,
+          zIndex: maxIndex + 1,
+        },
+      ]);
+    } else if (isTelegram) {
+      return;
+    }
+
     if (!isConnected && hasFartyBera && !hasConnectWallet) {
       setApplications([
         ...applications.filter((app) => app.id !== Applications.INVITE_CODE),
@@ -114,7 +143,13 @@ export function FartyBeraGame() {
         },
       ]);
     }
-  }, [applications.length, isInvited, isConnected, user.usedInviteCode]);
+  }, [
+    applications.length,
+    isInvited,
+    isConnected,
+    user.usedInviteCode,
+    isTelegram,
+  ]);
 
   async function handleCloseWindow(event?: MouseEvent<HTMLButtonElement>) {
     event?.stopPropagation();
@@ -143,6 +178,10 @@ export function FartyBeraGame() {
     setApplications(
       applications.filter((app) => app.id !== Applications.INVITE_CODE),
     );
+  }
+
+  async function handleShareTGScore() {
+    (window as any).TelegramGameProxy.shareScore();
   }
 
   async function handleShareHighScore(isTwitter?: boolean) {
@@ -217,35 +256,49 @@ export function FartyBeraGame() {
               </div>
             </div>
           )}
-          <div className="flex flex-1 md:flex-none justify-between md:justify-normal items-center gap-2 md:gap-8">
-            <div className="flex flex-col md:flex-row text-base text-right md:flex-nowrap gap-2 items-center">
-              <span className="font-bold whitespace-nowrap">Highest Score</span>
-              <span className="font-normal">{user.fartyHighScore ?? 0}</span>
-            </div>
-            <div className="flex items-stretch gap-2 md:mr-2">
+          {isTelegram ? (
+            <div className="flex flex-1 justify-center">
               <Button
-                className="px-1"
+                className="px-2"
                 type="primary"
-                onClick={() => handleShareHighScore(true)}
+                onClick={handleShareTGScore}
               >
-                <div className="flex md:flex-row items-center gap-1 flex-nowrap">
-                  <span className="whitespace-nowrap">Share on</span>
-                  <img
-                    alt="x icon"
-                    className="size-4"
-                    src="images/x-icon.svg"
-                  />
-                </div>
-              </Button>
-              <Button
-                className="px-1"
-                type="primary"
-                onClick={() => handleShareHighScore()}
-              >
-                Share on Discord
+                Share Score
               </Button>
             </div>
-          </div>
+          ) : (
+            <div className="flex flex-1 md:flex-none justify-between md:justify-normal items-center gap-2 md:gap-8">
+              <div className="flex flex-col md:flex-row text-base text-right md:flex-nowrap gap-2 items-center">
+                <span className="font-bold whitespace-nowrap">
+                  Highest Score
+                </span>
+                <span className="font-normal">{user.fartyHighScore ?? 0}</span>
+              </div>
+              <div className="flex items-stretch gap-2 md:mr-2">
+                <Button
+                  className="px-1"
+                  type="primary"
+                  onClick={() => handleShareHighScore(true)}
+                >
+                  <div className="flex md:flex-row items-center gap-1 flex-nowrap">
+                    <span className="whitespace-nowrap">Share on</span>
+                    <img
+                      alt="x icon"
+                      className="size-4"
+                      src="images/x-icon.svg"
+                    />
+                  </div>
+                </Button>
+                <Button
+                  className="px-1"
+                  type="primary"
+                  onClick={() => handleShareHighScore()}
+                >
+                  Share on Discord
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       {!isConnected && <ConnectWindow onClose={handleCloseWindow} />}

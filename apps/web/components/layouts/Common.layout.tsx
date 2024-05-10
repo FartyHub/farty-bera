@@ -7,9 +7,10 @@ import { Footer } from '../elements';
 type Props = {
   children: ReactNode;
   className?: string;
+  isTelegram?: boolean;
 };
 
-export function CommonLayout({ children, className }: Props) {
+export function CommonLayout({ children, className, isTelegram }: Props) {
   const { isTouch } = useTouchDevice();
 
   return (
@@ -36,7 +37,7 @@ export function CommonLayout({ children, className }: Props) {
           )}
           src="https://storage.googleapis.com/farty-bera-build/mascot.gif"
         />
-        <Footer />
+        {!isTelegram && <Footer />}
       </div>
     </div>
   );
