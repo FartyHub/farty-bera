@@ -44,7 +44,8 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
     ApplicationData[Applications.FARTY_BERA];
 
   const [isInvited, setIsInvited] = useState<boolean>(!!user.usedInviteCode);
-  const hasNoAccess = !isConnected || !isInvited || !user.usedInviteCode;
+  const hasNoAccess =
+    !isTelegram && (!isConnected || !isInvited || !user.usedInviteCode);
 
   const handleSetScore = useCallback(
     (newScore: number) => {
@@ -114,6 +115,8 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
           zIndex: maxIndex + 1,
         },
       ]);
+    } else if (isTelegram) {
+      return;
     }
 
     if (!isConnected && hasFartyBera && !hasConnectWallet) {
