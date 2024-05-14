@@ -22,15 +22,15 @@ export class FartyBeraBotService {
   constructor(private readonly configService: ConfigService) {}
 
   @Start()
-  async start(@Ctx() ctx: Context) {
+  start(@Ctx() ctx: Context) {
     this.logger.log('[START]');
-    await ctx.sendGame('Farty_Bera');
+    ctx.sendGame('Farty_Bera');
   }
 
   @Help()
-  async help(@Ctx() ctx: Context) {
+  help(@Ctx() ctx: Context) {
     this.logger.log('[HELP]');
-    await ctx.reply('Send me start to play a game!');
+    ctx.reply('Send me start to play a game!');
   }
 
   // @On('sticker')
@@ -44,7 +44,7 @@ export class FartyBeraBotService {
   // }
 
   @GameQuery()
-  async gameQuery(@Ctx() ctx: Context) {
+  gameQuery(@Ctx() ctx: Context) {
     const callbackQuery = (ctx.update as any).callback_query as Context;
     const urlQueries = {
       botId: ctx.botInfo?.id,
@@ -56,17 +56,17 @@ export class FartyBeraBotService {
       score: 0,
       userId: ctx.from.id,
     };
-    this.logger.log('[GAME_QUERY]', JSON.stringify(urlQueries, null, 2));
+    this.logger.log('[GAME_QUERY]', JSON.stringify(ctx, null, 2));
     const botId = ctx.botInfo?.id;
     const webUrl = this.configService.get<string>(ConfigKeys.WebUrl);
-    await ctx.answerGameQuery(
+    ctx.answerGameQuery(
       `${webUrl}/?botId=${botId}&userId=${urlQueries.userId}&chatId=${urlQueries.chatId}&messageId=${urlQueries.messageId}&inlineMessageId=${urlQueries.inlineMessageId}&score=0&editMessage=${urlQueries.editMessage}&force=${urlQueries.force}`,
     );
   }
 
   @InlineQuery([])
-  async inlineQuery(@Ctx() ctx: Context) {
-    await ctx.answerInlineQuery([
+  inlineQuery(@Ctx() ctx: Context) {
+    ctx.answerInlineQuery([
       {
         game_short_name: 'Farty_Bera',
         id: '0',

@@ -43,6 +43,9 @@ const defaultDBOptions = {
     }),
     TelegrafModule.forRoot({
       botName: 'fartyberabot',
+      launchOptions: {
+        allowedUpdates: ['message', 'callback_query', 'inline_query'],
+      },
       token: process.env.TELEGRAM_API_KEY,
     }),
     UserModule,

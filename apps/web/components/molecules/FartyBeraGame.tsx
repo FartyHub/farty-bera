@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+import { useWeb3Modal } from '@web3modal/wagmi/react';
 import clsx from 'clsx';
 import { MouseEvent, useCallback, useEffect, useState } from 'react';
 import { Unity } from 'react-unity-webgl';
@@ -11,6 +12,7 @@ import { SendTelegramGameScoreDto, User } from '@farty-bera/api-lib';
 import { ApplicationData, Applications, X_URL } from '../../constants';
 import { useApplications, useFartyBera, useUser } from '../../contexts';
 import { useCreateScore, useSendGameScore, useTouchDevice } from '../../hooks';
+import { truncateMiddle } from '../../utils';
 import { Button, Spinner } from '../atoms';
 import { Window } from '../elements';
 
@@ -30,6 +32,7 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
     sendMessage,
     unityProvider,
   } = useFartyBera();
+  const { open } = useWeb3Modal();
   const { applications, setApplications } = useApplications();
   const { address = '', isConnected } = useAccount();
   const { setUser, user = {} as User } = useUser();
@@ -41,8 +44,7 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
     ApplicationData[Applications.FARTY_BERA];
 
   const [isInvited, setIsInvited] = useState<boolean>(!!user.usedInviteCode);
-  const hasNoAccess =
-    !isTelegram && (!isConnected || !isInvited || !user.usedInviteCode);
+  const hasNoAccess = !isConnected || !isInvited || !user.usedInviteCode;
 
   const handleSetScore = useCallback(
     (newScore: number) => {
@@ -112,8 +114,6 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
           zIndex: maxIndex + 1,
         },
       ]);
-    } else if (isTelegram) {
-      return;
     }
 
     if (!isConnected && hasFartyBera && !hasConnectWallet) {
@@ -214,6 +214,11 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
     }
   }
 
+  function handleConnectWallet(event?: MouseEvent<HTMLButtonElement>) {
+    event?.stopPropagation();
+    open();
+  }
+
   return (
     <Window center application={application} onClose={handleCloseWindow}>
       <div
@@ -257,13 +262,20 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
             </div>
           )}
           {isTelegram ? (
-            <div className="flex flex-1 justify-center">
+            <div className="flex flex-1 justify-center gap-2">
               <Button
                 className="px-2"
                 type="primary"
                 onClick={handleShareTGScore}
               >
                 Share Score
+              </Button>
+              <Button
+                className="flex px-5 py-2 justify-center"
+                type="primary"
+                onClick={handleConnectWallet}
+              >
+                {isConnected ? truncateMiddle(address ?? '') : 'Connect Wallet'}
               </Button>
             </div>
           ) : (
