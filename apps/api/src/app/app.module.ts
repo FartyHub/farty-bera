@@ -1,6 +1,7 @@
 import { Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TelegrafModule } from 'nestjs-telegraf';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
@@ -31,6 +32,12 @@ const defaultDBOptions = {
 @Module({
   controllers: [AppController],
   imports: [
+    ThrottlerModule.forRoot([
+      {
+        limit: 10,
+        ttl: 6000,
+      },
+    ]),
     TypeOrmModule.forRoot({
       ...defaultDBOptions,
       database: process.env.DB_DATABASE,
@@ -58,6 +65,10 @@ const defaultDBOptions = {
     {
       provide: APP_GUARD,
       useClass: JwtGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
     },
     Logger,
     AppService,
