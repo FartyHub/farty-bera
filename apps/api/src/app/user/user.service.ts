@@ -141,7 +141,7 @@ export class UserService {
         where: { address },
       });
 
-      return removeInviteCode(user);
+      return user;
     } catch (error) {
       this.logger.error(`[GET_USER] ${error.message}`);
 
