@@ -35,9 +35,13 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
   const { open } = useWeb3Modal();
   const { applications, setApplications } = useApplications();
   const { address = '', isConnected } = useAccount();
-  const { setUser, user = {} as User } = useUser();
-  const { mutate: addScore } = useCreateScore();
-  const { mutate: sendGameScore } = useSendGameScore();
+  const { fetchUser, user = {} as User } = useUser();
+  const { mutate: addScore } = useCreateScore({
+    onSuccess: () => fetchUser(),
+  });
+  const { mutate: sendGameScore } = useSendGameScore({
+    onSuccess: () => fetchUser(),
+  });
   const { isTouch } = useTouchDevice();
   const application =
     applications.find((app) => app.id === Applications.FARTY_BERA) ||
@@ -59,10 +63,6 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
           game: Applications.FARTY_BERA,
           userAddress: address,
           value: newScore,
-        });
-        setUser({
-          fartyGamesPlayed: (user.fartyGamesPlayed ?? 0) + 1,
-          fartyHighScore: Math.max(user.fartyHighScore ?? 0, newScore),
         });
       }
     },

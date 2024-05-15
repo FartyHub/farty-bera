@@ -84,10 +84,4 @@ export class UserController {
   ): Promise<User> {
     return this.userService.update(address, updateUserDto);
   }
-
-  @Delete(':address')
-  @ApiOkResponse({ type: Boolean })
-  remove(@Param('address') address: string): Promise<boolean> {
-    return this.userService.remove(address);
-  }
 }

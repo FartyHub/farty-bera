@@ -2,7 +2,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { User, UserService } from '../user';
+import { User } from '../user';
 
 import { Score } from './entities/score.entity';
 import { ScoreController } from './score.controller';
@@ -16,7 +16,6 @@ describe('ScoreController', () => {
       controllers: [ScoreController],
       providers: [
         ScoreService,
-        UserService,
         {
           provide: getRepositoryToken(Score),
           useClass: Score,
