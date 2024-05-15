@@ -74,11 +74,9 @@ export class UserService {
     this.logger.log(`[GET_USER] ${address}`);
 
     try {
-      const user = await this.usersRepository.findOneOrFail({
+      return await this.usersRepository.findOneOrFail({
         where: { address },
       });
-
-      return user;
     } catch (error) {
       this.logger.error(`[GET_USER] ${error.message}`);
 
@@ -95,23 +93,23 @@ export class UserService {
       }
 
       const user = await this.findOne(address);
-      const newUser = this.usersRepository.create({
-        ...user,
-        ...updateUserDto,
-      });
 
-      newUser.honeyScore = calculateHoneyScore(
-        newUser.fartyGamesPlayed,
-        newUser.fartyHighScore,
+      user.honeyScore = calculateHoneyScore(
+        user.fartyGamesPlayed,
+        user.fartyHighScore,
       );
 
-      if (newUser.honeyScore >= SCORE_THRESHOLD) {
-        newUser.inviteCode = generateRandomText(6);
+      if (user.honeyScore >= SCORE_THRESHOLD) {
+        user.inviteCode = generateRandomText(6);
       }
 
-      await this.usersRepository.save(newUser);
+      if (updateUserDto.displayName) {
+        user.displayName = updateUserDto.displayName;
+      }
 
-      return newUser;
+      await this.usersRepository.save(user);
+
+      return user;
     } catch (error) {
       this.logger.error(`[UPDATE_USER] ${error.message}`);
 

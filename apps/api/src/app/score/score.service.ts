@@ -1,5 +1,4 @@
 import {
-  Inject,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -8,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Applications } from '../common';
-import { UserService } from '../user';
+import { User } from '../user';
 
 import { CreateScoreDto } from './dto/create-score.dto';
 import { UpdateScoreDto } from './dto/update-score.dto';
@@ -19,8 +18,8 @@ export class ScoreService {
   private readonly logger: Logger = new Logger(ScoreService.name);
 
   constructor(
-    @Inject(UserService)
-    private readonly userService: UserService,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
     @InjectRepository(Score)
     private scoresRepository: Repository<Score>,
   ) {}
@@ -32,7 +31,9 @@ export class ScoreService {
 
     try {
       const score = this.scoresRepository.create(createScoreDto);
-      const user = await this.userService.findOne(createScoreDto.userAddress);
+      const user = await this.userRepository.findOneOrFail({
+        where: { address: createScoreDto.userAddress },
+      });
 
       if (
         user.fartyHighScore < score.value &&
@@ -41,7 +42,9 @@ export class ScoreService {
         user.fartyHighScore = score.value;
       }
 
-      await this.userService.update(createScoreDto.userAddress, user);
+      user.fartyGamesPlayed += 1;
+
+      await this.userRepository.save(user);
 
       return await this.scoresRepository.save(score);
     } catch (error) {

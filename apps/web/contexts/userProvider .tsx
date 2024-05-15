@@ -17,6 +17,7 @@ import { createUser, getUser } from '../services';
 
 const UserContext = createContext<{
   error: string;
+  fetchUser: (newAddress?: string) => void;
   isLoading: boolean;
   setOnFailedUpdate: Dispatch<SetStateAction<(() => void) | undefined>>;
   setOnSuccessfulUpdate: Dispatch<SetStateAction<(() => void) | undefined>>;
@@ -24,6 +25,7 @@ const UserContext = createContext<{
   user?: User;
 }>({
   error: '',
+  fetchUser: () => {},
   isLoading: false,
   setOnFailedUpdate: () => {},
   setOnSuccessfulUpdate: () => {},
@@ -71,12 +73,12 @@ export function UserProvider({ children }: { children: ReactNode }) {
     });
   }
 
-  async function onAddressChange(newAddress: string) {
-    let newUser = await getUser(newAddress, false);
+  async function fetchUser(newAddress?: string) {
+    let newUser = await getUser(newAddress ?? address ?? '', false);
 
     if (!newUser) {
       newUser = await createUser({
-        address: newAddress,
+        address: newAddress ?? address ?? '',
         usedInviteCode: '',
       });
     }
@@ -87,6 +89,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const values = useMemo(
     () => ({
       error,
+      fetchUser,
       isLoading: isPending,
       setOnFailedUpdate,
       setOnSuccessfulUpdate,
@@ -104,7 +107,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    onAddressChange(address);
+    fetchUser(address);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
