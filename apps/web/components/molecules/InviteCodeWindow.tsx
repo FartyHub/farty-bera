@@ -15,7 +15,7 @@ type Props = {
 
 export function InviteCodeWindow({ onClose, onSuccess }: Props) {
   const { address = '', isConnected } = useAccount();
-  const { setUser } = useUser();
+  const { fetchUser } = useUser();
   const { isTouch } = useTouchDevice();
   const [code, setCode] = useState<string>('');
   const [error, setError] = useState<string>('');
@@ -25,8 +25,8 @@ export function InviteCodeWindow({ onClose, onSuccess }: Props) {
       onError: (checkError) => {
         setError(checkError.message);
       },
-      onSuccess: (data) => {
-        setUser(data);
+      onSuccess: () => {
+        fetchUser();
         setError('');
         onSuccess?.();
       },
