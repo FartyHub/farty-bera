@@ -2,15 +2,25 @@
 /* eslint-disable sort-keys-fix/sort-keys-fix */
 /* eslint-disable no-magic-numbers */
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Response } from 'express';
 import { Repository } from 'typeorm';
 
-import { calculateHoneyScore, generateRandomText } from '../../utils';
+import {
+  calculateHoneyScore,
+  forwardDateByDays,
+  generateRandomText,
+  verifyAuthenticationMessage,
+} from '../../utils';
+import { ACCESS_TOKEN } from '../common';
 
+import { LoginWithSignature } from './dto/auth.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -20,6 +30,8 @@ const SCORE_THRESHOLD = 35;
 function removeInviteCode(user: User) {
   user.inviteCode = undefined;
   user.usedInviteCode = undefined;
+  user.fartyHighScore = undefined;
+  user.inviteCodeLimit = undefined;
 
   return user;
 }
@@ -31,7 +43,58 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private jwtService: JwtService,
   ) {}
+
+  async loginWithSignature(
+    loginWithSignature: LoginWithSignature,
+    response: Response,
+  ) {
+    const { address, verified } =
+      await verifyAuthenticationMessage(loginWithSignature);
+
+    if (!verified) {
+      throw new BadRequestException('Vefiry signature failed.');
+    }
+
+    const userData = { address };
+    const user = await this.usersRepository.findOne({ where: { address } });
+
+    if (!user) {
+      this.logger.error(`[loginWithAccessToken] User not found: ${address}`);
+
+      throw new InternalServerErrorException('User not found');
+    }
+
+    this.logger.log('[loginWithAccessToken] UserService', userData);
+
+    const payload = {
+      userAddress: userData.address,
+    };
+
+    const accessToken = this.jwtService.sign(payload, {
+      expiresIn: process.env.JWT_SESSION_EXPIRES_IN,
+    });
+
+    response.cookie(ACCESS_TOKEN, accessToken, {
+      expires: forwardDateByDays(7),
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+    });
+
+    const responseData = {
+      user: {
+        address: user.address,
+        displayName: user.displayName,
+        honeyScore: user.honeyScore,
+        inviteCode: user.inviteCode,
+      },
+      accessToken: accessToken,
+    };
+
+    return response.send(responseData);
+  }
 
   create(createUserDto: CreateUserDto) {
     this.logger.log(`[CREATE_USER] ${JSON.stringify(createUserDto, null, 2)}`);

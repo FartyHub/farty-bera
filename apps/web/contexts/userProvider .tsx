@@ -72,13 +72,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
   }
 
   async function onAddressChange(newAddress: string) {
-    let newUser = await getUser(newAddress, false);
+    const newUser = await getUser(newAddress, false);
 
     if (!newUser) {
-      newUser = await createUser({
-        address: newAddress,
-        usedInviteCode: '',
-      });
+      // newUser = await createUser({
+      //   address: newAddress,
+      //   usedInviteCode: '',
+      // });
     }
 
     setUser(newUser);

@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 import {
   CanActivate,
   ExecutionContext,
@@ -8,10 +9,18 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
+import { InjectRepository } from '@nestjs/typeorm';
+import { verify } from 'jsonwebtoken';
+import { Repository } from 'typeorm';
 
-import { ConfigKeys } from '../constants';
-
-const IS_PUBLIC_KEY = 'isPublic';
+import { AuthenticatedRequest, DecodedAccessToken } from '../../../types';
+import { User } from '../../user';
+import {
+  ACCESS_TOKEN,
+  ConfigKeys,
+  IS_API_KEY,
+  IS_PUBLIC_KEY,
+} from '../constants';
 
 @Injectable()
 export class JwtGuard implements CanActivate {
@@ -20,6 +29,8 @@ export class JwtGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
     private readonly configService: ConfigService,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
   ) {}
 
   async canActivate(context: ExecutionContext) {
@@ -28,12 +39,16 @@ export class JwtGuard implements CanActivate {
         IS_PUBLIC_KEY,
         [context.getHandler(), context.getClass()],
       );
+      const isApiKey = this.reflector.getAllAndOverride<boolean>(IS_API_KEY, [
+        context.getHandler(),
+        context.getClass(),
+      ]);
 
       if (isPublic) {
         return true;
       }
 
-      const request = context.switchToHttp().getRequest();
+      const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
 
       if (typeof request.get !== 'function') {
         const telegramApiKey = this.configService.get<string>(
@@ -50,7 +65,7 @@ export class JwtGuard implements CanActivate {
 
       const requestApiKey = request.get('x-api-key');
 
-      if (requestApiKey) {
+      if (requestApiKey && isApiKey) {
         this.logger.log(
           '[API] Using API key from auth header: ',
           requestApiKey,
@@ -65,12 +80,49 @@ export class JwtGuard implements CanActivate {
 
         return true;
       }
+
+      let accessToken =
+        request.cookies[ACCESS_TOKEN] ?? request.get(ACCESS_TOKEN);
+
+      const token = request.get('Authorization')?.split(' ')?.[1];
+
+      if (!accessToken && token && token !== 'undefined') {
+        this.logger.debug('Using token from auth header');
+
+        accessToken = token;
+      }
+
+      if (accessToken) {
+        const { userAddress } = this.decodeAccessToken(accessToken) || {};
+
+        const user = await this.usersRepository.findOne({
+          where: { address: userAddress },
+        });
+
+        request.accessToken = accessToken;
+        request.user = user;
+      }
     } catch (e) {
       this.logger.error(e);
 
       throw new UnauthorizedException('Invalid access token');
     }
   }
-}
 
-export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
+  decodeAccessToken(accessToken: string) {
+    try {
+      const decodedToken = verify(
+        accessToken,
+        process.env.JWT_SECRET,
+      ) as DecodedAccessToken;
+
+      return {
+        userAddress: decodedToken?.userAddress,
+      };
+    } catch (e) {
+      this.logger.warn('Unable to decode client access token', e);
+
+      throw new UnauthorizedException('Invalid access token');
+    }
+  }
+}

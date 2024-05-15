@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { User, UserService } from '../user';
@@ -11,6 +12,6 @@ import { ScoreService } from './score.service';
   controllers: [ScoreController],
   exports: [ScoreService],
   imports: [TypeOrmModule.forFeature([Score, User])],
-  providers: [ScoreService, UserService],
+  providers: [ScoreService, UserService, JwtService],
 })
 export class ScoreModule {}

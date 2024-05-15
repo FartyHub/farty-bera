@@ -129,6 +129,31 @@ export interface CreateUserDto {
 /**
  * 
  * @export
+ * @interface LoginWithSignature
+ */
+export interface LoginWithSignature {
+    /**
+     * 
+     * @type {string}
+     * @memberof LoginWithSignature
+     */
+    'key': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LoginWithSignature
+     */
+    'signature': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LoginWithSignature
+     */
+    'message': string;
+}
+/**
+ * 
+ * @export
  * @interface ProjectInvite
  */
 export interface ProjectInvite {
@@ -1480,6 +1505,41 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
+         * @param {LoginWithSignature} loginWithSignature 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userControllerLoginUser: async (loginWithSignature: LoginWithSignature, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'loginWithSignature' is not null or undefined
+            assertParamExists('userControllerLoginUser', 'loginWithSignature', loginWithSignature)
+            const localVarPath = `/api/users/login`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(loginWithSignature, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {string} address 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1643,6 +1703,18 @@ export const UsersApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {LoginWithSignature} loginWithSignature 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async userControllerLoginUser(loginWithSignature: LoginWithSignature, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerLoginUser(loginWithSignature, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UsersApi.userControllerLoginUser']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {string} address 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1735,6 +1807,15 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
          */
         userControllerGetUserRank(address: string, options?: any): AxiosPromise<number> {
             return localVarFp.userControllerGetUserRank(address, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {LoginWithSignature} loginWithSignature 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userControllerLoginUser(loginWithSignature: LoginWithSignature, options?: any): AxiosPromise<void> {
+            return localVarFp.userControllerLoginUser(loginWithSignature, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1837,6 +1918,17 @@ export class UsersApi extends BaseAPI {
      */
     public userControllerGetUserRank(address: string, options?: RawAxiosRequestConfig) {
         return UsersApiFp(this.configuration).userControllerGetUserRank(address, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {LoginWithSignature} loginWithSignature 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersApi
+     */
+    public userControllerLoginUser(loginWithSignature: LoginWithSignature, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).userControllerLoginUser(loginWithSignature, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

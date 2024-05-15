@@ -1,3 +1,4 @@
+import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
@@ -14,6 +15,7 @@ describe('UserController', () => {
       providers: [
         UserService,
         { provide: getRepositoryToken(User), useValue: {} },
+        JwtService,
       ],
     }).compile();
 

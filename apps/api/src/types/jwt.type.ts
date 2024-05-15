@@ -13,5 +13,6 @@ export type AuthenticatedRequest = Request &
 
 export type DecodedAccessToken = Request &
   AccessToken & {
+    createdAt: Date;
     userAddress: string;
   };
