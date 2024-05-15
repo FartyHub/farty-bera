@@ -9,7 +9,7 @@ import {
   DesktopApp,
   FartyBeraGame,
   GameExplorerWip,
-  Leaderboard,
+  LeaderboardWip
   StatsWindow,
 } from '../components';
 import { ApplicationData, UNDER_DEVELOPMENT } from '../constants';
@@ -91,7 +91,7 @@ export default function Index({
           telegramMessageContext={telegramMessageContext}
         />
         <StatsWindow />
-        <Leaderboard />
+        <LeaderboardWip />
         <GameExplorerWip />
         {!isTelegram &&
           apps
