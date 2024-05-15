@@ -17,6 +17,13 @@ import { User } from './entities/user.entity';
 
 const SCORE_THRESHOLD = 35;
 
+function removeInviteCode(user: User) {
+  user.inviteCode = undefined;
+  user.usedInviteCode = undefined;
+
+  return user;
+}
+
 @Injectable()
 export class UserService {
   private readonly logger: Logger = new Logger(UserService.name);
@@ -40,10 +47,12 @@ export class UserService {
     }
   }
 
-  findAll() {
+  async findAll() {
     this.logger.log(`[GET_USERS]`);
 
-    return this.usersRepository.find();
+    const users = await this.usersRepository.find();
+
+    return users.map(removeInviteCode);
   }
 
   findAllInvitedCount() {
@@ -65,7 +74,11 @@ export class UserService {
     this.logger.log(`[GET_USER] ${address}`);
 
     try {
-      return await this.usersRepository.findOneOrFail({ where: { address } });
+      const user = await this.usersRepository.findOneOrFail({
+        where: { address },
+      });
+
+      return removeInviteCode(user);
     } catch (error) {
       this.logger.error(`[GET_USER] ${error.message}`);
 
@@ -169,7 +182,7 @@ export class UserService {
     this.logger.log(`[GET_TOP_RANKS]`);
 
     try {
-      return await this.usersRepository.find({
+      const users = await this.usersRepository.find({
         order: {
           honeyScore: 'DESC',
           fartyGamesPlayed: 'DESC',
@@ -177,6 +190,8 @@ export class UserService {
         },
         take: 20,
       });
+
+      return users.map(removeInviteCode);
     } catch (error) {
       this.logger.error(`[GET_TOP_RANKS] ${error.message}`);
 
