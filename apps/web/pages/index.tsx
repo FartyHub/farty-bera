@@ -9,7 +9,7 @@ import {
   DesktopApp,
   FartyBeraGame,
   GameExplorerWip,
-  LeaderboardWip
+  LeaderboardWip,
   StatsWindow,
 } from '../components';
 import { ApplicationData, UNDER_DEVELOPMENT } from '../constants';
