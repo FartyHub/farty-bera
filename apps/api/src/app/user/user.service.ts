@@ -137,11 +137,9 @@ export class UserService {
     this.logger.log(`[GET_USER] ${address}`);
 
     try {
-      const user = await this.usersRepository.findOneOrFail({
+      return await this.usersRepository.findOneOrFail({
         where: { address },
       });
-
-      return user;
     } catch (error) {
       this.logger.error(`[GET_USER] ${error.message}`);
 
