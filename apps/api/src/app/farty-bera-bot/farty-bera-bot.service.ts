@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Logger, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { SkipThrottle } from '@nestjs/throttler';
 import {
   Update,
   Ctx,
@@ -16,6 +17,7 @@ import { Context } from 'telegraf';
 import { ConfigKeys } from '../common';
 import { RateLimitGuard } from '../common/guards/telegram.guard';
 
+@SkipThrottle()
 @Update()
 @UseGuards(RateLimitGuard)
 export class FartyBeraBotService {
