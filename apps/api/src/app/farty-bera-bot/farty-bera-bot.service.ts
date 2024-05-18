@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Logger } from '@nestjs/common';
+import { Logger, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
   Update,
@@ -14,8 +14,10 @@ import {
 import { Context } from 'telegraf';
 
 import { ConfigKeys } from '../common';
+import { RateLimitGuard } from '../common/guards/telegram.guard';
 
 @Update()
+@UseGuards(RateLimitGuard)
 export class FartyBeraBotService {
   private readonly logger: Logger = new Logger(FartyBeraBotService.name);
 
