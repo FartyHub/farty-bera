@@ -14,14 +14,15 @@ import {
 } from 'nestjs-telegraf';
 import { Context } from 'telegraf';
 
-import { ConfigKeys } from '../common';
+import { Bot, ConfigKeys } from '../common';
 import { RateLimitGuard } from '../common/guards/telegram.guard';
 
+@Bot()
 @SkipThrottle()
 @Update()
 @UseGuards(RateLimitGuard)
-export class FartyBeraBotService {
-  private readonly logger: Logger = new Logger(FartyBeraBotService.name);
+export class FartyBeraBotUpdate {
+  private readonly logger: Logger = new Logger(FartyBeraBotUpdate.name);
 
   constructor(private readonly configService: ConfigService) {}
 

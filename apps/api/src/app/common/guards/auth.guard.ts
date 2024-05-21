@@ -12,6 +12,7 @@ import { Reflector } from '@nestjs/core';
 import { ConfigKeys } from '../constants';
 
 const IS_PUBLIC_KEY = 'isPublic';
+const IS_BOT_KEY = 'isBot';
 
 @Injectable()
 export class JwtGuard implements CanActivate {
@@ -74,3 +75,4 @@ export class JwtGuard implements CanActivate {
 }
 
 export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
+export const Bot = () => SetMetadata(IS_BOT_KEY, true);

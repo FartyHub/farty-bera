@@ -9,7 +9,8 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { JwtGuard } from './common';
-import { FartyBeraBotService } from './farty-bera-bot';
+import { sessionMiddleware } from './common/middleware';
+import { FartyBeraBotModule } from './farty-bera-bot';
 import { InviteCodeModule } from './invite-code';
 import { ProjectInvite, ProjectInviteModule } from './project-invite';
 import { Score, ScoreModule } from './score';
@@ -48,20 +49,23 @@ const defaultDBOptions = {
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    // TelegrafModule.forRootAsync({
-    //   useFactory: () => ({
-    //     botName: 'fartyberabot',
-    //     launchOptions: {
-    //       allowedUpdates: ['message', 'callback_query', 'inline_query'],
-    //     },
-    //     token: process.env.TELEGRAM_API_KEY,
-    //   }),
-    // }),
+    TelegrafModule.forRootAsync({
+      useFactory: () => ({
+        botName: 'fartyberabot',
+        include: [FartyBeraBotModule],
+        launchOptions: {
+          allowedUpdates: ['message', 'callback_query', 'inline_query'],
+        },
+        middlewares: [sessionMiddleware],
+        token: process.env.TELEGRAM_API_KEY,
+      }),
+    }),
     UserModule,
     ScoreModule,
     ProjectInviteModule,
     InviteCodeModule,
-    // TelegramModule,
+    TelegramModule,
+    FartyBeraBotModule,
   ],
   providers: [
     {
@@ -74,7 +78,6 @@ const defaultDBOptions = {
     },
     Logger,
     AppService,
-    FartyBeraBotService,
   ],
 })
 export class AppModule {
