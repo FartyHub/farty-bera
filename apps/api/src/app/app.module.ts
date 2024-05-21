@@ -10,7 +10,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { JwtGuard } from './common';
 import { sessionMiddleware } from './common/middleware';
-import { FartyBeraBotModule } from './farty-bera-bot';
+import { FartyBeraBotUpdate } from './farty-bera-bot';
 import { InviteCodeModule } from './invite-code';
 import { ProjectInvite, ProjectInviteModule } from './project-invite';
 import { Score, ScoreModule } from './score';
@@ -52,7 +52,6 @@ const defaultDBOptions = {
     TelegrafModule.forRootAsync({
       useFactory: () => ({
         botName: 'fartyberabot',
-        include: [FartyBeraBotModule],
         launchOptions: {
           allowedUpdates: ['message', 'callback_query', 'inline_query'],
         },
@@ -65,7 +64,6 @@ const defaultDBOptions = {
     ProjectInviteModule,
     InviteCodeModule,
     TelegramModule,
-    FartyBeraBotModule,
   ],
   providers: [
     {
@@ -78,6 +76,7 @@ const defaultDBOptions = {
     },
     Logger,
     AppService,
+    FartyBeraBotUpdate,
   ],
 })
 export class AppModule {

@@ -1,1 +1,1 @@
-export * from './farty-bera-bot.module';
+export * from './farty-bera-bot.update';
