@@ -9,7 +9,6 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { JwtGuard } from './common';
-import { sessionMiddleware } from './common/middleware';
 import { FartyBeraBotUpdate } from './farty-bera-bot';
 import { InviteCodeModule } from './invite-code';
 import { ProjectInvite, ProjectInviteModule } from './project-invite';
@@ -55,7 +54,6 @@ const defaultDBOptions = {
         launchOptions: {
           allowedUpdates: ['message', 'callback_query', 'inline_query'],
         },
-        middlewares: [sessionMiddleware],
         token: process.env.TELEGRAM_API_KEY,
       }),
     }),
