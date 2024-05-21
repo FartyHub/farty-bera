@@ -48,18 +48,20 @@ const defaultDBOptions = {
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TelegrafModule.forRoot({
-      botName: 'fartyberabot',
-      launchOptions: {
-        allowedUpdates: ['message', 'callback_query', 'inline_query'],
-      },
-      token: process.env.TELEGRAM_API_KEY,
-    }),
+    // TelegrafModule.forRootAsync({
+    //   useFactory: () => ({
+    //     botName: 'fartyberabot',
+    //     launchOptions: {
+    //       allowedUpdates: ['message', 'callback_query', 'inline_query'],
+    //     },
+    //     token: process.env.TELEGRAM_API_KEY,
+    //   }),
+    // }),
     UserModule,
     ScoreModule,
     ProjectInviteModule,
     InviteCodeModule,
-    TelegramModule,
+    // TelegramModule,
   ],
   providers: [
     {
