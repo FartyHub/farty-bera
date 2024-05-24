@@ -1,1 +1,1 @@
-export * from './farty-bera-bot.service';
+export * from './farty-bera-bot.update';

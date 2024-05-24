@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Logger } from '@nestjs/common';
+import { Logger, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { SkipThrottle } from '@nestjs/throttler';
 import {
   Update,
   Ctx,
@@ -13,11 +14,15 @@ import {
 } from 'nestjs-telegraf';
 import { Context } from 'telegraf';
 
-import { ConfigKeys } from '../common';
+import { Bot, ConfigKeys } from '../common';
+import { RateLimitGuard } from '../common/guards/telegram.guard';
 
+@Bot()
+@SkipThrottle()
 @Update()
-export class FartyBeraBotService {
-  private readonly logger: Logger = new Logger(FartyBeraBotService.name);
+@UseGuards(RateLimitGuard)
+export class FartyBeraBotUpdate {
+  private readonly logger: Logger = new Logger(FartyBeraBotUpdate.name);
 
   constructor(private readonly configService: ConfigService) {}
 

@@ -1,6 +1,7 @@
 import { Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TelegrafModule } from 'nestjs-telegraf';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
@@ -8,7 +9,7 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { JwtGuard } from './common';
-import { FartyBeraBotService } from './farty-bera-bot';
+import { FartyBeraBotUpdate } from './farty-bera-bot';
 import { InviteCodeModule } from './invite-code';
 import { ProjectInvite, ProjectInviteModule } from './project-invite';
 import { Score, ScoreModule } from './score';
@@ -31,6 +32,12 @@ const defaultDBOptions = {
 @Module({
   controllers: [AppController],
   imports: [
+    ThrottlerModule.forRoot([
+      {
+        limit: 10,
+        ttl: 6000,
+      },
+    ]),
     TypeOrmModule.forRoot({
       ...defaultDBOptions,
       database: process.env.DB_DATABASE,
@@ -41,13 +48,15 @@ const defaultDBOptions = {
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    // TelegrafModule.forRoot({
-    //   botName: 'fartyberabot',
-    //   launchOptions: {
-    //     allowedUpdates: ['message', 'callback_query', 'inline_query'],
-    //   },
-    //   token: process.env.TELEGRAM_API_KEY,
-    // }),
+    TelegrafModule.forRootAsync({
+      useFactory: () => ({
+        botName: 'fartyberabot',
+        launchOptions: {
+          allowedUpdates: ['message', 'callback_query', 'inline_query'],
+        },
+        token: process.env.TELEGRAM_API_KEY,
+      }),
+    }),
     UserModule,
     ScoreModule,
     ProjectInviteModule,
@@ -59,9 +68,13 @@ const defaultDBOptions = {
       provide: APP_GUARD,
       useClass: JwtGuard,
     },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
     Logger,
     AppService,
-    FartyBeraBotService,
+    FartyBeraBotUpdate,
   ],
 })
 export class AppModule {

@@ -9,7 +9,10 @@ export class TelegramService {
   private readonly logger: Logger = new Logger(TelegramService.name);
 
   constructor(@InjectBot('fartyberabot') private fartyBot: Telegraf<Context>) {
-    // no op
+    this.fartyBot.catch((error, ctx: Context) => {
+      console.error('Telegraf error:', error);
+      console.log(ctx);
+    });
   }
 
   async sendGameScore(sendTelegramGameScoreDto: SendTelegramGameScoreDto) {

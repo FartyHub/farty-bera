@@ -19,6 +19,7 @@ import {
   ACCESS_TOKEN,
   ConfigKeys,
   IS_API_KEY,
+  IS_BOT,
   IS_PUBLIC_KEY,
 } from '../constants';
 
