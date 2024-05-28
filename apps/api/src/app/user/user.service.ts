@@ -84,6 +84,8 @@ export class UserService {
         honeyScore: user.honeyScore,
         inviteCode: user.inviteCode,
         usedInviteCode: user.usedInviteCode,
+        id: user.id,
+        createdAt: user.createdAt,
       },
       accessToken: accessToken,
     };
