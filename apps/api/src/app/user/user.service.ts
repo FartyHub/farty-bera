@@ -142,10 +142,14 @@ export class UserService {
     }
   }
 
-  async update(address: string, updateUserDto: UpdateUserDto) {
+  async update(address: string, updateUserDto: UpdateUserDto, authUser: User) {
     this.logger.log(`[UPDATE_USER] ${address}`);
 
     try {
+      if (authUser.address !== address) {
+        throw new Error('Unauthorized');
+      }
+
       if (updateUserDto.displayName && updateUserDto.displayName.length > 20) {
         throw new Error('Should be less than 20 characters');
       }
@@ -179,7 +183,10 @@ export class UserService {
     this.logger.log(`[DELETE_USER] ${address}`);
 
     try {
-      await this.update(address, { deletedAt: new Date() });
+      const user = await this.findOne(address);
+      user.deletedAt = new Date();
+
+      await this.usersRepository.save(user);
 
       return true;
     } catch (error) {

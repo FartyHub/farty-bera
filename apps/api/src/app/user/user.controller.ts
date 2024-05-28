@@ -1,7 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Res,
+  Req,
+} from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 
+import { AuthenticatedRequest } from '../../types';
 import { Public, SignDto } from '../common';
 
 import { CreateUserDto } from './dto/create-user.dto';
@@ -68,7 +78,8 @@ export class UserController {
   update(
     @Param('address') address: string,
     @Body() updateUserDto: UpdateUserDto,
+    @Req() req: AuthenticatedRequest,
   ): Promise<User> {
-    return this.userService.update(address, updateUserDto);
+    return this.userService.update(address, updateUserDto, req.user);
   }
 }
