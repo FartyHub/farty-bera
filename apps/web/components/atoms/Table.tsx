@@ -61,7 +61,7 @@ export function Table<T extends { id: string }>(props: TableProps<T>) {
 
   const renderRows = data.map((row, idx) => (
     <tr
-      key={row.id.toString()}
+      key={row.id?.toString()}
       className={clsx(
         'cursor-pointer hover:bg-gray w-full whitespace-nowrap',
         !isTouch && 'table table-fixed',
@@ -70,7 +70,7 @@ export function Table<T extends { id: string }>(props: TableProps<T>) {
     >
       {columns.map((column, index) => (
         <td
-          key={`${row.id.toString()}-${column.key.toString()}`}
+          key={`${row.id?.toString()}-${column.key.toString()}`}
           className={clsx('px-3 py-2 align-top', column.className)}
         >
           <div
