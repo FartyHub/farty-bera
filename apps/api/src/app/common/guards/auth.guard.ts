@@ -4,7 +4,6 @@ import {
   ExecutionContext,
   Injectable,
   Logger,
-  SetMetadata,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -19,7 +18,6 @@ import {
   ACCESS_TOKEN,
   ConfigKeys,
   IS_API_KEY,
-  IS_BOT,
   IS_PUBLIC_KEY,
 } from '../constants';
 
@@ -102,6 +100,8 @@ export class JwtGuard implements CanActivate {
 
         request.accessToken = accessToken;
         request.user = user;
+
+        return true;
       }
     } catch (e) {
       this.logger.error(e);

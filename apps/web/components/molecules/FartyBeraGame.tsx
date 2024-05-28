@@ -11,8 +11,13 @@ import { SendTelegramGameScoreDto, User } from '@farty-bera/api-lib';
 
 import { ApplicationData, Applications, X_URL } from '../../constants';
 import { useApplications, useFartyBera, useUser } from '../../contexts';
-import { useCreateScore, useSendGameScore, useTouchDevice } from '../../hooks';
-import { truncateMiddle } from '../../utils';
+import {
+  useCreateScore,
+  useSendGameScore,
+  useSign,
+  useTouchDevice,
+} from '../../hooks';
+import { hashSHA256, truncateMiddle } from '../../utils';
 import { Button, Spinner } from '../atoms';
 import { Window } from '../elements';
 
@@ -35,7 +40,8 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
   const { open } = useWeb3Modal();
   const { applications, setApplications } = useApplications();
   const { address = '', isConnected } = useAccount();
-  const { fetchUser, user = {} as User } = useUser();
+  const { fetchUser, isLoading, user = {} as User } = useUser();
+  const { handleSignMessage } = useSign();
   const { mutate: addScore } = useCreateScore({
     onSuccess: () => fetchUser(),
   });
@@ -52,15 +58,23 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
     !isTelegram && (!isConnected || !isInvited || !user.usedInviteCode);
 
   const handleSetScore = useCallback(
-    (newScore: number) => {
+    async (newScore: number, time: string) => {
       if (isTelegram && telegramMessageContext) {
         sendGameScore({
           ...telegramMessageContext,
           score: newScore,
         });
       } else {
+        const res = await handleSignMessage(newScore.toString());
+        const hash = hashSHA256(newScore.toString(), res?.key ?? '');
+
         addScore({
           game: Applications.FARTY_BERA,
+          hash,
+          key: res?.key ?? '',
+          message: res?.message ?? '',
+          signature: res?.signature ?? '',
+          time,
           userAddress: address,
           value: newScore,
         });
@@ -70,9 +84,11 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
   );
 
   useEffect(() => {
+    // @ts-ignore
     addEventListener('SetScore', handleSetScore);
 
     return () => {
+      // @ts-ignore
       removeEventListener('SetScore', handleSetScore);
     };
   }, [addEventListener, removeEventListener, handleSetScore]);
@@ -127,7 +143,7 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
           zIndex: maxIndex + 1,
         },
       ]);
-    } else if (isConnected && hasConnectWallet) {
+    } else if (isConnected && hasConnectWallet && !isLoading) {
       setApplications(
         applications.filter((app) => app.id !== Applications.CONNECT_WALLET),
       );
@@ -137,7 +153,13 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
       return;
     }
 
-    if (isConnected && !hasInviteCode && !isInvited) {
+    if (
+      isConnected &&
+      !hasInviteCode &&
+      !isInvited &&
+      !isLoading &&
+      user.address
+    ) {
       setApplications([
         ...applications,
         {
@@ -149,7 +171,9 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
   }, [
     applications.length,
     isInvited,
+    isLoading,
     isConnected,
+    user.address,
     user.usedInviteCode,
     isTelegram,
   ]);

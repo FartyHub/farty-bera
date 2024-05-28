@@ -1,4 +1,8 @@
+/* eslint-disable sonarjs/no-duplicate-string */
+/* eslint-disable @typescript-eslint/naming-convention */
+import { hashSHA256 } from '@farty-bera/commons';
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -6,12 +10,16 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { Applications } from '../common';
+import { verifyAuthenticationMessage } from '../../utils';
+import { Applications, SignDto } from '../common';
 import { User } from '../user';
 
-import { CreateScoreDto } from './dto/create-score.dto';
+import { SoleCreateScoreDto } from './dto/create-score.dto';
 import { UpdateScoreDto } from './dto/update-score.dto';
 import { Score } from './entities/score.entity';
+
+const _408 = 408;
+const _408_THRESHOLD = '240';
 
 @Injectable()
 export class ScoreService {
@@ -24,16 +32,43 @@ export class ScoreService {
     private scoresRepository: Repository<Score>,
   ) {}
 
-  async create(createScoreDto: CreateScoreDto) {
+  async create(
+    createScoreDto: SoleCreateScoreDto,
+    user: User,
+    signDto: SignDto,
+  ) {
+    const { hash, ...rest } = createScoreDto;
     this.logger.log(
       `[CREATE_SCORE] ${JSON.stringify(createScoreDto, null, 2)}`,
     );
 
     try {
-      const score = this.scoresRepository.create(createScoreDto);
-      const user = await this.userRepository.findOneOrFail({
-        where: { address: createScoreDto.userAddress },
-      });
+      if (hash !== hashSHA256(rest.value.toString(), signDto.key)) {
+        throw new BadRequestException('Invalid score');
+      }
+
+      const { address, verified } = await verifyAuthenticationMessage(signDto);
+
+      if (!verified) {
+        throw new BadRequestException('Invalid score');
+      }
+
+      if (
+        user.address !== createScoreDto.userAddress ||
+        user.address !== address
+      ) {
+        throw new BadRequestException('Invalid score');
+      }
+
+      const score = this.scoresRepository.create(rest);
+
+      if (
+        parseFloat(score.time) <= parseFloat(_408_THRESHOLD) &&
+        score.game === Applications.FARTY_BERA &&
+        score.value > _408
+      ) {
+        throw new BadRequestException('Invalid score');
+      }
 
       if (
         user.fartyHighScore < score.value &&

@@ -3,6 +3,7 @@ import { AxiosError } from 'axios';
 
 import {
   CreateUserDto,
+  SignDto,
   UpdateUserDto,
   User,
   UsersApi,
@@ -11,6 +12,16 @@ import {
 import ApiClient from '../api-client';
 
 export const usersApiClient = ApiClient.use(UsersApi);
+
+export async function login(signDto: SignDto) {
+  try {
+    const response = await usersApiClient.userControllerLoginUser(signDto);
+
+    return response.data;
+  } catch (error) {
+    throw new Error(((error as AxiosError)?.response?.data as any)?.message);
+  }
+}
 
 export async function getUsers(): Promise<User[]> {
   try {
@@ -65,16 +76,6 @@ export async function updateUser(
 ): Promise<User> {
   try {
     const response = await usersApiClient.userControllerUpdate(address, data);
-
-    return response.data;
-  } catch (error) {
-    throw new Error(((error as AxiosError)?.response?.data as any)?.message);
-  }
-}
-
-export async function deleteUser(address: string): Promise<boolean> {
-  try {
-    const response = await usersApiClient.userControllerRemove(address);
 
     return response.data;
   } catch (error) {

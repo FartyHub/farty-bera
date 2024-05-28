@@ -18,9 +18,8 @@ import {
   generateRandomText,
   verifyAuthenticationMessage,
 } from '../../utils';
-import { ACCESS_TOKEN } from '../common';
+import { ACCESS_TOKEN, SignDto } from '../common';
 
-import { LoginWithSignature } from './dto/auth.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -46,27 +45,21 @@ export class UserService {
     private jwtService: JwtService,
   ) {}
 
-  async loginWithSignature(
-    loginWithSignature: LoginWithSignature,
-    response: Response,
-  ) {
-    const { address, verified } =
-      await verifyAuthenticationMessage(loginWithSignature);
+  async loginWithSignature(signDto: SignDto, response: Response) {
+    const { address, verified } = await verifyAuthenticationMessage(signDto);
 
     if (!verified) {
-      throw new BadRequestException('Vefiry signature failed.');
+      throw new BadRequestException('Verify signature failed.');
     }
 
     const userData = { address };
-    const user = await this.usersRepository.findOne({ where: { address } });
+    let user = await this.usersRepository.findOne({ where: { address } });
 
     if (!user) {
-      this.logger.error(`[loginWithAccessToken] User not found: ${address}`);
-
-      throw new InternalServerErrorException('User not found');
+      user = await this.create(userData);
     }
 
-    this.logger.log('[loginWithAccessToken] UserService', userData);
+    this.logger.log('[loginWithSignature] UserService', userData);
 
     const payload = {
       userAddress: userData.address,
@@ -74,6 +67,7 @@ export class UserService {
 
     const accessToken = this.jwtService.sign(payload, {
       expiresIn: process.env.JWT_SESSION_EXPIRES_IN,
+      secret: process.env.JWT_SECRET,
     });
 
     response.cookie(ACCESS_TOKEN, accessToken, {
@@ -89,6 +83,7 @@ export class UserService {
         displayName: user.displayName,
         honeyScore: user.honeyScore,
         inviteCode: user.inviteCode,
+        usedInviteCode: user.usedInviteCode,
       },
       accessToken: accessToken,
     };

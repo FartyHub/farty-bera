@@ -2,7 +2,7 @@ import crypto from 'crypto';
 
 import { BadRequestException } from '@nestjs/common';
 
-import { LoginWithSignature } from '../app/user/dto/auth.dto';
+import { SignDto } from '../app/common';
 
 import {
   AccountNotFoundError,
@@ -18,10 +18,8 @@ export function generateRandomText(length: number): string {
     .slice(0, length);
 }
 
-export async function verifyAuthenticationMessage(
-  loginWithSignature: LoginWithSignature,
-) {
-  const { key, message, signature } = loginWithSignature;
+export async function verifyAuthenticationMessage(signDto: SignDto) {
+  const { key, message, signature } = signDto;
   const chainProvider = ChainSdkFactory.getChainSdk(ChainType.Evm);
 
   if (!chainProvider) {

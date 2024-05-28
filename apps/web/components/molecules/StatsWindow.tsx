@@ -20,6 +20,7 @@ export function StatsWindow() {
   const { open } = useWeb3Modal();
   const { applications } = useApplications();
   const {
+    isLoading,
     user = {
       honeyScore: 0,
       inviteCode: '',
@@ -55,7 +56,7 @@ export function StatsWindow() {
       className={clsx('w-[320px] top-2 right-2', isTouch && 'hidden')}
     >
       <div className="flex flex-col p-[13.6px] gap-3 text-sm">
-        {isConnected ? (
+        {user.address && !isLoading ? (
           <>
             <div className="flex gap-1 items-center ">
               <img
@@ -140,7 +141,7 @@ export function StatsWindow() {
           {!isConnected && (
             <Button
               className="flex px-5 py-2 justify-center"
-              // loading={isPending}
+              loading={isLoading}
               type="primary"
               onClick={() => open()}
             >

@@ -1,19 +1,9 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Res,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Res } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 
-import { Public } from '../common';
+import { Public, SignDto } from '../common';
 
-import { LoginWithSignature } from './dto/auth.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -26,11 +16,8 @@ export class UserController {
 
   @Post('/login')
   @Public()
-  async loginUser(
-    @Body() loginWithSignature: LoginWithSignature,
-    @Res() response: Response,
-  ) {
-    return this.userService.loginWithSignature(loginWithSignature, response);
+  async loginUser(@Body() signDto: SignDto, @Res() response: Response) {
+    return this.userService.loginWithSignature(signDto, response);
   }
 
   @Post()

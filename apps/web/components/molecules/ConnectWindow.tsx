@@ -4,7 +4,8 @@ import { MouseEvent, useState } from 'react';
 import { useAccount, useConfig } from 'wagmi';
 
 import { ApplicationData, Applications } from '../../constants';
-import { useSignIn, useTouchDevice } from '../../hooks';
+import { useUser } from '../../contexts';
+import { useTouchDevice } from '../../hooks';
 import { Button } from '../atoms';
 import { Window } from '../elements';
 
@@ -16,7 +17,7 @@ export function ConnectWindow({ onClose }: Props) {
   const { isConnected } = useAccount();
   const { isTouch } = useTouchDevice();
   const { open } = useWeb3Modal();
-  const { isLoading } = useSignIn();
+  const { isLoading } = useUser();
   const application = ApplicationData[Applications.CONNECT_WALLET];
 
   async function handleOnClose(event?: MouseEvent<HTMLButtonElement>) {
