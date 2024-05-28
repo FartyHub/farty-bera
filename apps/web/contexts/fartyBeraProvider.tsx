@@ -31,15 +31,15 @@ export function FartyBeraProvider({ children }: { children: ReactNode }) {
     sendMessage,
     unityProvider,
   } = useUnityContext({
-    // codeUrl: 'https://storage.googleapis.com/farty-bera-build/web.wasm',
-    // dataUrl: 'https://storage.googleapis.com/farty-bera-build/web.data',
-    // frameworkUrl:
-    //   'https://storage.googleapis.com/farty-bera-build/web.framework.js',
-    // loaderUrl: 'https://storage.googleapis.com/farty-bera-build/web.loader.js',
-    codeUrl: 'build/web.wasm',
-    dataUrl: 'build/web.data',
-    frameworkUrl: 'build/web.framework.js',
-    loaderUrl: 'build/web.loader.js',
+    codeUrl: 'https://storage.googleapis.com/farty-bera-build/web.wasm',
+    dataUrl: 'https://storage.googleapis.com/farty-bera-build/web.data',
+    frameworkUrl:
+      'https://storage.googleapis.com/farty-bera-build/web.framework.js',
+    loaderUrl: 'https://storage.googleapis.com/farty-bera-build/web.loader.js',
+    // codeUrl: 'build/web.wasm',
+    // dataUrl: 'build/web.data',
+    // frameworkUrl: 'build/web.framework.js',
+    // loaderUrl: 'build/web.loader.js',
   });
 
   const values = useMemo(
