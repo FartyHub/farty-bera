@@ -21,6 +21,8 @@ steps:
       - 'ALLOW_ORIGINS=${_ALLOW_ORIGINS}'
       - 'TELEGRAM_API_KEY=${_TELEGRAM_API_KEY}'
       - 'WEB_URL=${_WEB_URL}'
+      - 'JWT_SESSION_EXPIRES_IN=${_JWT_SESSION_EXPIRES_IN}'
+      - 'JWT_SECRET=${_JWT_SECRET}'
 
   - name: 'gcr.io/cloud-builders/gcloud'
     id: COPY-STUFF
