@@ -56,7 +56,7 @@ const defaultDBOptions = {
         },
         options: {
           telegram: {
-            testEnv: true,
+            testEnv: process.env.ENVIRONMENT !== 'production',
           },
         },
         token: process.env.TELEGRAM_API_KEY,
