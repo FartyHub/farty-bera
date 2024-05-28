@@ -8,7 +8,7 @@ steps:
     args: ['run', 'build:tg-api']
 
   - name: 'gcr.io/cloud-builders/npm'
-    args: ['run', 'create-env', 'dist/apps/api/.env']
+    args: ['run', 'create-env', 'dist/apps/tg-api/.env']
     env:
       - 'ENVIRONMENT=${_ENVIRONMENT}'
       - 'DB_HOST=${_DB_HOST}'
@@ -31,23 +31,23 @@ steps:
       - '-e'
       - '-c'
       - |
-        cp apps/api/app.yaml dist/apps/api/app.yaml
+        cp apps/tg-api/app.yaml dist/apps/tg-api/app.yaml
 
   - name: node:$_NODE_VERSION
     entrypoint: npm
     args: ['install', '--package-lock-only']
-    dir: 'dist/apps/api'
+    dir: 'dist/apps/tg-api'
 
   - name: 'gcr.io/cloud-builders/gcloud'
     args: ['app', 'deploy', 'app.yaml', '--no-cache']
-    dir: 'dist/apps/api'
+    dir: 'dist/apps/tg-api'
 
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: bash
     args:
       - -c
       - |
-        gcloud app versions list --format="value(version.id)" --sort-by="~version.createTime" --service="api" | tail -n +40 | xargs -r gcloud app versions delete --quiet
+        gcloud app versions list --format="value(version.id)" --sort-by="~version.createTime" --service="tg-api" | tail -n +40 | xargs -r gcloud app versions delete --quiet
 
 timeout: 1800s
 options:
