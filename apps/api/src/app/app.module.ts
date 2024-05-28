@@ -48,25 +48,25 @@ const defaultDBOptions = {
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TelegrafModule.forRootAsync({
-      useFactory: () => ({
-        botName: 'fartyberabot',
-        launchOptions: {
-          allowedUpdates: ['message', 'callback_query', 'inline_query'],
-        },
-        options: {
-          telegram: {
-            testEnv: process.env.ENVIRONMENT !== 'production',
-          },
-        },
-        token: process.env.TELEGRAM_API_KEY,
-      }),
-    }),
+    // TelegrafModule.forRootAsync({
+    //   useFactory: () => ({
+    //     botName: 'fartyberabot',
+    //     launchOptions: {
+    //       allowedUpdates: ['message', 'callback_query', 'inline_query'],
+    //     },
+    //     options: {
+    //       telegram: {
+    //         testEnv: process.env.ENVIRONMENT !== 'production',
+    //       },
+    //     },
+    //     token: process.env.TELEGRAM_API_KEY,
+    //   }),
+    // }),
     UserModule,
     ScoreModule,
     ProjectInviteModule,
     InviteCodeModule,
-    TelegramModule,
+    // TelegramModule,
   ],
   providers: [
     {
@@ -79,7 +79,7 @@ const defaultDBOptions = {
     },
     Logger,
     AppService,
-    FartyBeraBotUpdate,
+    // FartyBeraBotUpdate,
   ],
 })
 export class AppModule {
