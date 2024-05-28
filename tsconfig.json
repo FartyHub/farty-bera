@@ -16,7 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@farty-bera/api-lib": ["libs/api-lib/src/index.ts"],
-      "@farty-bera/api-spec": ["libs/api-spec/src/index.ts"]
+      "@farty-bera/api-spec": ["libs/api-spec/src/index.ts"],
+      "@farty-bera/commons": ["libs/commons/src/index.ts"]
     },
     "esModuleInterop": true
   },

@@ -5,9 +5,14 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
+  Res,
+  Req,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
+
+import { AuthenticatedRequest } from '../../types';
+import { Public, SignDto } from '../common';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -18,6 +23,12 @@ import { UserService } from './user.service';
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @Post('/login')
+  @Public()
+  async loginUser(@Body() signDto: SignDto, @Res() response: Response) {
+    return this.userService.loginWithSignature(signDto, response);
+  }
 
   @Post()
   @ApiOkResponse({ type: User })
@@ -50,6 +61,7 @@ export class UserController {
   }
 
   @Get('top-ranks')
+  @Public()
   @ApiOkResponse({ type: [User] })
   getTopRanks(): Promise<User[]> {
     return this.userService.getTopRanks();
@@ -66,7 +78,8 @@ export class UserController {
   update(
     @Param('address') address: string,
     @Body() updateUserDto: UpdateUserDto,
+    @Req() req: AuthenticatedRequest,
   ): Promise<User> {
-    return this.userService.update(address, updateUserDto);
+    return this.userService.update(address, updateUserDto, req.user);
   }
 }

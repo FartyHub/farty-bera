@@ -1,14 +1,26 @@
 import { MutationOptions, useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
-import { UpdateUserDto, User } from '@farty-bera/api-lib';
+import { SignDto, UpdateUserDto, User } from '@farty-bera/api-lib';
 
-import { updateUser } from '../../services';
+import { login, updateUser } from '../../services';
 
 type UpdateUserMutation = {
   address: string;
   updateUserDto: UpdateUserDto;
 };
+
+export const useLogin = (
+  mutationOptions: MutationOptions<
+    void,
+    AxiosError<{ message: string }>,
+    SignDto
+  > = {},
+) =>
+  useMutation({
+    mutationFn: login,
+    ...mutationOptions,
+  });
 
 export const useUpdateUser = (
   mutationOptions: MutationOptions<

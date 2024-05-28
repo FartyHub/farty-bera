@@ -23,3 +23,9 @@ export const config = defaultWagmiConfig({
     storage: cookieStorage,
   }),
 });
+
+export const GlobalConfig = {
+  AUTH_TOKEN_KEY: 'FARTYBERA_AUTH_TOKEN',
+  WELCOME_SIGNATURE_STATEMENT: 'Welcome to FartyBera!',
+  WELCOME_SIGNATURE_VERSION: '1',
+};

@@ -2,14 +2,23 @@
 /* eslint-disable sort-keys-fix/sort-keys-fix */
 /* eslint-disable no-magic-numbers */
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Response } from 'express';
 import { Repository } from 'typeorm';
 
-import { calculateHoneyScore, generateRandomText } from '../../utils';
+import {
+  calculateHoneyScore,
+  forwardDateByDays,
+  generateRandomText,
+  verifyAuthenticationMessage,
+} from '../../utils';
+import { ACCESS_TOKEN, SignDto } from '../common';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -20,6 +29,8 @@ const SCORE_THRESHOLD = 35;
 function removeInviteCode(user: User) {
   user.inviteCode = undefined;
   user.usedInviteCode = undefined;
+  user.fartyHighScore = undefined;
+  user.inviteCodeLimit = undefined;
 
   return user;
 }
@@ -31,7 +42,54 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private jwtService: JwtService,
   ) {}
+
+  async loginWithSignature(signDto: SignDto, response: Response) {
+    const { address, verified } = await verifyAuthenticationMessage(signDto);
+
+    if (!verified) {
+      throw new BadRequestException('Verify signature failed.');
+    }
+
+    const userData = { address };
+    let user = await this.usersRepository.findOne({ where: { address } });
+
+    if (!user) {
+      user = await this.create(userData);
+    }
+
+    this.logger.log('[loginWithSignature] UserService', userData);
+
+    const payload = {
+      userAddress: userData.address,
+    };
+
+    const accessToken = this.jwtService.sign(payload, {
+      expiresIn: process.env.JWT_SESSION_EXPIRES_IN,
+      secret: process.env.JWT_SECRET,
+    });
+
+    response.cookie(ACCESS_TOKEN, accessToken, {
+      expires: forwardDateByDays(7),
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+    });
+
+    const responseData = {
+      user: {
+        address: user.address,
+        displayName: user.displayName,
+        honeyScore: user.honeyScore,
+        inviteCode: user.inviteCode,
+        usedInviteCode: user.usedInviteCode,
+      },
+      accessToken: accessToken,
+    };
+
+    return response.send(responseData);
+  }
 
   create(createUserDto: CreateUserDto) {
     this.logger.log(`[CREATE_USER] ${JSON.stringify(createUserDto, null, 2)}`);
@@ -84,10 +142,14 @@ export class UserService {
     }
   }
 
-  async update(address: string, updateUserDto: UpdateUserDto) {
+  async update(address: string, updateUserDto: UpdateUserDto, authUser: User) {
     this.logger.log(`[UPDATE_USER] ${address}`);
 
     try {
+      if (authUser.address !== address) {
+        throw new Error('Unauthorized');
+      }
+
       if (updateUserDto.displayName && updateUserDto.displayName.length > 20) {
         throw new Error('Should be less than 20 characters');
       }
@@ -121,7 +183,10 @@ export class UserService {
     this.logger.log(`[DELETE_USER] ${address}`);
 
     try {
-      await this.update(address, { deletedAt: new Date() });
+      const user = await this.findOne(address);
+      user.deletedAt = new Date();
+
+      await this.usersRepository.save(user);
 
       return true;
     } catch (error) {

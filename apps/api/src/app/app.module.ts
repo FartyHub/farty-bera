@@ -34,7 +34,7 @@ const defaultDBOptions = {
   imports: [
     ThrottlerModule.forRoot([
       {
-        limit: 10,
+        limit: 100,
         ttl: 6000,
       },
     ]),
@@ -53,6 +53,11 @@ const defaultDBOptions = {
         botName: 'fartyberabot',
         launchOptions: {
           allowedUpdates: ['message', 'callback_query', 'inline_query'],
+        },
+        options: {
+          telegram: {
+            testEnv: true,
+          },
         },
         token: process.env.TELEGRAM_API_KEY,
       }),

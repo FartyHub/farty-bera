@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
+import { useAccount } from 'wagmi';
 
 import { useUser } from '../../contexts';
 import { useTouchDevice } from '../../hooks';
@@ -7,8 +8,15 @@ import { useTouchDevice } from '../../hooks';
 export function VideoIntro() {
   const [showVideo, setShowVideo] = useState<boolean>(true);
   const [hasVideoEnded, setHasVideoEnded] = useState<boolean>(false);
+  const { isConnected } = useAccount();
   const { isLoading, user } = useUser();
   const { isTouch } = useTouchDevice();
+
+  useEffect(() => {
+    if (isConnected) {
+      handleVideoEnded();
+    }
+  }, [isConnected]);
 
   useEffect(() => {
     if (isLoading || !showVideo) {

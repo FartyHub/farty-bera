@@ -23,4 +23,9 @@ export class Score extends BaseEntity {
   @ApiProperty()
   @IsString()
   userAddress: string;
+
+  @Column({ default: '', type: 'text' })
+  @ApiProperty()
+  @IsString()
+  time: string;
 }

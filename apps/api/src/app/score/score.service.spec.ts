@@ -1,3 +1,4 @@
+import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
@@ -21,6 +22,7 @@ describe('ScoreService', () => {
           provide: getRepositoryToken(User),
           useClass: User,
         },
+        JwtService,
       ],
     }).compile();
 
