@@ -1,0 +1,54 @@
+steps:
+  - name: node:$_NODE_VERSION
+    entrypoint: npm
+    args: ['install', '--legacy-peer-deps']
+
+  - name: node:$_NODE_VERSION
+    entrypoint: npm
+    args: ['run', 'build:tg-api']
+
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['run', 'create-env', 'dist/apps/api/.env']
+    env:
+      - 'ENVIRONMENT=${_ENVIRONMENT}'
+      - 'DB_HOST=${_DB_HOST}'
+      - 'DB_USERNAME=${_DB_USERNAME}'
+      - 'DB_PASSWORD=${_DB_PASSWORD}'
+      - 'DB_DATABASE=${_DB_DATABASE}'
+      - 'DB_PORT=${_DB_PORT}'
+      - 'SALT=${_SALT}'
+      - 'X_API_KEY=${_X_API_KEY}'
+      - 'ALLOW_ORIGINS=${_ALLOW_ORIGINS}'
+      - 'TELEGRAM_API_KEY=${_TELEGRAM_API_KEY}'
+      - 'WEB_URL=${_WEB_URL}'
+      - 'JWT_SESSION_EXPIRES_IN=${_JWT_SESSION_EXPIRES_IN}'
+      - 'JWT_SECRET=${_JWT_SECRET}'
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: COPY-STUFF
+    entrypoint: bash
+    args:
+      - '-e'
+      - '-c'
+      - |
+        cp apps/api/app.yaml dist/apps/api/app.yaml
+
+  - name: node:$_NODE_VERSION
+    entrypoint: npm
+    args: ['install', '--package-lock-only']
+    dir: 'dist/apps/api'
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['app', 'deploy', 'app.yaml', '--no-cache']
+    dir: 'dist/apps/api'
+
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        gcloud app versions list --format="value(version.id)" --sort-by="~version.createTime" --service="api" | tail -n +40 | xargs -r gcloud app versions delete --quiet
+
+timeout: 1800s
+options:
+  logging: CLOUD_LOGGING_ONLY

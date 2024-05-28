@@ -1,0 +1,65 @@
+{
+  "name": "tg-api",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/tg-api/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/tg-api",
+        "main": "apps/tg-api/src/main.ts",
+        "tsConfig": "apps/tg-api/tsconfig.app.json",
+        "assets": ["apps/tg-api/src/assets"],
+        "webpackConfig": "apps/tg-api/webpack.config.js",
+        "generatePackageJson": true,
+        "tsPlugins": [
+          {
+            "name": "@nestjs/swagger/plugin",
+            "options": {
+              "dtoFileNameSuffix": [".dto.ts", ".vm.ts", ".entity.ts"]
+            }
+          }
+        ]
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "tg-api:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "tg-api:build:development"
+        },
+        "production": {
+          "buildTarget": "tg-api:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/tg-api/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/tg-api/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}
