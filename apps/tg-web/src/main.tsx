@@ -5,9 +5,9 @@ import ReactDOM from 'react-dom/client';
 import App from './app/app';
 import './styles.css';
 import { UnityGameProvider } from './contexts';
-// this manifest is used temporarily for development purposes
+
 const manifestUrl =
-  'https://raw.githubusercontent.com/ton-community/tutorials/main/03-client/test/public/tonconnect-manifest.json';
+  'https://tg-web-dot-farty-bera-420304.ue.r.appspot.com/tonconnect-manifest.json';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false } },
