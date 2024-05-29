@@ -22,9 +22,10 @@ export function UnityGame(_props: Props) {
   } = useUnityGame();
 
   async function handleShareGame() {
-    WebApp.openTelegramLink(
-      `https://t.me/share/url?url=https%3A%2F%2Ft.me%2F${import.meta.env.VITE_BOT_USERNAME}`,
-    );
+    WebApp.showAlert('Share');
+    // WebApp.openTelegramLink(
+    //   `https://t.me/share/url?url=https%3A%2F%2Ft.me%2F${import.meta.env.VITE_BOT_USERNAME}`,
+    // );
     sendMessage('UnityWebReceiver', 'ShareGameCallBack', 1);
   }
 
