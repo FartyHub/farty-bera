@@ -8,7 +8,7 @@ function App() {
   const { tonConnectUI } = useTonConnect();
 
   useEffect(() => {
-    tonConnectUI.openModal();
+    // tonConnectUI.openModal();
   }, []);
 
   return <UnityGame />;
