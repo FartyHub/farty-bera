@@ -5,20 +5,14 @@ steps:
 
   - name: node:$_NODE_VERSION
     entrypoint: npx
-    args: ['nx', 'build', 'web', '--prod']
+    args: ['nx', 'build', 'tg-web', '--prod']
     env:
-      - 'NEXT_PUBLIC_PROJECT_ID=${_NEXT_PUBLIC_PROJECT_ID}'
-      - 'NEXT_PUBLIC_API_BASE_URL=${_NEXT_PUBLIC_API_BASE_URL}'
-      - 'NEXT_PUBLIC_X_API_KEY=${_NEXT_PUBLIC_X_API_KEY}'
-      - 'NEXT_PUBLIC_BOT_ID=${_NEXT_PUBLIC_BOT_ID}'
+      - 'VITE_BOT_USERNAME=${_VITE_BOT_USERNAME}'
 
   - name: 'gcr.io/cloud-builders/npm'
-    args: ['run', 'create-env', 'dist/apps/web/.env.local']
+    args: ['run', 'create-env', 'dist/apps/tg-web/.env.local']
     env:
-      - 'NEXT_PUBLIC_PROJECT_ID=${_NEXT_PUBLIC_PROJECT_ID}'
-      - 'NEXT_PUBLIC_API_BASE_URL=${_NEXT_PUBLIC_API_BASE_URL}'
-      - 'NEXT_PUBLIC_X_API_KEY=${_NEXT_PUBLIC_X_API_KEY}'
-      - 'NEXT_PUBLIC_BOT_ID=${_NEXT_PUBLIC_BOT_ID}'
+      - 'VITE_BOT_USERNAME=${_VITE_BOT_USERNAME}'
 
   - name: 'gcr.io/cloud-builders/gcloud'
     id: COPY-STUFF
@@ -27,11 +21,11 @@ steps:
       - '-e'
       - '-c'
       - |
-        cp apps/web/app.yaml dist/apps/web/app.yaml
+        cp apps/tg-web/app.yaml dist/apps/tg-web/app.yaml
 
   - name: 'gcr.io/cloud-builders/gcloud'
     args: ['app', 'deploy', 'app.yaml']
-    dir: 'dist/apps/web'
+    dir: 'dist/apps/tg-web'
 
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: bash
