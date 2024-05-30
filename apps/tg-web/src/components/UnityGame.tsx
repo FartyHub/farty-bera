@@ -25,7 +25,12 @@ export function UnityGame(_props: Props) {
     WebApp.openTelegramLink(
       `https://t.me/share/url?url=t.me%2F${import.meta.env.VITE_BOT_USERNAME}%2F${import.meta.env.VITE_WEB_SHORTNAME}`,
     );
-    sendMessage('UnityWebReceiver', 'ShareGameCallBack', 1);
+
+    setTimeout(
+      () => sendMessage('UnityWebReceiver', 'ShareGameCallBack', 1),
+      // eslint-disable-next-line no-magic-numbers
+      500,
+    );
   }
 
   async function handlePayment(value: string) {
