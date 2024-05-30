@@ -22,10 +22,9 @@ export function UnityGame(_props: Props) {
   } = useUnityGame();
 
   async function handleShareGame() {
-    WebApp.showAlert('Share');
-    // WebApp.openTelegramLink(
-    //   `https://t.me/share/url?url=https%3A%2F%2Ft.me%2F${import.meta.env.VITE_BOT_USERNAME}`,
-    // );
+    WebApp.openTelegramLink(
+      `https://t.me/share/url?url=t.me%2F${import.meta.env.VITE_BOT_USERNAME}%2F${import.meta.env.VITE_WEB_SHORTNAME}`,
+    );
     sendMessage('UnityWebReceiver', 'ShareGameCallBack', 1);
   }
 
@@ -46,7 +45,7 @@ export function UnityGame(_props: Props) {
 
   useEffect(() => {
     if (isLoaded) {
-      WebApp.showAlert(JSON.stringify(WebApp.initDataUnsafe.user));
+      // WebApp.showAlert(JSON.stringify(WebApp.initDataUnsafe.user));
       sendMessage(
         'UnityWebReceiver',
         'GetUserInfo',

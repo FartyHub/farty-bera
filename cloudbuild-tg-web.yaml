@@ -8,11 +8,13 @@ steps:
     args: ['nx', 'build', 'tg-web', '--prod']
     env:
       - 'VITE_BOT_USERNAME=${_VITE_BOT_USERNAME}'
+      - 'VITE_WEB_SHORTNAME=${_VITE_WEB_SHORTNAME}'
 
   - name: 'gcr.io/cloud-builders/npm'
     args: ['run', 'create-env', 'dist/apps/tg-web/.env.local']
     env:
       - 'VITE_BOT_USERNAME=${_VITE_BOT_USERNAME}'
+      - 'VITE_WEB_SHORTNAME=${_VITE_WEB_SHORTNAME}'
 
   - name: 'gcr.io/cloud-builders/gcloud'
     id: COPY-STUFF
