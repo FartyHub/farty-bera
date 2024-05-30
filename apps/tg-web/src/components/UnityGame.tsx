@@ -54,7 +54,7 @@ export function UnityGame(_props: Props) {
           nickname: WebApp.initDataUnsafe.user?.username ?? '',
           photoUrl:
             WebApp.initDataUnsafe.user?.photo_url ??
-            'https://placehold.co/600x400/png',
+            'https://storage.googleapis.com/tg-mini-app-build/placeholder.png',
           uid: WebApp.initDataUnsafe.user?.id ?? 0,
           username: WebApp.initDataUnsafe.user?.username ?? '',
         }),
