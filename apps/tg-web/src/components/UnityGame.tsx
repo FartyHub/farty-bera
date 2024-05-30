@@ -67,6 +67,7 @@ export function UnityGame(_props: Props) {
       <Spinner className={clsx(isLoaded ? 'hidden' : 'visible')} />
       <Unity
         className={clsx(isLoaded ? 'visible' : 'hidden')}
+        devicePixelRatio={3}
         style={{
           height: '100%',
           width: '100%',
