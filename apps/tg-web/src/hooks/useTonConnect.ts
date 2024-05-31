@@ -5,9 +5,13 @@ import {
   useTonConnectUI,
   useTonWallet,
 } from '@tonconnect/ui-react';
-import { Sender, SenderArguments } from 'ton-core';
+import { Cell, Sender, SenderArguments } from 'ton-core';
 
-export function useTonConnect(): {
+type Props = {
+  sendCallback?: (address: string, body: Cell) => Promise<void>;
+};
+
+export function useTonConnect(props?: Props): {
   connected: boolean;
   network: CHAIN | null;
   sender: Sender;
@@ -22,7 +26,7 @@ export function useTonConnect(): {
     network: wallet?.account.chain ?? null,
     sender: {
       send: async (args: SenderArguments) => {
-        tonConnectUI.sendTransaction({
+        await tonConnectUI.sendTransaction({
           messages: [
             {
               address: args.to.toString(),
@@ -32,6 +36,13 @@ export function useTonConnect(): {
           ],
           validUntil: Date.now() + 5 * 60 * 1000, // 5 minutes for user to approve
         });
+
+        setTimeout(() => {
+          props?.sendCallback?.(
+            wallet?.account.address ?? '',
+            args.body as Cell,
+          );
+        }, 1000);
       },
     },
     tonConnectUI,

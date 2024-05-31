@@ -36,6 +36,12 @@
     "maxAgeSeconds": 3600
   },
   {
+    "origin": ["https://clever-hornet-mildly.ngrok-free.app"],
+    "method": ["GET"],
+    "responseHeader": ["Content-Type"],
+    "maxAgeSeconds": 3600
+  },
+  {
     "origin": ["https://farty-bera-tg-web.loca.lt"],
     "method": ["GET"],
     "responseHeader": ["Content-Type"],

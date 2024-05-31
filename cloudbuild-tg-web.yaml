@@ -9,12 +9,16 @@ steps:
     env:
       - 'VITE_BOT_USERNAME=${_VITE_BOT_USERNAME}'
       - 'VITE_WEB_SHORTNAME=${_VITE_WEB_SHORTNAME}'
+      - 'VITE_MASTER_ADDRESS=${_VITE_MASTER_ADDRESS}'
+      - 'VITE_IS_MAINNET=${_VITE_IS_MAINNET}'
 
   - name: 'gcr.io/cloud-builders/npm'
     args: ['run', 'create-env', 'dist/apps/tg-web/.env.local']
     env:
       - 'VITE_BOT_USERNAME=${_VITE_BOT_USERNAME}'
       - 'VITE_WEB_SHORTNAME=${_VITE_WEB_SHORTNAME}'
+      - 'VITE_MASTER_ADDRESS=${_VITE_MASTER_ADDRESS}'
+      - 'VITE_IS_MAINNET=${_VITE_IS_MAINNET}'
 
   - name: 'gcr.io/cloud-builders/gcloud'
     id: COPY-STUFF
