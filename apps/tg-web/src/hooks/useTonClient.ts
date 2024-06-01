@@ -1,5 +1,4 @@
 import { getHttpEndpoint } from '@orbs-network/ton-access';
-import { CHAIN } from '@tonconnect/protocol';
 import { TonClient } from 'ton';
 
 import { useAsyncInitialize } from './useAsyncInitialize';
@@ -14,7 +13,8 @@ export function useTonClient() {
 
       return new TonClient({
         endpoint: await getHttpEndpoint({
-          network: network === CHAIN.MAINNET ? 'mainnet' : 'testnet',
+          network:
+            import.meta.env.VITE_IS_MAINNET === 'true' ? 'mainnet' : 'testnet',
         }),
       });
     }, [network]),

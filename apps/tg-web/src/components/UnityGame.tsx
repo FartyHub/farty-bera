@@ -1,10 +1,11 @@
-/* eslint-disable no-magic-numbers */
+/* eslint-disable max-params */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+import { CHAIN } from '@tonconnect/ui-react';
 import WebApp from '@twa-dev/sdk';
 import clsx from 'clsx';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Unity } from 'react-unity-webgl';
 import { Address, Cell, SendMode, beginCell, toNano } from 'ton-core';
 import * as uuid from 'uuid';
@@ -17,6 +18,8 @@ import { Spinner } from './Spinner';
 
 type Props = {};
 
+const RETRY_INTERVAL = 5000;
+
 export function UnityGame(_props: Props) {
   const {
     addEventListener,
@@ -25,17 +28,33 @@ export function UnityGame(_props: Props) {
     sendMessage,
     unityProvider,
   } = useUnityGame();
+  const [senderArgs, setSenderArgs] = useState<{
+    propId: string;
+    sendMode: SendMode;
+    to: string;
+    value: string;
+  } | null>(null);
 
-  async function sendCallback(address: string, body: Cell, count = 1) {
+  async function sendCallback(
+    address: string,
+    body: Cell,
+    count = 1,
+    rejected = false,
+  ) {
     const ref = body.beginParse();
     const strData = ref.loadStringTail();
     ref.endParse();
     const rawData = Buffer.from(strData).toString('hex');
     const propId = strData.split(':')[0];
-    const res = await getTransactions(address);
-    const result: any[] = Array.from(res?.transactions ?? []);
 
     try {
+      if (rejected) {
+        throw new Error('Transaction rejected');
+      }
+
+      const res = await getTransactions(address);
+      const result: any[] = Array.from(res?.transactions ?? []);
+
       console.log('Checking transaction data:', count);
       const transaction = result.find((item) =>
         (item?.in_msg?.raw_body as string).includes(rawData),
@@ -53,27 +72,14 @@ export function UnityGame(_props: Props) {
           }),
         );
 
-        return;
-      } else if (count < 5) {
-        setTimeout(() => sendCallback(address, body, count + 1), 5000);
-
-        return;
+        return true;
       } else {
-        console.log('More than 5 attempts to get transaction data.', count);
-        sendMessage(
-          'UnityWebReceiver',
-          'PaymentCallBack',
-          JSON.stringify({
-            address,
-            cancelled: true,
-            isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
-            propId,
-            tx: '',
-          }),
-        );
+        await new Promise((resolve) => setTimeout(resolve, RETRY_INTERVAL));
+
+        return await sendCallback(address, body, count + 1);
       }
     } catch (error) {
-      console.log(error);
+      console.log('[Payment Error]', error);
       sendMessage(
         'UnityWebReceiver',
         'PaymentCallBack',
@@ -85,11 +91,34 @@ export function UnityGame(_props: Props) {
           tx: '',
         }),
       );
+
+      return false;
     }
   }
 
-  const { sender, tonConnectUI, wallet } = useTonConnect({
+  const { connected, network, sender, tonConnectUI, wallet } = useTonConnect({
     sendCallback,
+  });
+
+  tonConnectUI.onModalStateChange(({ closeReason, status }) => {
+    if (
+      !connected &&
+      status === 'closed' &&
+      closeReason === 'action-cancelled' &&
+      isLoaded
+    ) {
+      sendMessage(
+        'UnityWebReceiver',
+        'PaymentCallBack',
+        JSON.stringify({
+          address: wallet,
+          cancelled: true,
+          isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
+          propId: senderArgs?.propId ?? '',
+          tx: '',
+        }),
+      );
+    }
   });
 
   async function handleShareGame() {
@@ -104,23 +133,56 @@ export function UnityGame(_props: Props) {
     );
   }
 
+  useEffect(
+    () => {
+      if (senderArgs && connected && sender) {
+        console.log(
+          'Connected to: ',
+          network === CHAIN.MAINNET ? 'mainnet' : 'testnet',
+        );
+
+        const { propId, sendMode, to, value } = senderArgs;
+        const uid = uuid.v4();
+        const body = beginCell().storeStringTail(`${propId}:${uid}`).endCell();
+        WebApp.showPopup(
+          {
+            buttons: [
+              {
+                type: 'ok',
+              },
+            ],
+            message:
+              'After confirming in your wallet, please wait for the redirect or wait 3-5 seconds to complete the transaction before returning to the game.',
+            title: 'Important!',
+          },
+          () => {
+            sender.send({
+              body,
+              sendMode,
+              to: Address.parse(to),
+              value: toNano(value),
+            });
+            setSenderArgs(null);
+          },
+        );
+      }
+    } /* eslint-disable-next-line react-hooks/exhaustive-deps */,
+    [connected, sender, senderArgs],
+  );
+
   async function handlePayment(value: string, propId: string) {
     try {
-      if (!wallet) {
-        await tonConnectUI.openModal();
-
-        WebApp.showAlert('Please retry payment after connecting wallet.');
-
-        throw new Error('Retry payment');
+      if (connected) {
+        await tonConnectUI.disconnect();
       }
-      // WebApp.showAlert(`Payment: ${value} - ${propId}`);
-      const uid = uuid.v4();
-      const body = beginCell().storeStringTail(`${propId}:${uid}`).endCell();
-      sender.send({
-        body,
+
+      tonConnectUI.openModal();
+
+      setSenderArgs({
+        propId,
         sendMode: SendMode.PAY_GAS_SEPARATELY,
-        to: Address.parse(import.meta.env.VITE_MASTER_ADDRESS),
-        value: toNano(value),
+        to: import.meta.env.VITE_MASTER_ADDRESS,
+        value,
       });
     } catch (error) {
       console.log(error);
