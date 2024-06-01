@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-magic-numbers */
 import { CHAIN } from '@tonconnect/protocol';
 import {
@@ -12,7 +13,7 @@ type Props = {
     address: string,
     body: Cell,
     count?: number,
-    rejected?: boolean,
+    rejected?: number,
   ) => Promise<boolean>;
 };
 
@@ -50,17 +51,20 @@ export function useTonConnect(props?: Props): {
               args.body as Cell,
             );
           }, 1000);
-        } catch (error) {
+        } catch (error: any) {
           console.error(error);
+          const onUserReject = String(error).includes('UserRejectsError');
 
           setTimeout(() => {
             props?.sendCallback?.(
               wallet?.account.address ?? '',
               args.body as Cell,
               0,
-              true,
+              onUserReject ? 1 : 2,
             );
           }, 1000);
+
+          throw error;
         }
       },
     },

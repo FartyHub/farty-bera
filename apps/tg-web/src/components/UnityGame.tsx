@@ -40,7 +40,7 @@ export function UnityGame(_props: Props) {
     address: string,
     body: Cell,
     count = 1,
-    rejected = false,
+    rejected = 0,
   ) {
     const ref = body.beginParse();
     const strData = ref.loadStringTail();
@@ -49,7 +49,7 @@ export function UnityGame(_props: Props) {
     const propId = strData.split(':')[0];
 
     try {
-      if (rejected && count > RETRY_REJECTED_COUNT) {
+      if ((rejected === 1 && count > RETRY_REJECTED_COUNT) || rejected === 2) {
         throw new Error('Transaction rejected');
       }
 
