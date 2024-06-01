@@ -18,6 +18,7 @@ import { Spinner } from './Spinner';
 
 type Props = {};
 
+const RETRY_REJECTED_COUNT = 5;
 const RETRY_INTERVAL = 5000;
 
 export function UnityGame(_props: Props) {
@@ -48,7 +49,7 @@ export function UnityGame(_props: Props) {
     const propId = strData.split(':')[0];
 
     try {
-      if (rejected) {
+      if (rejected && count > RETRY_REJECTED_COUNT) {
         throw new Error('Transaction rejected');
       }
 
@@ -76,7 +77,7 @@ export function UnityGame(_props: Props) {
       } else {
         await new Promise((resolve) => setTimeout(resolve, RETRY_INTERVAL));
 
-        return await sendCallback(address, body, count + 1);
+        return await sendCallback(address, body, count + 1, rejected);
       }
     } catch (error) {
       console.log('[Payment Error]', error);
@@ -152,7 +153,7 @@ export function UnityGame(_props: Props) {
               },
             ],
             message:
-              'After confirming in your wallet, please wait for the redirect or wait 3-5 seconds to complete the transaction before returning to the game.',
+              'After confirming in your wallet, please wait for the redirect or wait 5-10 seconds to complete the transaction before returning to the game.',
             title: 'Important!',
           },
           () => {
