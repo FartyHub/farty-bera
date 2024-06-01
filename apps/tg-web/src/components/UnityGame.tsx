@@ -106,9 +106,7 @@ export function UnityGame(_props: Props) {
   async function handlePayment(value: string, propId: string) {
     try {
       if (!wallet) {
-        tonConnectUI.openModal();
-
-        throw new Error('Not connected');
+        await tonConnectUI.openModal();
       }
       // WebApp.showAlert(`Payment: ${value} - ${propId}`);
       const uid = uuid.v4();
