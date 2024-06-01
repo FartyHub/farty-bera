@@ -87,7 +87,7 @@ export function UnityGame(_props: Props) {
     }
   }
 
-  const { connected, sender, wallet } = useTonConnect({
+  const { sender, tonConnectUI, wallet } = useTonConnect({
     sendCallback,
   });
 
@@ -104,10 +104,15 @@ export function UnityGame(_props: Props) {
   }
 
   async function handlePayment(value: string, propId: string) {
-    // WebApp.showAlert(`Payment: ${value} - ${propId}`);
-    const uid = uuid.v4();
-    const body = beginCell().storeStringTail(`${propId}:${uid}`).endCell();
     try {
+      if (!wallet) {
+        tonConnectUI.openModal();
+
+        throw new Error('Not connected');
+      }
+      // WebApp.showAlert(`Payment: ${value} - ${propId}`);
+      const uid = uuid.v4();
+      const body = beginCell().storeStringTail(`${propId}:${uid}`).endCell();
       await sender.send({
         body,
         sendMode: SendMode.PAY_GAS_SEPARATELY,
@@ -162,9 +167,9 @@ export function UnityGame(_props: Props) {
 
   return (
     <div className={clsx('flex items-center justify-center h-screen w-screen')}>
-      <Spinner className={clsx(connected && isLoaded ? 'hidden' : 'visible')} />
+      <Spinner className={clsx(isLoaded ? 'hidden' : 'visible')} />
       <Unity
-        className={clsx(connected && isLoaded ? 'visible' : 'hidden')}
+        className={clsx(isLoaded ? 'visible' : 'hidden')}
         devicePixelRatio={3}
         style={{
           height: '100%',
