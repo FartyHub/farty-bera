@@ -36,43 +36,44 @@ export function UnityGame(_props: Props) {
     const result: any[] = Array.from(res?.transactions ?? []);
 
     try {
-      if (result.length > 0) {
-        const transaction = result.find((item) =>
-          (item?.in_msg?.raw_body as string).includes(rawData),
+      console.log('Checking transaction data:', count);
+      const transaction = result.find((item) =>
+        (item?.in_msg?.raw_body as string).includes(rawData),
+      );
+
+      if (transaction) {
+        sendMessage(
+          'UnityWebReceiver',
+          'PaymentCallBack',
+          JSON.stringify({
+            address,
+            isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
+            propId,
+            tx: String(transaction.hash),
+          }),
         );
 
-        if (transaction) {
-          sendMessage(
-            'UnityWebReceiver',
-            'PaymentCallBack',
-            JSON.stringify({
-              address,
-              isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
-              propId,
-              tx: String(transaction.hash),
-            }),
-          );
+        return;
+      } else if (count < 5) {
+        setTimeout(() => sendCallback(address, body, count + 1), 5000);
 
-          return;
-        } else if (count < 5) {
-          setTimeout(() => sendCallback(address, body, count + 1), 5000);
-
-          return;
-        }
+        return;
+      } else {
+        console.log('More than 5 attempts to get transaction data.', count);
+        sendMessage(
+          'UnityWebReceiver',
+          'PaymentCallBack',
+          JSON.stringify({
+            address,
+            cancelled: true,
+            isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
+            propId,
+            tx: '',
+          }),
+        );
       }
-
-      sendMessage(
-        'UnityWebReceiver',
-        'PaymentCallBack',
-        JSON.stringify({
-          address,
-          cancelled: true,
-          isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
-          propId,
-          tx: '',
-        }),
-      );
     } catch (error) {
+      console.log(error);
       sendMessage(
         'UnityWebReceiver',
         'PaymentCallBack',
@@ -107,17 +108,22 @@ export function UnityGame(_props: Props) {
     try {
       if (!wallet) {
         await tonConnectUI.openModal();
+
+        WebApp.showAlert('Please retry payment after connecting wallet.');
+
+        throw new Error('Retry payment');
       }
       // WebApp.showAlert(`Payment: ${value} - ${propId}`);
       const uid = uuid.v4();
       const body = beginCell().storeStringTail(`${propId}:${uid}`).endCell();
-      await sender.send({
+      sender.send({
         body,
         sendMode: SendMode.PAY_GAS_SEPARATELY,
         to: Address.parse(import.meta.env.VITE_MASTER_ADDRESS),
         value: toNano(value),
       });
     } catch (error) {
+      console.log(error);
       sendMessage(
         'UnityWebReceiver',
         'PaymentCallBack',
