@@ -18,7 +18,7 @@ import { Spinner } from './Spinner';
 
 type Props = {};
 
-const RETRY_REJECTED_COUNT = 5;
+const RETRY_REJECTED_COUNT = 20;
 const RETRY_INTERVAL = 5000;
 
 export function UnityGame(_props: Props) {
@@ -57,8 +57,9 @@ export function UnityGame(_props: Props) {
       const result: any[] = Array.from(res?.transactions ?? []);
 
       console.log('Checking transaction data:', count);
+      console.log('rawData', rawData);
       const transaction = result.find((item) =>
-        (item?.in_msg?.raw_body as string).includes(rawData),
+        (item?.in_msg?.raw_body as string)?.includes(rawData),
       );
 
       if (transaction) {
