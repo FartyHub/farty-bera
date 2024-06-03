@@ -29,13 +29,45 @@ export class FartyBeraBotUpdate {
   @Start()
   start(@Ctx() ctx: Context) {
     this.logger.log('[START]');
-    ctx.sendGame('Farty_Bera');
+
+    ctx.replyWithPhoto(
+      {
+        url: this.configService.get<string>(ConfigKeys.MainImageUUrl),
+      },
+      {
+        caption: 'Catch a bera in the Farty Arcade and earn $NOTs.',
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: 'Play Farty Claw',
+                web_app: {
+                  url: this.configService.get<string>(ConfigKeys.WebUrl),
+                },
+              },
+            ],
+            [
+              {
+                text: 'Join Community',
+                url: this.configService.get<string>(ConfigKeys.CommunityUrl),
+              },
+            ],
+            [
+              {
+                text: 'Follow X',
+                url: this.configService.get<string>(ConfigKeys.XUrl),
+              },
+            ],
+          ],
+        },
+      },
+    );
   }
 
   @Help()
   help(@Ctx() ctx: Context) {
     this.logger.log('[HELP]');
-    ctx.reply('Send me start to play a game!');
+    ctx.reply('Send start to play Farty Claw!');
   }
 
   // @On('sticker')
@@ -48,35 +80,35 @@ export class FartyBeraBotUpdate {
   //   await ctx.reply('Hey there');
   // }
 
-  @GameQuery()
-  gameQuery(@Ctx() ctx: Context) {
-    const callbackQuery = (ctx.update as any).callback_query as Context;
-    const urlQueries = {
-      botId: ctx.botInfo?.id,
-      chatId: callbackQuery.message?.chat?.id,
-      editMessage: false,
-      force: false,
-      inlineMessageId: callbackQuery?.inlineMessageId,
-      messageId: callbackQuery.message?.message_id,
-      score: 0,
-      userId: ctx.from.id,
-    };
-    this.logger.log('[GAME_QUERY]', JSON.stringify(ctx, null, 2));
-    const botId = ctx.botInfo?.id;
-    const webUrl = this.configService.get<string>(ConfigKeys.WebUrl);
-    ctx.answerGameQuery(
-      `${webUrl}/?botId=${botId}&userId=${urlQueries.userId}&chatId=${urlQueries.chatId}&messageId=${urlQueries.messageId}&inlineMessageId=${urlQueries.inlineMessageId}&score=0&editMessage=${urlQueries.editMessage}&force=${urlQueries.force}`,
-    );
-  }
+  // @GameQuery()
+  // gameQuery(@Ctx() ctx: Context) {
+  //   const callbackQuery = (ctx.update as any).callback_query as Context;
+  //   const urlQueries = {
+  //     botId: ctx.botInfo?.id,
+  //     chatId: callbackQuery.message?.chat?.id,
+  //     editMessage: false,
+  //     force: false,
+  //     inlineMessageId: callbackQuery?.inlineMessageId,
+  //     messageId: callbackQuery.message?.message_id,
+  //     score: 0,
+  //     userId: ctx.from.id,
+  //   };
+  //   this.logger.log('[GAME_QUERY]', JSON.stringify(ctx, null, 2));
+  //   const botId = ctx.botInfo?.id;
+  //   const webUrl = this.configService.get<string>(ConfigKeys.WebUrl);
+  //   ctx.answerGameQuery(
+  //     `${webUrl}/?botId=${botId}&userId=${urlQueries.userId}&chatId=${urlQueries.chatId}&messageId=${urlQueries.messageId}&inlineMessageId=${urlQueries.inlineMessageId}&score=0&editMessage=${urlQueries.editMessage}&force=${urlQueries.force}`,
+  //   );
+  // }
 
-  @InlineQuery([])
-  inlineQuery(@Ctx() ctx: Context) {
-    ctx.answerInlineQuery([
-      {
-        game_short_name: 'Farty_Bera',
-        id: '0',
-        type: 'game',
-      },
-    ]);
-  }
+  // @InlineQuery([])
+  // inlineQuery(@Ctx() ctx: Context) {
+  //   ctx.answerInlineQuery([
+  //     {
+  //       game_short_name: 'Farty_Bera',
+  //       id: '0',
+  //       type: 'game',
+  //     },
+  //   ]);
+  // }
 }

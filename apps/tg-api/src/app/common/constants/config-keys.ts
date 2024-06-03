@@ -1,12 +1,15 @@
 export enum ConfigKeys {
   ApiKey = 'X_API_KEY',
+  CommunityUrl = 'COMMUNITY_URL',
   DBDatabase = 'DB_DATABASE',
   DBHost = 'DB_HOST',
   DBPassword = 'DB_PASSWORD',
   DBPort = 'DB_PORT',
   DBUsername = 'DB_USERNAME',
   Env = 'ENVIRONMENT',
+  MainImageUUrl = 'MAIN_IMAGE_URL',
   Salt = 'SALT',
   TelegramApiKey = 'TELEGRAM_API_KEY',
   WebUrl = 'WEB_URL',
+  XUrl = 'X_URL',
 }

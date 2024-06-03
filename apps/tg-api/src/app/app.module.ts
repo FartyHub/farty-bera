@@ -30,7 +30,7 @@ import { TelegramModule } from './telegram';
         },
         options: {
           telegram: {
-            testEnv: process.env.ENVIRONMENT !== 'production',
+            // testEnv: process.env.ENVIRONMENT !== 'production',
           },
         },
         token: process.env.TELEGRAM_API_KEY,
