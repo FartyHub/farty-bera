@@ -18,3 +18,6 @@ handlers:
   - url: /.*
     secure: always
     script: auto
+
+vpc_access_connector:
+  name: projects/farty-bera-420304/locations/us-east1/connectors/appengine-farty-connector

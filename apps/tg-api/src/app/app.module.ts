@@ -27,6 +27,8 @@ const defaultDBOptions = {
   username: process.env.DB_USERNAME,
 };
 
+console.log('defaultDBOptions: ', defaultDBOptions);
+
 @Module({
   controllers: [AppController],
   imports: [
