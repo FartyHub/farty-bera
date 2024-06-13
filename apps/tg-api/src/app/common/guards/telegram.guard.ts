@@ -11,7 +11,7 @@ import { Context } from 'telegraf';
 
 @Injectable()
 export class RateLimitGuard implements CanActivate {
-  private readonly timeout = 1000;
+  private readonly timeout = 100;
 
   private timestamps: any = [];
 

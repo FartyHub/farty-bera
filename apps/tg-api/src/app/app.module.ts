@@ -1,14 +1,31 @@
 import { Logger, Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { TelegrafModule } from 'nestjs-telegraf';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { JwtGuard } from './common';
+import { ConfigKeys, JwtGuard } from './common';
 import { FartyBeraBotUpdate } from './farty-bera-bot';
+import { FartyClawModule } from './farty-claw';
+import { Invoice, InvoiceModule, InvoiceService } from './invoice';
 import { TelegramModule } from './telegram';
+
+const defaultDBOptions = {
+  autoLoadEntities: true,
+  extra: {
+    socketPath: process.env.DB_HOST,
+  },
+  host: process.env.DB_HOST,
+  namingStrategy: new SnakeNamingStrategy(),
+  password: process.env.DB_PASSWORD,
+  port: +process.env.DB_PORT,
+  synchronize: false,
+  username: process.env.DB_USERNAME,
+};
 
 @Module({
   controllers: [AppController],
@@ -22,21 +39,35 @@ import { TelegramModule } from './telegram';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    TypeOrmModule.forFeature([Invoice]),
+    TypeOrmModule.forRoot({
+      ...defaultDBOptions,
+      database: process.env.DB_DATABASE,
+      entities: [Invoice],
+      type: 'postgres',
+    }),
     TelegrafModule.forRootAsync({
-      useFactory: () => ({
-        botName: 'fartyberabot',
-        launchOptions: {
-          allowedUpdates: ['message', 'callback_query', 'inline_query'],
-        },
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        // launchOptions: {
+        //   allowedUpdates: [
+        //     'message',
+        //     'callback_query',
+        //     'inline_query',
+        //     'pre_checkout_query',
+        //   ],
+        // },
         options: {
           telegram: {
-            // testEnv: process.env.ENVIRONMENT !== 'production',
+            testEnv: process.env.ENVIRONMENT !== 'production',
           },
         },
-        token: process.env.TELEGRAM_API_KEY,
+        token: configService.get<string>(ConfigKeys.TelegramApiKey),
       }),
     }),
     TelegramModule,
+    FartyClawModule,
+    InvoiceModule,
   ],
   providers: [
     {
@@ -49,6 +80,7 @@ import { TelegramModule } from './telegram';
     },
     Logger,
     AppService,
+    InvoiceService,
     FartyBeraBotUpdate,
   ],
 })

@@ -16,6 +16,7 @@ import { Context } from 'telegraf';
 
 import { Bot, ConfigKeys } from '../common';
 import { RateLimitGuard } from '../common/guards/telegram.guard';
+import { InvoiceService } from '../invoice';
 
 @Bot()
 @SkipThrottle()
@@ -24,7 +25,12 @@ import { RateLimitGuard } from '../common/guards/telegram.guard';
 export class FartyBeraBotUpdate {
   private readonly logger: Logger = new Logger(FartyBeraBotUpdate.name);
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly invoiceService: InvoiceService,
+  ) {
+    // no op
+  }
 
   @Start()
   start(@Ctx() ctx: Context) {
@@ -70,10 +76,48 @@ export class FartyBeraBotUpdate {
     ctx.reply('Send start to play Farty Claw!');
   }
 
-  // @On('sticker')
-  // async on(@Ctx() ctx: Context) {
-  //   await ctx.reply('👍');
-  // }
+  @On('pre_checkout_query')
+  async onPreCheckout(@Ctx() ctx: Context) {
+    this.logger.log(
+      '[PRE_CHECKOUT_QUERY]',
+      JSON.stringify(ctx.preCheckoutQuery, null, 2),
+    );
+
+    try {
+      const invoice = await this.invoiceService.findOne(
+        ctx.preCheckoutQuery.invoice_payload,
+      );
+      await this.invoiceService.update(invoice.id, {
+        firstName: ctx.preCheckoutQuery.from.first_name,
+        lastName: ctx.preCheckoutQuery.from.last_name,
+        preCheckoutQueryId: ctx.preCheckoutQuery.id,
+      });
+
+      ctx.answerPreCheckoutQuery(true);
+    } catch (error) {
+      this.logger.error(error);
+      ctx.answerPreCheckoutQuery(false, 'Internal server error');
+    }
+  }
+
+  @On('successful_payment')
+  async onSuccessfulPayment(@Ctx() ctx: Context) {
+    this.logger.log(
+      '[SUCCESSFUL_PAYMENT]',
+      JSON.stringify((ctx.update as any)?.message.successful_payment, null, 2),
+    );
+
+    const invoice = await this.invoiceService.findOne(
+      (ctx.update as any)?.message.successful_payment.invoice_payload,
+    );
+
+    await this.invoiceService.update(invoice.id, {
+      providerPaymentChargeId: (ctx.update as any)?.message.successful_payment
+        .provider_payment_charge_id,
+      telegramPaymentChargeId: (ctx.update as any)?.message.successful_payment
+        .telegram_payment_charge_id,
+    });
+  }
 
   // @Hears('hi')
   // async hears(@Ctx() ctx: Context) {

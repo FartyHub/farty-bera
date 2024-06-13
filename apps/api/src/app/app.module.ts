@@ -11,6 +11,7 @@ import { AppService } from './app.service';
 import { JwtGuard } from './common';
 import { FartyBeraBotUpdate } from './farty-bera-bot';
 import { InviteCodeModule } from './invite-code';
+import { Invoice } from './invoice';
 import { ProjectInvite, ProjectInviteModule } from './project-invite';
 import { Score, ScoreModule } from './score';
 import { TelegramModule } from './telegram';
@@ -41,7 +42,7 @@ const defaultDBOptions = {
     TypeOrmModule.forRoot({
       ...defaultDBOptions,
       database: process.env.DB_DATABASE,
-      entities: [User, Score, ProjectInvite],
+      entities: [User, Score, ProjectInvite, Invoice],
       type: 'postgres',
     }),
     TypeOrmModule.forFeature([User]),

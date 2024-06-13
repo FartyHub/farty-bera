@@ -11,7 +11,7 @@ import { Address, Cell, SendMode, beginCell, toNano } from 'ton-core';
 import * as uuid from 'uuid';
 
 import { useUnityGame } from '../contexts';
-import { useTonConnect } from '../hooks';
+import { useGetNewInvoice, useTonConnect } from '../hooks';
 import { getTransactions } from '../services';
 
 import { Spinner } from './Spinner';
@@ -35,6 +35,21 @@ export function UnityGame(_props: Props) {
     to: string;
     value: string;
   } | null>(null);
+  const { mutate: getNewInvoice } = useGetNewInvoice({
+    onSuccess: ({ id, url }) => {
+      WebApp.openInvoice(url, (status) => {
+        sendMessage(
+          'UnityWebReceiver',
+          'PaymentCallBack',
+          JSON.stringify({
+            isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
+            telegramInvoiceId: id,
+            ...(status === 'paid' ? {} : { cancelled: true }),
+          }),
+        );
+      });
+    },
+  });
 
   async function sendCallback(
     address: string,
@@ -56,8 +71,6 @@ export function UnityGame(_props: Props) {
       const res = await getTransactions(address);
       const result: any[] = Array.from(res?.transactions ?? []);
 
-      console.log('Checking transaction data:', count);
-      console.log('rawData', rawData);
       const transaction = result.find((item) =>
         (item?.in_msg?.raw_body as string)?.includes(rawData),
       );
@@ -206,11 +219,13 @@ export function UnityGame(_props: Props) {
     addEventListener('ShareGame', handleShareGame);
     // @ts-ignore
     addEventListener('PaymentRequest', handlePayment);
+    addEventListener('PaymentRequestStars', getNewInvoice);
 
     return () => {
       removeEventListener('ShareGame', handleShareGame);
       // @ts-ignore
       removeEventListener('PaymentRequest', handlePayment);
+      removeEventListener('PaymentRequestStars', getNewInvoice);
     };
   }, [addEventListener, removeEventListener, handleShareGame, handlePayment]);
 

@@ -8,7 +8,7 @@ import { SendTelegramGameScoreDto } from './dto/send-telegram-game-score.dto';
 export class TelegramService {
   private readonly logger: Logger = new Logger(TelegramService.name);
 
-  constructor(@InjectBot('fartyberabot') private fartyBot: Telegraf<Context>) {
+  constructor(@InjectBot() private fartyBot: Telegraf<Context>) {
     this.fartyBot.catch((error, ctx: Context) => {
       console.error('Telegraf error:', error);
       console.log(ctx);
