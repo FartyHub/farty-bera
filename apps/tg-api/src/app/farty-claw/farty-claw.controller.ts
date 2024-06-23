@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { ApiKey } from '../common';
@@ -12,9 +12,9 @@ export class FartyClawController {
     // no op
   }
 
-  @Get('invoice')
+  @Get('invoice/:amount')
   @ApiKey()
-  getInvoiceLink() {
-    return this.fartyClawService.getInvoiceLink();
+  getInvoiceLink(@Param('amount') amount: string) {
+    return this.fartyClawService.getInvoiceLink(+amount);
   }
 }

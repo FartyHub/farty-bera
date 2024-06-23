@@ -11,9 +11,9 @@ const tgApiClient = axios.create({
   },
 });
 
-export async function getInvoice() {
+export async function getInvoice(amount: string) {
   try {
-    const { data } = await tgApiClient.get('/farty-claw/invoice');
+    const { data } = await tgApiClient.get('/farty-claw/invoice/' + amount);
 
     return {
       id: data?.id ?? '',

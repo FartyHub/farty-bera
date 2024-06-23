@@ -22,12 +22,12 @@ export class FartyClawService {
     });
   }
 
-  async getInvoiceLink() {
+  async getInvoiceLink(amount: number) {
     this.logger.log('[GET_INVOICE_LINK]');
 
     const invoice = await this.invoiceService.create({
       currency: 'XTR',
-      totalAmount: 15,
+      totalAmount: amount,
     });
 
     const url = await this.fartyBot.telegram.createInvoiceLink({
@@ -36,7 +36,7 @@ export class FartyClawService {
       payload: invoice.id,
       prices: [
         {
-          amount: 15,
+          amount: amount,
           label: '1 Game',
         },
       ],

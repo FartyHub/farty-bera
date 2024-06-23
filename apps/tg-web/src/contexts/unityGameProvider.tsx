@@ -42,6 +42,10 @@ export function UnityGameProvider({ children }: { children: ReactNode }) {
       'https://storage.googleapis.com/tg-mini-app-build/Build.framework.js',
     loaderUrl:
       'https://storage.googleapis.com/tg-mini-app-build/Build.loader.js',
+    // codeUrl: 'Build/Build.wasm',
+    // dataUrl: 'Build/Build.data',
+    // frameworkUrl: 'Build/Build.framework.js',
+    // loaderUrl: 'Build/Build.loader.js',
   });
 
   const values = useMemo(

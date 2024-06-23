@@ -9,7 +9,8 @@ export const useGetNewInvoice = (
       id: string;
       url: string;
     },
-    AxiosError<{ message: string }>
+    AxiosError<{ message: string }>,
+    string
   >,
 ) =>
   useMutation({
