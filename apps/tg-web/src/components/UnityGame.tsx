@@ -38,7 +38,6 @@ export function UnityGame(_props: Props) {
   const [starsPropId, setStarsPropId] = useState<string>('');
   const { mutate: getNewInvoice } = useGetNewInvoice({
     onSuccess: ({ id, url }) => {
-      WebApp.showAlert(JSON.stringify({ id, url }));
       try {
         WebApp.openInvoice(url, (status) => {
           setTimeout(() => {
@@ -236,7 +235,6 @@ export function UnityGame(_props: Props) {
 
   async function handleStarsPayment(value: string, propId: string) {
     setStarsPropId(propId);
-    WebApp.showAlert(JSON.stringify({ propId, value }));
 
     getNewInvoice(value);
   }
