@@ -1,0 +1,15 @@
+@import url(./assets/fonts/IBMPlexSans/stylesheet.css);
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* You can add global styles to this file, and also import other style files */
+
+@layer base {
+  html {
+    font-family: 'IBMPlexSans', system-ui, sans-serif;
+    color: white;
+    background-image: linear-gradient(to bottom left, #333969, #144a54);
+    background-attachment: fixed;
+  }
+}

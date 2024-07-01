@@ -35,19 +35,37 @@ export function UnityGame(_props: Props) {
     to: string;
     value: string;
   } | null>(null);
+  const [starsPropId, setStarsPropId] = useState<string>('');
   const { mutate: getNewInvoice } = useGetNewInvoice({
     onSuccess: ({ id, url }) => {
-      WebApp.openInvoice(url, (status) => {
+      try {
+        WebApp.openInvoice(url, (status) => {
+          setTimeout(() => {
+            sendMessage(
+              'UnityWebReceiver',
+              'PaymentCallBack',
+              JSON.stringify({
+                isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
+                propId: starsPropId,
+                telegramInvoiceId: id,
+                ...(status === 'paid'
+                  ? { cancelled: false }
+                  : { cancelled: true }),
+              }),
+            );
+          }, 1000);
+        });
+      } catch (error) {
         sendMessage(
           'UnityWebReceiver',
           'PaymentCallBack',
           JSON.stringify({
+            cancelled: true,
             isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
             telegramInvoiceId: id,
-            ...(status === 'paid' ? {} : { cancelled: true }),
           }),
         );
-      });
+      }
     },
   });
 
@@ -215,17 +233,25 @@ export function UnityGame(_props: Props) {
     }
   }
 
+  async function handleStarsPayment(value: string, propId: string) {
+    setStarsPropId(propId);
+
+    getNewInvoice(value);
+  }
+
   useEffect(() => {
     addEventListener('ShareGame', handleShareGame);
     // @ts-ignore
     addEventListener('PaymentRequest', handlePayment);
-    addEventListener('PaymentRequestStars', getNewInvoice);
+    // @ts-ignore
+    addEventListener('PaymentRequestStars', handleStarsPayment);
 
     return () => {
       removeEventListener('ShareGame', handleShareGame);
       // @ts-ignore
       removeEventListener('PaymentRequest', handlePayment);
-      removeEventListener('PaymentRequestStars', getNewInvoice);
+      // @ts-ignore
+      removeEventListener('PaymentRequestStars', handleStarsPayment);
     };
   }, [addEventListener, removeEventListener, handleShareGame, handlePayment]);
 

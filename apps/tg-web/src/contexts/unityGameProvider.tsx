@@ -31,17 +31,21 @@ export function UnityGameProvider({ children }: { children: ReactNode }) {
     sendMessage,
     unityProvider,
   } = useUnityContext({
-    // codeUrl: 'https://storage.googleapis.com/tg-mini-app-build/tg.wasm',
-    // dataUrl: 'https://storage.googleapis.com/tg-mini-app-build/tg.data',
-    // frameworkUrl:
-    //   'https://storage.googleapis.com/tg-mini-app-build/tg.framework.js',
-    // loaderUrl: 'https://storage.googleapis.com/tg-mini-app-build/tg.loader.js',
-    codeUrl: 'https://storage.googleapis.com/tg-mini-app-build/Build.wasm',
-    dataUrl: 'https://storage.googleapis.com/tg-mini-app-build/Build.data',
+    codeUrl: 'https://storage.googleapis.com/tg-mini-app-build/tg.wasm',
+    dataUrl: 'https://storage.googleapis.com/tg-mini-app-build/tg.data',
     frameworkUrl:
-      'https://storage.googleapis.com/tg-mini-app-build/Build.framework.js',
-    loaderUrl:
-      'https://storage.googleapis.com/tg-mini-app-build/Build.loader.js',
+      'https://storage.googleapis.com/tg-mini-app-build/tg.framework.js',
+    loaderUrl: 'https://storage.googleapis.com/tg-mini-app-build/tg.loader.js',
+    // codeUrl: 'https://storage.googleapis.com/tg-mini-app-build/Build.wasm',
+    // dataUrl: 'https://storage.googleapis.com/tg-mini-app-build/Build.data',
+    // frameworkUrl:
+    //   'https://storage.googleapis.com/tg-mini-app-build/Build.framework.js',
+    // loaderUrl:
+    //   'https://storage.googleapis.com/tg-mini-app-build/Build.loader.js',
+    // codeUrl: 'Build/Build.wasm',
+    // dataUrl: 'Build/Build.data',
+    // frameworkUrl: 'Build/Build.framework.js',
+    // loaderUrl: 'Build/Build.loader.js',
   });
 
   const values = useMemo(

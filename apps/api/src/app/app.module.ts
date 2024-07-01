@@ -10,6 +10,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { JwtGuard } from './common';
 import { FartyBeraBotUpdate } from './farty-bera-bot';
+import { FartyClawUsers } from './farty-claw-user';
 import { InviteCodeModule } from './invite-code';
 import { Invoice } from './invoice';
 import { ProjectInvite, ProjectInviteModule } from './project-invite';
@@ -42,7 +43,7 @@ const defaultDBOptions = {
     TypeOrmModule.forRoot({
       ...defaultDBOptions,
       database: process.env.DB_DATABASE,
-      entities: [User, Score, ProjectInvite, Invoice],
+      entities: [User, Score, ProjectInvite, Invoice, FartyClawUsers],
       type: 'postgres',
     }),
     TypeOrmModule.forFeature([User]),
