@@ -23,6 +23,8 @@ steps:
       - 'MAIN_IMAGE_URL=${_MAIN_IMAGE_URL}'
       - 'COMMUNITY_URL=${_COMMUNITY_URL}'
       - 'X_URL=${_X_URL}'
+      - 'FARTY_CLAW_API_URL=${_FARTY_CLAW_API_URL}'
+      - 'CLAIM_WEB_URL=${_CLAIM_WEB_URL}'
 
   - name: 'gcr.io/cloud-builders/npm'
     args: ['run', 'create-env', 'dist/apps/tg-api/.env']
@@ -43,6 +45,8 @@ steps:
       - 'MAIN_IMAGE_URL=${_MAIN_IMAGE_URL}'
       - 'COMMUNITY_URL=${_COMMUNITY_URL}'
       - 'X_URL=${_X_URL}'
+      - 'FARTY_CLAW_API_URL=${_FARTY_CLAW_API_URL}'
+      - 'CLAIM_WEB_URL=${_CLAIM_WEB_URL}'
 
   - name: 'gcr.io/cloud-builders/gcloud'
     id: COPY-STUFF

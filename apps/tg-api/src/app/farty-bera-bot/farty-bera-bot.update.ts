@@ -2,6 +2,7 @@
 import { Logger, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { SkipThrottle } from '@nestjs/throttler';
+import { InjectRepository } from '@nestjs/typeorm';
 import {
   Update,
   Ctx,
@@ -11,11 +12,14 @@ import {
   Hears,
   GameQuery,
   InlineQuery,
+  Command,
 } from 'nestjs-telegraf';
 import { Context } from 'telegraf';
+import { Repository } from 'typeorm';
 
 import { Bot, ConfigKeys } from '../common';
 import { RateLimitGuard } from '../common/guards/telegram.guard';
+import { FartyClawUsers } from '../farty-claw-user';
 import { InvoiceService } from '../invoice';
 
 @Bot()
@@ -28,13 +32,17 @@ export class FartyBeraBotUpdate {
   constructor(
     private readonly configService: ConfigService,
     private readonly invoiceService: InvoiceService,
+    @InjectRepository(FartyClawUsers)
+    private fartyClawUsersRepository: Repository<FartyClawUsers>,
   ) {
     // no op
   }
 
   @Start()
-  start(@Ctx() ctx: Context) {
+  async start(@Ctx() ctx: Context) {
     this.logger.log('[START]');
+
+    this.saveUser(ctx);
 
     ctx.replyWithPhoto(
       {
@@ -73,6 +81,9 @@ export class FartyBeraBotUpdate {
   @Help()
   help(@Ctx() ctx: Context) {
     this.logger.log('[HELP]');
+
+    this.saveUser(ctx);
+
     ctx.reply('Send start to play Farty Claw!');
   }
 
@@ -119,6 +130,28 @@ export class FartyBeraBotUpdate {
     });
   }
 
+  @Command('claim')
+  async claim(@Ctx() ctx: Context) {
+    this.logger.log('[CLAIM]');
+
+    this.saveUser(ctx);
+
+    ctx.reply('Claim your $NOTs now!', {
+      reply_markup: {
+        inline_keyboard: [
+          [
+            {
+              text: 'Claim $NOTs',
+              web_app: {
+                url: this.configService.get<string>(ConfigKeys.ClaimWebUrl),
+              },
+            },
+          ],
+        ],
+      },
+    });
+  }
+
   // @Hears('hi')
   // async hears(@Ctx() ctx: Context) {
   //   await ctx.reply('Hey there');
@@ -155,4 +188,35 @@ export class FartyBeraBotUpdate {
   //     },
   //   ]);
   // }
+
+  async saveUser(ctx: Context) {
+    this.logger.log('[SAVE_USER]');
+
+    try {
+      const user = (ctx.update as any).message.from;
+
+      const existingUser = await this.fartyClawUsersRepository.findOne({
+        where: { telegramId: user.id },
+      });
+
+      if (existingUser) {
+        await this.fartyClawUsersRepository.update(existingUser.id, {
+          chatId: (ctx.update as any).message.chat.id,
+        });
+      } else {
+        const newUser = this.fartyClawUsersRepository.create({
+          chatId: (ctx.update as any).message.chat.id,
+          firstName: user.first_name,
+          languageCode: user.language_code,
+          lastName: user.last_name,
+          telegramId: user.id,
+          username: user.username,
+        });
+
+        this.fartyClawUsersRepository.save(newUser);
+      }
+    } catch (error) {
+      this.logger.error(`[SAVE_USER] ${error}`);
+    }
+  }
 }
