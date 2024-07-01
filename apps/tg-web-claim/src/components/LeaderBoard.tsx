@@ -1,4 +1,4 @@
-import { Dialog, DialogPanel } from '@headlessui/react';
+// import { Dialog, DialogPanel } from '@headlessui/react';
 import WebApp from '@twa-dev/sdk';
 import clsx from 'clsx';
 import { useState } from 'react';
@@ -118,7 +118,7 @@ export function Leaderboard({ className }: Props) {
         />
       </div>
 
-      <Dialog
+      {/* <Dialog
         transition
         className={clsx(
           'fixed bottom-0 flex w-screen items-center justify-center bg-transparent',
@@ -165,7 +165,7 @@ export function Leaderboard({ className }: Props) {
             {isClaimed ? 'Close' : 'Connect Wallet'}
           </button>
         </DialogPanel>
-      </Dialog>
+      </Dialog> */}
     </div>
   );
 }
