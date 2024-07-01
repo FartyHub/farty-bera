@@ -1,13 +1,13 @@
-// import { Dialog, DialogPanel } from '@headlessui/react';
 import WebApp from '@twa-dev/sdk';
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Address } from 'ton-core';
 
 import { useAuth } from '../contexts';
 import {
   useGetLeaderboard,
   useGetMyLeaderboardPosition,
+  useOutsideAlerter,
   useTonConnect,
 } from '../hooks';
 import { ClaimUserDto } from '../services/tgApiService';
@@ -25,6 +25,9 @@ export function Leaderboard({ className }: Props) {
   const { connected, tonConnectUI } = useTonConnect();
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const dialogRef = useRef(null);
+  useOutsideAlerter(dialogRef, () => setIsOpen(false));
+
   const rank = users.findIndex((u) => u.openid === myRank?.openid) + 1;
   const isClaimed = user?.address;
 
@@ -118,18 +121,19 @@ export function Leaderboard({ className }: Props) {
         />
       </div>
 
-      {/* <Dialog
-        transition
+      <dialog
+        ref={dialogRef}
         className={clsx(
-          'fixed bottom-0 flex w-screen items-center justify-center bg-transparent',
+          'text-white fixed bottom-0 flex w-screen items-center justify-center bg-transparent',
           'transition ease-in-out duration-300 data-[closed]:opacity-0',
           'data-[enter]:duration-300 data-[enter]:data-[closed]:translate-y-full',
           'data-[leave]:duration-300 data-[leave]:data-[closed]:translate-y-full',
+          isOpen ? '' : 'hidden',
         )}
         open={isOpen}
         onClose={() => setIsOpen(false)}
       >
-        <DialogPanel className="flex flex-col gap-6 bg-[#131B2F] py-8 px-4 rounded-t-[10px] w-full">
+        <div className="flex flex-col gap-6 bg-[#131B2F] py-8 px-4 rounded-t-[10px] w-full">
           <div className="flex flex-col gap-4 items-center">
             <img alt="farty" className="w-[202px]" src="/images/farty.png" />
             <span className="text-[21px] font-bold">
@@ -164,8 +168,8 @@ export function Leaderboard({ className }: Props) {
           >
             {isClaimed ? 'Close' : 'Connect Wallet'}
           </button>
-        </DialogPanel>
-      </Dialog> */}
+        </div>
+      </dialog>
     </div>
   );
 }
