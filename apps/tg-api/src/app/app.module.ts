@@ -4,6 +4,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TelegrafModule } from 'nestjs-telegraf';
+import { Repository } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 import { AppController } from './app.controller';
@@ -11,6 +12,7 @@ import { AppService } from './app.service';
 import { ConfigKeys, JwtGuard } from './common';
 import { FartyBeraBotUpdate } from './farty-bera-bot';
 import { FartyClawModule } from './farty-claw';
+import { FartyClawUsers } from './farty-claw-user';
 import { Invoice, InvoiceModule, InvoiceService } from './invoice';
 import { TelegramModule } from './telegram';
 
@@ -41,11 +43,11 @@ console.log('defaultDBOptions: ', defaultDBOptions);
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TypeOrmModule.forFeature([Invoice]),
+    TypeOrmModule.forFeature([Invoice, FartyClawUsers]),
     TypeOrmModule.forRoot({
       ...defaultDBOptions,
       database: process.env.DB_DATABASE,
-      entities: [Invoice],
+      entities: [Invoice, FartyClawUsers],
       type: 'postgres',
     }),
     TelegrafModule.forRootAsync({
@@ -84,6 +86,10 @@ console.log('defaultDBOptions: ', defaultDBOptions);
     AppService,
     InvoiceService,
     FartyBeraBotUpdate,
+    {
+      provide: Repository,
+      useClass: FartyClawUsers,
+    },
   ],
 })
 export class AppModule {

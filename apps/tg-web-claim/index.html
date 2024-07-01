@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>TgWebClaim</title>
+    <base href="/" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script src="https://telegram.org/js/games.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+      // Init TWA
+      Telegram.WebApp.ready();
+      Telegram.WebApp.expand();
+      Telegram.WebApp.enableClosingConfirmation();
+
+      // Event occurs whenever theme settings are changed in the user's Telegram app (including switching to night mode).
+      Telegram.WebApp.onEvent('themeChanged', function () {
+        document.documentElement.className = Telegram.WebApp.colorScheme;
+      });
+
+      // Show main button
+      Telegram.WebApp.MainButton.setParams({
+        text: 'Main Button',
+      });
+      Telegram.WebApp.MainButton.onClick(function () {
+        Telegram.WebApp.showAlert('Main Button was clicked');
+      });
+      // Telegram.WebApp.MainButton.show();
+
+      // Function to call showPopup API
+      function showPopup() {
+        Telegram.WebApp.showPopup(
+          {
+            title: 'Title',
+            message: 'Some message',
+            buttons: [
+              { id: 'link', type: 'default', text: 'Open ton.org' },
+              { type: 'cancel' },
+            ],
+          },
+          function (btn) {
+            if (btn === 'link') {
+              Telegram.WebApp.openLink('https://ton.org/');
+            }
+          },
+        );
+      }
+
+      // Function to toggle main TWA button
+      function toggleMainButton() {
+        if (Telegram.WebApp.MainButton.isVisible) {
+          Telegram.WebApp.MainButton.hide();
+        } else {
+          Telegram.WebApp.MainButton.show();
+        }
+      }
+
+      Telegram.WebApp.setHeaderColor('secondary_bg_color');
+
+      Telegram.WebApp.onEvent('themeChanged', function () {
+        document.body.setAttribute(
+          'style',
+          '--bg-color:' + Telegram.WebApp.backgroundColor,
+        );
+      });
+    </script>
+    <!-- Eruda is console for mobile browsers -->
+    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+    <script>
+      eruda.init();
+    </script>
+  </body>
+</html>
