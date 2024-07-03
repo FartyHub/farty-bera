@@ -22,7 +22,7 @@ const MAX_RANK = 200;
 
 function calculateNOTs(gold: number, sum: number) {
   // eslint-disable-next-line no-magic-numbers
-  return 1000000 * (gold / sum);
+  return 100000 * (gold / sum);
 }
 
 export function Leaderboard({ className }: Props) {
