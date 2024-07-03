@@ -18,8 +18,16 @@ type Props = {
   className?: string;
 };
 
+const MAX_RANK = 200;
+
+function calculateNOTs(gold: number, sum: number) {
+  // eslint-disable-next-line no-magic-numbers
+  return 1000000 * (gold / sum);
+}
+
 export function Leaderboard({ className }: Props) {
-  const { data: users = [], isPending: isLoading } = useGetLeaderboard();
+  const { data: leaderboard, isPending: isLoading } = useGetLeaderboard();
+  const { list: users = [], sum = 0 } = leaderboard || {};
   const { data: myRank, isPending: isLoadingMyRank } =
     useGetMyLeaderboardPosition(WebApp.initData);
   const { connected, tonConnectUI } = useTonConnect();
@@ -28,7 +36,6 @@ export function Leaderboard({ className }: Props) {
   const dialogRef = useRef(null);
   useOutsideAlerter(dialogRef, () => setIsOpen(false));
 
-  const rank = users.findIndex((u) => u.openid === myRank?.openid) + 1;
   const isClaimed = user?.address;
 
   async function handleConnectWallet() {
@@ -63,11 +70,12 @@ export function Leaderboard({ className }: Props) {
       className: 'rounded-tr-[4px] rounded-br-[4px]',
       header: 'Rewards',
       key: 'rewards',
-      render: (data) =>
+      render: (data, idx = 0) =>
         Intl.NumberFormat('en', {
           maximumFractionDigits: 2,
           notation: 'compact',
-        }).format(data.gold) + ' NOTs',
+        }).format(calculateNOTs(idx >= MAX_RANK ? 0 : data.gold, sum)) +
+        ' NOTs',
     },
   ];
 
@@ -95,7 +103,7 @@ export function Leaderboard({ className }: Props) {
           className="flex w-full px-4 py-[10px] items-center justify-between rounded-[4px] text-[13px] font-medium text-[#101828] bg-gradient-to-r from-[#FFF869] to-[#FFCA43]"
           onClick={() => setIsOpen(true)}
         >
-          <span>{rank <= 0 ? '-' : rank}</span>
+          <span>{myRank?.rank || '-'}</span>
           <span>
             {myRank?.nickname ??
               (user?.firstName ?? '') + ' ' + (user?.lastName ?? '')}
@@ -110,7 +118,11 @@ export function Leaderboard({ className }: Props) {
             {Intl.NumberFormat('en', {
               maximumFractionDigits: 2,
               notation: 'compact',
-            }).format(myRank?.gold ?? 0)}{' '}
+            }).format(
+              (myRank?.rank ?? 0) >= MAX_RANK
+                ? 0
+                : calculateNOTs(myRank?.gold ?? 0, sum),
+            )}{' '}
             NOTs
           </span>
         </button>
