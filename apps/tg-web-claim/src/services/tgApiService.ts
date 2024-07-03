@@ -44,9 +44,9 @@ export async function getLeaderboard(): Promise<{
 
 export async function getMyLeaderboardPosition(initData: string) {
   try {
-    const { data } = await tgApiClient.get(
-      `/farty-claw/leaderboard/me?initData=${initData}`,
-    );
+    const { data } = await tgApiClient.post(`/farty-claw/leaderboard/me`, {
+      initData,
+    });
     console.log('data', data);
 
     return {
@@ -63,21 +63,6 @@ export async function getMyLeaderboardPosition(initData: string) {
 export async function saveUser(address: string, initData: string) {
   try {
     const { data } = await tgApiClient.post('/farty-claw/user/', {
-      address,
-      initData,
-    });
-
-    return data;
-  } catch (error) {
-    console.error(error);
-
-    throw error;
-  }
-}
-
-export async function claimPrize(address: string, initData: string) {
-  try {
-    const { data } = await tgApiClient.post('/farty-claw/claim-prize/', {
       address,
       initData,
     });

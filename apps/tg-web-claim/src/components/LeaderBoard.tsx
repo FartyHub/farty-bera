@@ -119,7 +119,7 @@ export function Leaderboard({ className }: Props) {
               maximumFractionDigits: 2,
               notation: 'compact',
             }).format(
-              (myRank?.rank ?? 0) >= MAX_RANK
+              (myRank?.rank ?? 0) > MAX_RANK
                 ? 0
                 : calculateNOTs(myRank?.gold ?? 0, sum),
             )}{' '}

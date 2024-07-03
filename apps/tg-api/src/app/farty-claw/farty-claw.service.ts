@@ -119,7 +119,6 @@ export class FartyClawService {
   async getMyLeaderboardPosition(initData: string) {
     this.logger.log('[GET_USER_RANKING]', initData);
     const { isVerified, user } = await this.verifyUser(initData);
-    console.log('isVerified', isVerified, user);
 
     if (!isVerified) {
       throw new UnauthorizedException('User is not verified');
@@ -132,21 +131,6 @@ export class FartyClawService {
     const { list, ...rest } = data?.info || {};
 
     return rest;
-  }
-
-  async claimFartyLeaguePrize(address: string, initData: string) {
-    this.logger.log('[CLAIM_FARTY_LEAGUE_PRIZE]', address, initData);
-    const { isVerified, user } = await this.verifyUser(initData);
-
-    if (!isVerified) {
-      throw new UnauthorizedException('User is not verified');
-    }
-
-    const { data } = await this.fartyClawGameApi.get('/getTGBand');
-    const list: ClaimUserDto[] = Array.from(data?.info?.list) || [];
-    const userOnList = list.find((u) => u.openid === user.id);
-
-    console.log('userOnList', userOnList);
   }
 
   async verifyUser(initData: string) {

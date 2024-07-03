@@ -1,9 +1,9 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { ApiKey } from '../common';
 
-import { ClaimPrizeDto, SaveUserDto } from './dto';
+import { SaveUserDto } from './dto';
 import { FartyClawService } from './farty-claw.service';
 
 @ApiTags('FartyClaw')
@@ -24,14 +24,9 @@ export class FartyClawController {
     return this.fartyClawService.getLeaderboard();
   }
 
-  @Get('leaderboard/me')
-  getMyLeaderboardPosition(@Query('initData') initData: string) {
+  @Post('leaderboard/me')
+  getMyLeaderboardPosition(@Body('initData') initData: string) {
     return this.fartyClawService.getMyLeaderboardPosition(initData);
-  }
-
-  @Post('claim-prize')
-  claimFartyLeaguePrize(@Body() { address, initData }: ClaimPrizeDto) {
-    return this.fartyClawService.claimFartyLeaguePrize(address, initData);
   }
 
   @Post('user')
