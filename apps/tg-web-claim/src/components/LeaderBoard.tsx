@@ -157,14 +157,15 @@ export function Leaderboard({ className }: Props) {
               <span className="text-[15px] font-normal text-center">
                 You will receive{' '}
                 {Intl.NumberFormat('en', {
-              maximumFractionDigits: 2,
-              notation: 'compact',
-            }).format(
-              (myRank?.rank ?? 0) > MAX_RANK
-                ? 0
-                : calculateNOTs(myRank?.gold ?? 0, sum),
-            )} NOTs to your
-                wallet {Address.parse(user.address).toString()} within 3 days.
+                  maximumFractionDigits: 2,
+                  notation: 'compact',
+                }).format(
+                  (myRank?.rank ?? 0) > MAX_RANK
+                    ? 0
+                    : calculateNOTs(myRank?.gold ?? 0, sum),
+                )}{' '}
+                NOTs to your wallet {Address.parse(user.address).toString()}{' '}
+                within 3 days.
               </span>
             ) : (
               <span className="text-[15px] font-normal text-center">
