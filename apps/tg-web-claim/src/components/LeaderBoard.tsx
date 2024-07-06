@@ -27,7 +27,7 @@ function calculateNOTs(gold: number, sum: number) {
 
 export function Leaderboard({ className }: Props) {
   const { data: leaderboard, isPending: isLoading } = useGetLeaderboard();
-  const { list: users = [], sum = 0 } = leaderboard || {};
+  const { list: users = [], sum = 1 } = leaderboard || {};
   const { data: myRank, isPending: isLoadingMyRank } =
     useGetMyLeaderboardPosition(WebApp.initData);
   const { connected, tonConnectUI } = useTonConnect();
@@ -50,11 +50,14 @@ export function Leaderboard({ className }: Props) {
     {
       className: 'rounded-tl-[4px] rounded-bl-[4px]',
       header: 'Rank',
+      headerClassName: 'w-9',
       key: 'rank',
       render: (_data, idx = 0) => idx + 1,
     },
     {
+      className: 'truncate',
       header: 'Telegram ID',
+      headerClassName: 'w-24',
       key: 'nickname',
     },
     {
