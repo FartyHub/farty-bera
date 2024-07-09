@@ -172,8 +172,15 @@ export function Leaderboard({ className }: Props) {
               </span>
             ) : (
               <span className="text-[15px] font-normal text-center">
-                You have won {Intl.NumberFormat('en').format(myRank?.gold ?? 0)}{' '}
-                NOTs from Farty League.
+                You have won{' '}
+                {Intl.NumberFormat('en', {
+                  maximumFractionDigits: 2,
+                  notation: 'compact',
+                }).format(
+                  (myRank?.rank ?? 0) > MAX_RANK
+                    ? 0
+                    : calculateNOTs(myRank?.gold ?? 0, sum),
+                )}{' '}NOTs from Farty League.
                 <br />
                 Connect your wallet address.
               </span>
