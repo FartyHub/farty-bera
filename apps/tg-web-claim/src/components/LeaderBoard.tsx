@@ -1,6 +1,6 @@
 import WebApp from '@twa-dev/sdk';
 import clsx from 'clsx';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Address } from 'ton-core';
 
 import { useAuth } from '../contexts';
@@ -11,6 +11,7 @@ import {
   useTonConnect,
 } from '../hooks';
 import { ClaimUserDto } from '../services/tgApiService';
+import { truncateMiddle } from '../utils';
 
 import { Table, TableColumn } from './Table';
 
@@ -19,10 +20,12 @@ type Props = {
 };
 
 const MAX_RANK = 200;
+const MAX_NOTS = 100000;
+const MAX_ADDRESS_LENGTH = 8;
 
 function calculateNOTs(gold: number, sum: number) {
   // eslint-disable-next-line no-magic-numbers
-  return 100000 * (gold / sum);
+  return MAX_NOTS * (gold / sum);
 }
 
 export function Leaderboard({ className }: Props) {
@@ -35,8 +38,22 @@ export function Leaderboard({ className }: Props) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dialogRef = useRef(null);
   useOutsideAlerter(dialogRef, () => setIsOpen(false));
+  const startTime = new Date('2024-06-04T12:00:00Z');
+  const endTime = new Date('2024-07-25T12:00:00Z');
+  const hasEnded = Date.now() >= endTime.getTime();
+  const canOpen =
+    hasEnded && (myRank?.rank ?? 0) > MAX_RANK
+      ? false
+      : !!calculateNOTs(myRank?.gold ?? 0, sum);
 
   const isClaimed = user?.address;
+
+  useEffect(() => {
+    if (canOpen) {
+      setIsOpen(hasEnded);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function handleConnectWallet() {
     if (connected) {
@@ -87,24 +104,81 @@ export function Leaderboard({ className }: Props) {
       <div className="flex bg-white/20 border border-[#EBECEF]/20 justify-center py-[21px]">
         <img alt="logo" className="h-[17.5px]" src="/images/logo.png" />
       </div>
-      <div className="flex flex-col gap-2 items-center text-center">
-        <div className="px-3 py-2 bg-[#131B2F]/60 rounded-xl font-bold text-[13px]">
-          2024.6.31 UTC 12:00:00 - 2024.7.4 UTC 12:00:00
+      <div className="flex flex-col gap-2 items-center text-center px-[25px]">
+        <div className="flex justify-between text-[13px] font-medium items-center w-full">
+          {user?.address ? (
+            <span className="flex gap-[6px] items-center">
+              <img alt="wallet" className="size-4" src="/images/wallet.svg" />
+              {truncateMiddle(
+                Address.parse(user.address).toString(),
+                MAX_ADDRESS_LENGTH,
+              )}
+            </span>
+          ) : (
+            <span />
+          )}
+          <button
+            className="flex gap-[6px] items-center px-2 py-1 rounded-full border border-gray-200"
+            onClick={handleConnectWallet}
+          >
+            {user?.address ? (
+              <>
+                <img alt="logout" className="size-4" src="/images/logout.svg" />
+                Switch Wallet
+              </>
+            ) : (
+              <>
+                <img alt="wallet" className="size-4" src="/images/wallet.svg" />
+                Connect Wallet
+              </>
+            )}
+          </button>
         </div>
         <div className="font-bold text-[19px]">Farty League</div>
-        <div className="font-normal text-[13px]">
-          Monthly incentive league for Farty players.
+        <div className="font-normal text-[13px] text-[#98A2B3]">
+          <span className="text-[#FFCA0D] font-bold">
+            {Intl.NumberFormat('en').format(MAX_NOTS)} NOTs
+          </span>{' '}
+          rewarded to{' '}
+          <span className="text-[#FFCA0D] font-bold">
+            TOP {Intl.NumberFormat('en').format(MAX_RANK)} players
+          </span>{' '}
           <br />
-          Play Farty Claw, earn coins, and WIN PRIZE.
+          with accumulated Farty Claw Coins.
         </div>
-        <div className="font-medium text-[13px] text-[#F2C94C]">
-          Farty League Rules
+        <div className="p-2 w-full bg-[#131B2F]/60 rounded-xl font-bold text-[13px] whitespace-nowrap">
+          {hasEnded ? (
+            <>
+              Ended on {endTime.getUTCFullYear()}.{endTime.getUTCMonth() + 1}.
+              {endTime.getUTCDate()} UTC{' '}
+              {String(endTime.getUTCHours()).padStart(2, '0')}:
+              {String(endTime.getUTCMinutes()).padStart(2, '0')}:
+              {String(endTime.getUTCSeconds()).padStart(2, '0')}
+            </>
+          ) : (
+            <>
+              {startTime.getUTCFullYear()}.{startTime.getUTCMonth() + 1}.
+              {startTime.getUTCDate()} UTC{' '}
+              {String(startTime.getUTCHours()).padStart(2, '0')}:
+              {String(startTime.getUTCMinutes()).padStart(2, '0')}:
+              {String(startTime.getUTCSeconds()).padStart(2, '0')} -{' '}
+              {endTime.getUTCFullYear()}.{endTime.getUTCMonth() + 1}.
+              {endTime.getUTCDate()} UTC{' '}
+              {String(endTime.getUTCHours()).padStart(2, '0')}:
+              {String(endTime.getUTCMinutes()).padStart(2, '0')}:
+              {String(endTime.getUTCSeconds()).padStart(2, '0')}
+            </>
+          )}
         </div>
       </div>
       <div className="flex flex-col items-center gap-[10px] mx-[25px]">
         <button
           className="flex w-full px-4 py-[10px] items-center justify-between rounded-[4px] text-[13px] font-medium text-[#101828] bg-gradient-to-r from-[#FFF869] to-[#FFCA43]"
-          onClick={() => setIsOpen(true)}
+          onClick={() => {
+            if (canOpen) {
+              setIsOpen(true);
+            }
+          }}
         >
           <span>{myRank?.rank || '-'}</span>
           <span>
@@ -180,7 +254,8 @@ export function Leaderboard({ className }: Props) {
                   (myRank?.rank ?? 0) > MAX_RANK
                     ? 0
                     : calculateNOTs(myRank?.gold ?? 0, sum),
-                )}{' '}NOTs from Farty League.
+                )}{' '}
+                NOTs from Farty League.
                 <br />
                 Connect your wallet address.
               </span>
