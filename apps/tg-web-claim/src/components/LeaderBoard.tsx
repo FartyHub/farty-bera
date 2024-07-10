@@ -36,11 +36,13 @@ export function Leaderboard({ className }: Props) {
   const { connected, tonConnectUI } = useTonConnect();
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  // On Development Mode for testing
+  const [hasEndedTest, setHasEndedTest] = useState<boolean>(false);
   const dialogRef = useRef(null);
   useOutsideAlerter(dialogRef, () => setIsOpen(false));
   const startTime = new Date('2024-06-04T12:00:00Z');
   const endTime = new Date('2024-07-25T12:00:00Z');
-  const hasEnded = Date.now() >= endTime.getTime();
+  const hasEnded = hasEndedTest || Date.now() >= endTime.getTime();
   const canOpen =
     hasEnded && (myRank?.rank ?? 0) > MAX_RANK
       ? false
@@ -53,7 +55,7 @@ export function Leaderboard({ className }: Props) {
       setIsOpen(hasEnded);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [hasEnded]);
 
   async function handleConnectWallet() {
     if (connected) {
@@ -146,7 +148,10 @@ export function Leaderboard({ className }: Props) {
           <br />
           with accumulated Farty Claw Coins.
         </div>
-        <div className="p-2 w-full bg-[#131B2F]/60 rounded-xl font-bold text-[13px] whitespace-nowrap">
+        <div
+          className="p-2 w-full bg-[#131B2F]/60 rounded-xl font-bold text-[13px] whitespace-nowrap"
+          onClick={() => setHasEndedTest((prev) => !prev)}
+        >
           {hasEnded ? (
             <>
               Ended on {endTime.getUTCFullYear()}.{endTime.getUTCMonth() + 1}.
