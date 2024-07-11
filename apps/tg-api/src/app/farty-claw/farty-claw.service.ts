@@ -107,7 +107,9 @@ export class FartyClawService {
   async getLeaderboard(date?: string) {
     this.logger.log('[GET_LEADERBOARD]');
 
-    const { data } = await this.fartyClawGameApi.get(`/getTGBand?date=${date}`);
+    const { data } = await this.fartyClawGameApi.get(
+      `/getTGBand` + (date ? `?date=${date}` : ''),
+    );
     const list: ClaimUserDto[] = Array.from(data?.info?.list) || [];
     const sum = data?.info?.SumGold2 || 0;
 
@@ -123,7 +125,7 @@ export class FartyClawService {
     }
 
     const { data } = await this.fartyClawGameApi.get(
-      `/getTGBand?tgid=${user.id}&date=${date}`,
+      `/getTGBand?tgid=${user.id}` + (date ? `&date=${date}` : ''),
     );
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { list, ...rest } = data?.info || {};

@@ -31,12 +31,11 @@ function calculateNOTs(gold: number, sum: number) {
 export function Leaderboard({ className }: Props) {
   const startTime = new Date('2024-06-04T12:00:00Z');
   const endTime = new Date('2024-07-25T12:00:00Z');
-  const apiDate = endTime.toISOString().split('T')[0];
-  const { data: leaderboard, isPending: isLoading } =
-    useGetLeaderboard(apiDate);
+  // const apiDate = endTime.toISOString().split('T')[0];
+  const { data: leaderboard, isPending: isLoading } = useGetLeaderboard();
   const { list: users = [], sum = 1 } = leaderboard || {};
   const { data: myRank, isPending: isLoadingMyRank } =
-    useGetMyLeaderboardPosition(WebApp.initData, apiDate);
+    useGetMyLeaderboardPosition(WebApp.initData);
   const { connected, tonConnectUI } = useTonConnect();
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState<boolean>(false);
