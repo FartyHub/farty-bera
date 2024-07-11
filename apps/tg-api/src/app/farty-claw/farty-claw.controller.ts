@@ -3,42 +3,35 @@ import { ApiTags } from '@nestjs/swagger';
 
 import { ApiKey } from '../common';
 
-import { ClaimPrizeDto, SaveUserDto } from './dto';
+import { SaveUserDto } from './dto';
 import { FartyClawService } from './farty-claw.service';
 
 @ApiTags('FartyClaw')
 @Controller('farty-claw')
+@ApiKey()
 export class FartyClawController {
   constructor(private readonly fartyClawService: FartyClawService) {
     // no op
   }
 
   @Get('invoice/:amount')
-  @ApiKey()
   getInvoiceLink(@Param('amount') amount: string) {
     return this.fartyClawService.getInvoiceLink(+amount);
   }
 
   @Get('leaderboard')
-  @ApiKey()
-  getLeaderboard() {
-    return this.fartyClawService.getLeaderboard();
+  getLeaderboard(@Query('date') date?: string) {
+    return this.fartyClawService.getLeaderboard(date);
   }
 
-  @Get('leaderboard/me')
-  @ApiKey()
-  getMyLeaderboardPosition(@Query('initData') initData: string) {
-    return this.fartyClawService.getMyLeaderboardPosition(initData);
-  }
-
-  @Post('claim-prize')
-  @ApiKey()
-  claimFartyLeaguePrize(@Body() { address, initData }: ClaimPrizeDto) {
-    return this.fartyClawService.claimFartyLeaguePrize(address, initData);
+  @Post('leaderboard/me')
+  getMyLeaderboardPosition(
+    @Body() { date, initData }: { date?: string; initData: string },
+  ) {
+    return this.fartyClawService.getMyLeaderboardPosition(initData, date);
   }
 
   @Post('user')
-  @ApiKey()
   saveUser(@Body() saveUserDto: SaveUserDto) {
     return this.fartyClawService.saveUser(saveUserDto);
   }

@@ -17,17 +17,28 @@ export type ClaimUserDto = {
   id: string;
   nickname: string;
   openid: string;
+  rank?: number;
   username?: string;
 };
 
-export async function getLeaderboard() {
+export async function getLeaderboard(date?: string): Promise<{
+  list: ClaimUserDto[];
+  sum: number;
+}> {
   try {
-    const { data } = await tgApiClient.get('/farty-claw/leaderboard');
+    const { data } = await tgApiClient.get(`/farty-claw/leaderboard`, {
+      params: {
+        date,
+      },
+    });
 
-    return Array.from(data as ClaimUserDto[]).map((rank) => ({
-      ...rank,
-      id: rank.openid,
-    }));
+    return {
+      list: Array.from(data.list as ClaimUserDto[]).map((rank) => ({
+        ...rank,
+        id: rank.openid,
+      })),
+      sum: data.sum,
+    };
   } catch (error) {
     console.error(error);
 
@@ -35,11 +46,16 @@ export async function getLeaderboard() {
   }
 }
 
-export async function getMyLeaderboardPosition(initData: string) {
+export async function getMyLeaderboardPosition(
+  initData: string,
+  date?: string,
+) {
   try {
-    const { data } = await tgApiClient.get(
-      `/farty-claw/leaderboard/me?initData=${initData}`,
-    );
+    const { data } = await tgApiClient.post(`/farty-claw/leaderboard/me`, {
+      date,
+      initData,
+    });
+    console.log('data', data);
 
     return {
       ...data,
@@ -55,21 +71,6 @@ export async function getMyLeaderboardPosition(initData: string) {
 export async function saveUser(address: string, initData: string) {
   try {
     const { data } = await tgApiClient.post('/farty-claw/user/', {
-      address,
-      initData,
-    });
-
-    return data;
-  } catch (error) {
-    console.error(error);
-
-    throw error;
-  }
-}
-
-export async function claimPrize(address: string, initData: string) {
-  try {
-    const { data } = await tgApiClient.post('/farty-claw/claim-prize/', {
       address,
       initData,
     });

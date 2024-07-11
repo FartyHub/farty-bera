@@ -104,16 +104,19 @@ export class FartyClawService {
     return existingUser;
   }
 
-  async getLeaderboard() {
+  async getLeaderboard(date?: string) {
     this.logger.log('[GET_LEADERBOARD]');
 
-    const { data } = await this.fartyClawGameApi.get('/getTGBand');
+    const { data } = await this.fartyClawGameApi.get(
+      `/getTGBand` + (date ? `?date=${date}` : ''),
+    );
     const list: ClaimUserDto[] = Array.from(data?.info?.list) || [];
+    const sum = data?.info?.SumGold2 || 0;
 
-    return list;
+    return { list, sum };
   }
 
-  async getMyLeaderboardPosition(initData: string) {
+  async getMyLeaderboardPosition(initData: string, date?: string) {
     this.logger.log('[GET_USER_RANKING]', initData);
     const { isVerified, user } = await this.verifyUser(initData);
 
@@ -121,25 +124,13 @@ export class FartyClawService {
       throw new UnauthorizedException('User is not verified');
     }
 
-    const { data } = await this.fartyClawGameApi.get('/getTGBand');
-    const list: ClaimUserDto[] = Array.from(data?.info?.list) || [];
+    const { data } = await this.fartyClawGameApi.get(
+      `/getTGBand?tgid=${user.id}` + (date ? `&date=${date}` : ''),
+    );
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { list, ...rest } = data?.info || {};
 
-    return list.find((u) => u.openid === user.id);
-  }
-
-  async claimFartyLeaguePrize(address: string, initData: string) {
-    this.logger.log('[CLAIM_FARTY_LEAGUE_PRIZE]', address, initData);
-    const { isVerified, user } = await this.verifyUser(initData);
-
-    if (!isVerified) {
-      throw new UnauthorizedException('User is not verified');
-    }
-
-    const { data } = await this.fartyClawGameApi.get('/getTGBand');
-    const list: ClaimUserDto[] = Array.from(data?.info?.list) || [];
-    const userOnList = list.find((u) => u.openid === user.id);
-
-    console.log('userOnList', userOnList);
+    return rest;
   }
 
   async verifyUser(initData: string) {

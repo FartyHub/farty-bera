@@ -1,5 +1,6 @@
 export enum ConfigKeys {
   ApiKey = 'X_API_KEY',
+  ClaimImageUrl = 'CLAIM_IMAGE_URL',
   ClaimWebUrl = 'CLAIM_WEB_URL',
   CommunityUrl = 'COMMUNITY_URL',
   DBDatabase = 'DB_DATABASE',
@@ -9,7 +10,7 @@ export enum ConfigKeys {
   DBUsername = 'DB_USERNAME',
   Env = 'ENVIRONMENT',
   FartyClawApiUrl = 'FARTY_CLAW_API_URL',
-  MainImageUUrl = 'MAIN_IMAGE_URL',
+  MainImageUrl = 'MAIN_IMAGE_URL',
   Salt = 'SALT',
   TelegramApiKey = 'TELEGRAM_API_KEY',
   WebUrl = 'WEB_URL',
