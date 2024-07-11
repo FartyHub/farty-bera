@@ -101,7 +101,7 @@ export function Table<T extends { id: string }>(props: TableProps<T>) {
     <div className={clsx('w-full flex-1 overflow-auto', containerClassName)}>
       <table
         className={clsx(
-          'w-full table-auto text-[13px] border-spacing-y-[10px] border-separate',
+          'w-full table-fixed text-[13px] border-spacing-y-[10px] border-separate',
           tableClassName,
         )}
       >

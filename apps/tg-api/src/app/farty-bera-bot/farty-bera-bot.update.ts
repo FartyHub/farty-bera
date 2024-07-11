@@ -46,7 +46,7 @@ export class FartyBeraBotUpdate {
 
     ctx.replyWithPhoto(
       {
-        url: this.configService.get<string>(ConfigKeys.MainImageUUrl),
+        url: this.configService.get<string>(ConfigKeys.MainImageUrl),
       },
       {
         caption: 'Catch a bera in the Farty Arcade and earn $NOTs.',
@@ -57,6 +57,14 @@ export class FartyBeraBotUpdate {
                 text: 'Play Farty Claw',
                 web_app: {
                   url: this.configService.get<string>(ConfigKeys.WebUrl),
+                },
+              },
+            ],
+            [
+              {
+                text: 'Farty League',
+                web_app: {
+                  url: this.configService.get<string>(ConfigKeys.ClaimWebUrl),
                 },
               },
             ],
@@ -136,20 +144,27 @@ export class FartyBeraBotUpdate {
 
     this.saveUser(ctx);
 
-    ctx.reply('Claim your $NOTs now!', {
-      reply_markup: {
-        inline_keyboard: [
-          [
-            {
-              text: 'Claim $NOTs',
-              web_app: {
-                url: this.configService.get<string>(ConfigKeys.ClaimWebUrl),
-              },
-            },
-          ],
-        ],
+    ctx.replyWithPhoto(
+      {
+        url: this.configService.get<string>(ConfigKeys.ClaimImageUrl),
       },
-    });
+      {
+        caption:
+          'Top Farty League leaderboard and win $NOTs. 100,000 NOTs reward for top Farty Claw winners.',
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: 'Farty League',
+                web_app: {
+                  url: this.configService.get<string>(ConfigKeys.ClaimWebUrl),
+                },
+              },
+            ],
+          ],
+        },
+      },
+    );
   }
 
   // @Hears('hi')
