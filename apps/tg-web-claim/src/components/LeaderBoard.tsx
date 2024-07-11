@@ -40,11 +40,9 @@ export function Leaderboard({ className }: Props) {
   const { connected, tonConnectUI } = useTonConnect();
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  // On Development Mode for testing
-  const [hasEndedTest, setHasEndedTest] = useState<boolean>(false);
   const dialogRef = useRef(null);
   useOutsideAlerter(dialogRef, () => setIsOpen(false));
-  const hasEnded = hasEndedTest || Date.now() >= endTime.getTime();
+  const hasEnded = Date.now() >= endTime.getTime();
   const canOpen =
     hasEnded &&
     ((myRank?.rank ?? 0) > MAX_RANK
@@ -151,10 +149,7 @@ export function Leaderboard({ className }: Props) {
           <br />
           with accumulated Farty Claw Coins.
         </div>
-        <div
-          className="p-2 w-full bg-[#131B2F]/60 rounded-xl font-bold text-[13px] whitespace-nowrap"
-          onClick={() => setHasEndedTest((prev) => !prev)}
-        >
+        <div className="p-2 w-full bg-[#131B2F]/60 rounded-xl font-bold text-[13px] whitespace-nowrap">
           {hasEnded ? (
             <>
               Ended on {endTime.getUTCFullYear()}.{endTime.getUTCMonth() + 1}.
