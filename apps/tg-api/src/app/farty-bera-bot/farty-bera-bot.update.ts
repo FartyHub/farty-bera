@@ -141,12 +141,13 @@ export class FartyBeraBotUpdate {
         url: this.configService.get<string>(ConfigKeys.ClaimImageUrl),
       },
       {
-        caption: 'Claim your $NOTs now!',
+        caption:
+          'Top Farty League leaderboard and win $NOTs. 100,000 NOTs reward for top Farty Claw winners.',
         reply_markup: {
           inline_keyboard: [
             [
               {
-                text: 'Claim $NOTs',
+                text: 'Farty League',
                 web_app: {
                   url: this.configService.get<string>(ConfigKeys.ClaimWebUrl),
                 },
