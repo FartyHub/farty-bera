@@ -62,6 +62,14 @@ export class FartyBeraBotUpdate {
             ],
             [
               {
+                text: 'Farty League',
+                web_app: {
+                  url: this.configService.get<string>(ConfigKeys.ClaimWebUrl),
+                },
+              },
+            ],
+            [
+              {
                 text: 'Join Community',
                 url: this.configService.get<string>(ConfigKeys.CommunityUrl),
               },
