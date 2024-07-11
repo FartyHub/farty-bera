@@ -21,12 +21,16 @@ export type ClaimUserDto = {
   username?: string;
 };
 
-export async function getLeaderboard(): Promise<{
+export async function getLeaderboard(date?: string): Promise<{
   list: ClaimUserDto[];
   sum: number;
 }> {
   try {
-    const { data } = await tgApiClient.get('/farty-claw/leaderboard');
+    const { data } = await tgApiClient.get(`/farty-claw/leaderboard`, {
+      params: {
+        date,
+      },
+    });
 
     return {
       list: Array.from(data.list as ClaimUserDto[]).map((rank) => ({
@@ -42,9 +46,13 @@ export async function getLeaderboard(): Promise<{
   }
 }
 
-export async function getMyLeaderboardPosition(initData: string) {
+export async function getMyLeaderboardPosition(
+  initData: string,
+  date?: string,
+) {
   try {
     const { data } = await tgApiClient.post(`/farty-claw/leaderboard/me`, {
+      date,
       initData,
     });
     console.log('data', data);

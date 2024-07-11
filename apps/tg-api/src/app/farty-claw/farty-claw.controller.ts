@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { ApiKey } from '../common';
@@ -20,13 +20,15 @@ export class FartyClawController {
   }
 
   @Get('leaderboard')
-  getLeaderboard() {
-    return this.fartyClawService.getLeaderboard();
+  getLeaderboard(@Query('date') date?: string) {
+    return this.fartyClawService.getLeaderboard(date);
   }
 
   @Post('leaderboard/me')
-  getMyLeaderboardPosition(@Body('initData') initData: string) {
-    return this.fartyClawService.getMyLeaderboardPosition(initData);
+  getMyLeaderboardPosition(
+    @Body() { date, initData }: { date?: string; initData: string },
+  ) {
+    return this.fartyClawService.getMyLeaderboardPosition(initData, date);
   }
 
   @Post('user')

@@ -29,10 +29,14 @@ function calculateNOTs(gold: number, sum: number) {
 }
 
 export function Leaderboard({ className }: Props) {
-  const { data: leaderboard, isPending: isLoading } = useGetLeaderboard();
+  const startTime = new Date('2024-06-04T12:00:00Z');
+  const endTime = new Date('2024-07-25T12:00:00Z');
+  const apiDate = endTime.toISOString().split('T')[0];
+  const { data: leaderboard, isPending: isLoading } =
+    useGetLeaderboard(apiDate);
   const { list: users = [], sum = 1 } = leaderboard || {};
   const { data: myRank, isPending: isLoadingMyRank } =
-    useGetMyLeaderboardPosition(WebApp.initData);
+    useGetMyLeaderboardPosition(WebApp.initData, apiDate);
   const { connected, tonConnectUI } = useTonConnect();
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -40,8 +44,6 @@ export function Leaderboard({ className }: Props) {
   const [hasEndedTest, setHasEndedTest] = useState<boolean>(false);
   const dialogRef = useRef(null);
   useOutsideAlerter(dialogRef, () => setIsOpen(false));
-  const startTime = new Date('2024-06-04T12:00:00Z');
-  const endTime = new Date('2024-07-25T12:00:00Z');
   const hasEnded = hasEndedTest || Date.now() >= endTime.getTime();
   const canOpen =
     hasEnded &&

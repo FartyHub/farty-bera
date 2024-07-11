@@ -104,19 +104,17 @@ export class FartyClawService {
     return existingUser;
   }
 
-  async getLeaderboard() {
+  async getLeaderboard(date?: string) {
     this.logger.log('[GET_LEADERBOARD]');
 
-    const { data } = await this.fartyClawGameApi.get(
-      '/getTGBand?date=2024-06-30',
-    );
+    const { data } = await this.fartyClawGameApi.get(`/getTGBand?date=${date}`);
     const list: ClaimUserDto[] = Array.from(data?.info?.list) || [];
     const sum = data?.info?.SumGold2 || 0;
 
     return { list, sum };
   }
 
-  async getMyLeaderboardPosition(initData: string) {
+  async getMyLeaderboardPosition(initData: string, date?: string) {
     this.logger.log('[GET_USER_RANKING]', initData);
     const { isVerified, user } = await this.verifyUser(initData);
 
@@ -125,7 +123,7 @@ export class FartyClawService {
     }
 
     const { data } = await this.fartyClawGameApi.get(
-      `/getTGBand?tgid=${user.id}&date=2024-06-30`,
+      `/getTGBand?tgid=${user.id}&date=${date}`,
     );
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { list, ...rest } = data?.info || {};
