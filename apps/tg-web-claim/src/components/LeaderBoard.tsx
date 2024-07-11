@@ -44,7 +44,8 @@ export function Leaderboard({ className }: Props) {
   const endTime = new Date('2024-07-25T12:00:00Z');
   const hasEnded = hasEndedTest || Date.now() >= endTime.getTime();
   const canOpen =
-    hasEnded && ((myRank?.rank ?? 0) > MAX_RANK
+    hasEnded &&
+    ((myRank?.rank ?? 0) > MAX_RANK
       ? false
       : !!calculateNOTs(myRank?.gold ?? 0, sum));
 
