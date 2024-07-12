@@ -20,15 +20,31 @@ export class FartyClawController {
   }
 
   @Get('leaderboard')
-  getLeaderboard(@Query('date') date?: string) {
-    return this.fartyClawService.getLeaderboard(date);
+  getLeaderboard(
+    @Query('sdate') sdate?: string,
+    @Query('edate') edate?: string,
+  ) {
+    return this.fartyClawService.getLeaderboard(sdate, edate);
   }
 
   @Post('leaderboard/me')
   getMyLeaderboardPosition(
-    @Body() { date, initData }: { date?: string; initData: string },
+    @Body()
+    {
+      edate,
+      initData,
+      sdate,
+    }: {
+      edate?: string;
+      initData: string;
+      sdate?: string;
+    },
   ) {
-    return this.fartyClawService.getMyLeaderboardPosition(initData, date);
+    return this.fartyClawService.getMyLeaderboardPosition(
+      initData,
+      sdate,
+      edate,
+    );
   }
 
   @Post('user')

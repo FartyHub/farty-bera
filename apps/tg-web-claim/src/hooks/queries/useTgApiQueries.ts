@@ -8,16 +8,20 @@ import {
 const LEADERBOARD_QUERY = 'LEADERBOARD';
 const MY_LEADERBOARD_POSITION_QUERY = 'MY_LEADERBOARD_POSITION';
 
-export function useGetLeaderboard(date?: string) {
+export function useGetLeaderboard(sdate?: string, edate?: string) {
   return useQuery({
-    queryFn: () => getLeaderboard(date),
-    queryKey: [LEADERBOARD_QUERY, date],
+    queryFn: () => getLeaderboard(sdate, edate),
+    queryKey: [LEADERBOARD_QUERY, sdate, edate],
   });
 }
 
-export function useGetMyLeaderboardPosition(initData: string, date?: string) {
+export function useGetMyLeaderboardPosition(
+  initData: string,
+  sdate?: string,
+  edate?: string,
+) {
   return useQuery({
-    queryFn: () => getMyLeaderboardPosition(initData, date),
-    queryKey: [MY_LEADERBOARD_POSITION_QUERY, initData, date],
+    queryFn: () => getMyLeaderboardPosition(initData, sdate, edate),
+    queryKey: [MY_LEADERBOARD_POSITION_QUERY, initData, sdate, edate],
   });
 }

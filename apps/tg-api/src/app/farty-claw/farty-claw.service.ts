@@ -104,11 +104,13 @@ export class FartyClawService {
     return existingUser;
   }
 
-  async getLeaderboard(date?: string) {
-    this.logger.log('[GET_LEADERBOARD]');
+  async getLeaderboard(sdate?: string, edate?: string) {
+    this.logger.log('[GET_LEADERBOARD]', sdate, edate);
 
     const { data } = await this.fartyClawGameApi.get(
-      `/getTGBand` + (date ? `?date=${date}` : ''),
+      `/getTGBand` +
+        (sdate ? `?sdate=${sdate}` : '') +
+        (edate ? `&edate=${edate}` : ''),
     );
     const list: ClaimUserDto[] = Array.from(data?.info?.list) || [];
     const sum = data?.info?.SumGold2 || 0;
@@ -116,8 +118,12 @@ export class FartyClawService {
     return { list, sum };
   }
 
-  async getMyLeaderboardPosition(initData: string, date?: string) {
-    this.logger.log('[GET_USER_RANKING]', initData);
+  async getMyLeaderboardPosition(
+    initData: string,
+    sdate?: string,
+    edate?: string,
+  ) {
+    this.logger.log('[GET_USER_RANKING]', initData, sdate, edate);
     const { isVerified, user } = await this.verifyUser(initData);
 
     if (!isVerified) {
@@ -125,7 +131,9 @@ export class FartyClawService {
     }
 
     const { data } = await this.fartyClawGameApi.get(
-      `/getTGBand?tgid=${user.id}` + (date ? `&date=${date}` : ''),
+      `/getTGBand?tgid=${user.id}` +
+        (sdate ? `&sdate=${sdate}` : '') +
+        (edate ? `&edate=${edate}` : ''),
     );
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { list, ...rest } = data?.info || {};

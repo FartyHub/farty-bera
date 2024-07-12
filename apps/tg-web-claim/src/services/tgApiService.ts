@@ -21,14 +21,18 @@ export type ClaimUserDto = {
   username?: string;
 };
 
-export async function getLeaderboard(date?: string): Promise<{
+export async function getLeaderboard(
+  sdate?: string,
+  edate?: string,
+): Promise<{
   list: ClaimUserDto[];
   sum: number;
 }> {
   try {
     const { data } = await tgApiClient.get(`/farty-claw/leaderboard`, {
       params: {
-        date,
+        edate,
+        sdate,
       },
     });
 
@@ -48,12 +52,14 @@ export async function getLeaderboard(date?: string): Promise<{
 
 export async function getMyLeaderboardPosition(
   initData: string,
-  date?: string,
+  sdate?: string,
+  edate?: string,
 ) {
   try {
     const { data } = await tgApiClient.post(`/farty-claw/leaderboard/me`, {
-      date,
+      edate,
       initData,
+      sdate,
     });
     console.log('data', data);
 
