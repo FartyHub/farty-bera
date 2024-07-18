@@ -3,6 +3,7 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 import './styles.css';
 import Script from 'next/script';
+import { useEffect } from 'react';
 import { cookieToInitialState } from 'wagmi';
 
 import { VideoIntro } from '../components';
@@ -20,6 +21,27 @@ const queryClient = new QueryClient();
 
 function CustomApp({ Component, pageProps }: AppProps) {
   const initialState = cookieToInitialState(config, getCookie('wagmi'));
+
+  useEffect(() => {
+    if ((window as any)?.ethereum) {
+      (window as any).ethereum.request({
+        method: 'wallet_addEthereumChain',
+        params: [
+          {
+            blockExplorerUrls: ['https://bartio.beratrail.io/'],
+            chainId: '0x138D4',
+            chainName: 'Berachain bArtio',
+            nativeCurrency: {
+              decimals: 18,
+              name: 'Bera',
+              symbol: 'BERA',
+            },
+            rpcUrls: ['https://bartio.rpc.berachain.com/'],
+          },
+        ],
+      });
+    }
+  }, []);
 
   return (
     <>
