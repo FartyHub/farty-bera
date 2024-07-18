@@ -1,6 +1,5 @@
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config';
 import { cookieStorage, createStorage } from 'wagmi';
-import { berachainTestnet } from 'wagmi/chains';
 
 export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 
@@ -13,9 +12,29 @@ const metadata = {
   url: 'https://www.fartybera.xyz',
 };
 
-const chains = [berachainTestnet] as const;
 export const config = defaultWagmiConfig({
-  chains,
+  chains: [
+    {
+      blockExplorers: {
+        default: {
+          name: 'Bartio Testnet Explorer',
+          url: 'https://bartio.beratrail.io/',
+        },
+      },
+      id: 80084,
+      name: 'Berachain bArtio',
+      nativeCurrency: {
+        decimals: 18,
+        name: 'Bera',
+        symbol: 'BERA',
+      },
+      rpcUrls: {
+        default: {
+          http: ['https://bartio.rpc.berachain.com/'],
+        },
+      },
+    },
+  ],
   metadata,
   projectId,
   ssr: true,

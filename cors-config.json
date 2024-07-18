@@ -30,7 +30,19 @@
     "maxAgeSeconds": 3600
   },
   {
+    "origin": ["https://game-test-dot-farty-bera-420304.ue.r.appspot.com"],
+    "method": ["GET"],
+    "responseHeader": ["Content-Type"],
+    "maxAgeSeconds": 3600
+  },
+  {
     "origin": ["http://localhost:4200"],
+    "method": ["GET"],
+    "responseHeader": ["Content-Type"],
+    "maxAgeSeconds": 3600
+  },
+  {
+    "origin": ["http://localhost:3001"],
     "method": ["GET"],
     "responseHeader": ["Content-Type"],
     "maxAgeSeconds": 3600
