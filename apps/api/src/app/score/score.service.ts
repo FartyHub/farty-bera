@@ -10,7 +10,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { verifyAuthenticationMessage } from '../../utils';
+import { calculateHoneyScore, verifyAuthenticationMessage } from '../../utils';
 import { Applications, SignDto } from '../common';
 import { User } from '../user';
 
@@ -78,6 +78,10 @@ export class ScoreService {
       }
 
       user.fartyGamesPlayed += 1;
+      user.honeyScore = calculateHoneyScore(
+        user.fartyGamesPlayed,
+        user.fartyHighScore,
+      );
 
       await this.userRepository.save(user);
 
