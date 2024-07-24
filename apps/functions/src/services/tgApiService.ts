@@ -1,13 +1,15 @@
 /* eslint-disable no-console */
 import axios from 'axios';
+import { TG_API_URL, TG_X_API_KEY } from '../constants';
+import { Score } from '@farty-bera/api-lib';
 
-const TG_API = `${import.meta.env.VITE_TG_API_URL}/api`;
+const TG_API = `${TG_API_URL}/api`;
 
 const tgApiClient = axios.create({
   baseURL: TG_API,
   headers: {
     'Content-Type': 'application/json',
-    'x-api-key': import.meta.env.VITE_X_API_KEY,
+    'x-api-key': TG_X_API_KEY,
   },
 });
 
@@ -44,46 +46,23 @@ export async function getLeaderboard(
       sum: data.sum,
     };
   } catch (error) {
-    console.error(error);
+    console.error('getLeaderboard', error);
 
     throw error;
   }
 }
 
-export async function getMyLeaderboardPosition(
-  initData: string,
-  sdate?: string,
-  edate?: string,
-) {
+export async function getScore(userAddress: string): Promise<Score> {
   try {
-    const { data } = await tgApiClient.post(`/farty-claw/leaderboard/me`, {
-      edate,
-      initData,
-      sdate,
-    });
-    console.log('data', data);
-
-    return {
-      ...data,
-      id: data.openid,
-    } as ClaimUserDto;
-  } catch (error) {
-    console.error(error);
-
-    throw error;
-  }
-}
-
-export async function saveUser(address: string, initData: string) {
-  try {
-    const { data } = await tgApiClient.post('/farty-claw/user/', {
-      address,
-      initData,
+    const { data } = await tgApiClient.get(`/scores`, {
+      params: {
+        userAddress,
+      },
     });
 
     return data;
   } catch (error) {
-    console.error(error);
+    console.error('getLeaderboard', error);
 
     throw error;
   }
