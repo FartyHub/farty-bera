@@ -181,7 +181,7 @@ export class FartyClawService {
 
     if (endDate < today) {
       try {
-        const score = await this.scoreService.findOne(rest.openid, endDate);
+        const score = await this.scoreService.findOne(tgId, endDate);
 
         if (!score) {
           this.scoreService.createFartyClaw([
