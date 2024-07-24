@@ -1,3 +1,4 @@
+/* eslint-disable max-params */
 /* eslint-disable no-console */
 import axios from 'axios';
 
@@ -52,6 +53,7 @@ export async function getLeaderboard(
 
 export async function getMyLeaderboardPosition(
   initData: string,
+  tgId: string,
   sdate?: string,
   edate?: string,
 ) {
@@ -60,6 +62,7 @@ export async function getMyLeaderboardPosition(
       edate,
       initData,
       sdate,
+      tgId,
     });
     console.log('data', data);
 

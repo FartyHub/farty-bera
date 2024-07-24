@@ -1,3 +1,4 @@
+/* eslint-disable max-params */
 import { useQuery } from '@tanstack/react-query';
 
 import {
@@ -17,11 +18,12 @@ export function useGetLeaderboard(sdate?: string, edate?: string) {
 
 export function useGetMyLeaderboardPosition(
   initData: string,
+  tgId: string,
   sdate?: string,
   edate?: string,
 ) {
   return useQuery({
-    queryFn: () => getMyLeaderboardPosition(initData, sdate, edate),
-    queryKey: [MY_LEADERBOARD_POSITION_QUERY, initData, sdate, edate],
+    queryFn: () => getMyLeaderboardPosition(initData, tgId, sdate, edate),
+    queryKey: [MY_LEADERBOARD_POSITION_QUERY, initData, tgId, sdate, edate],
   });
 }

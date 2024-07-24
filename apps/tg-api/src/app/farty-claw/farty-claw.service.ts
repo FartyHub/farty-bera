@@ -16,12 +16,20 @@ import { InjectBot } from 'nestjs-telegraf';
 import { Context, Telegraf } from 'telegraf';
 import { Repository } from 'typeorm';
 
-import { ConfigKeys } from '../common';
+import { Applications, ConfigKeys } from '../common';
 import { FartyClawUsers } from '../farty-claw-user';
 import { InvoiceService } from '../invoice';
 import { ScoreService } from '../score';
 
 import { ClaimUserDto, SaveUserDto } from './dto';
+
+const MAX_RANK = 200;
+const MAX_NOTS = 100000;
+
+function calculateNOTs(gold: number, sum: number) {
+  // eslint-disable-next-line no-magic-numbers
+  return MAX_NOTS * (gold / sum);
+}
 
 @Injectable()
 export class FartyClawService {
@@ -109,12 +117,13 @@ export class FartyClawService {
   async getLeaderboard(sdate?: string, edate?: string) {
     this.logger.log('[GET_LEADERBOARD]', sdate, edate);
     const today = new Date();
-    const endDate = new Date(edate);
+    const endDate = edate ? new Date(edate) : today;
+    const eDate = endDate.toISOString().split('T')[0];
 
     const { data } = await this.fartyClawGameApi.get(
       `/getTGBand` +
         (sdate ? `?sdate=${sdate}` : '') +
-        (edate ? `&edate=${edate}` : ''),
+        (edate ? `&edate=${eDate}` : ''),
     );
     const list: ClaimUserDto[] = Array.from(data?.info?.list) || [];
     const sum = data?.info?.SumGold2 || 0;
@@ -126,14 +135,14 @@ export class FartyClawService {
           let claimUser = user;
 
           try {
-            const score = await this.scoreService.findOne(user.openid, endDate);
+            const score = await this.scoreService.findOne(user.openid);
 
             claimUser = {
               ...user,
               gold: score?.value ?? user.gold,
             };
           } catch (error) {
-            console.error('updateFartyClawScore', error);
+            console.error('getLeaderboard', error);
           }
 
           return claimUser;
@@ -146,12 +155,14 @@ export class FartyClawService {
 
   async getMyLeaderboardPosition(
     initData: string,
+    tgId: string,
     sdate?: string,
     edate?: string,
   ) {
-    this.logger.log('[GET_USER_RANKING]', initData, sdate, edate);
+    this.logger.log('[GET_USER_RANKING]', initData, tgId, sdate, edate);
     const today = new Date();
-    const endDate = new Date(edate);
+    const endDate = edate ? new Date(edate) : today;
+    const eDate = endDate.toISOString().split('T')[0];
     const { isVerified, user } = await this.verifyUser(initData);
 
     if (!isVerified) {
@@ -161,22 +172,42 @@ export class FartyClawService {
     const { data } = await this.fartyClawGameApi.get(
       `/getTGBand?tgid=${user.id}` +
         (sdate ? `&sdate=${sdate}` : '') +
-        (edate ? `&edate=${edate}` : ''),
+        (edate ? `&edate=${eDate}` : ''),
     );
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { list, ...rest } = data?.info || {};
+    const sum = data?.info?.SumGold2 || 0;
     let finalRest = rest;
 
     if (endDate < today) {
       try {
-        const score = await this.scoreService.findOne(rest.openid, endDate);
+        const score = await this.scoreService.findOne(tgId);
+
+        if (!score) {
+          this.scoreService.createFartyClaw([
+            {
+              game: Applications.FARTY_CLAW,
+              rewards: Intl.NumberFormat('en', {
+                maximumFractionDigits: 2,
+                notation: 'compact',
+              }).format(
+                (user.rank ?? 0) > MAX_RANK
+                  ? 0
+                  : calculateNOTs(user.gold ?? 0, sum),
+              ),
+              time: new Date().toISOString(),
+              userAddress: tgId,
+              value: rest.gold,
+            },
+          ]);
+        }
 
         finalRest = {
           ...rest,
           gold: score?.value ?? rest.gold,
         };
       } catch (error) {
-        console.error('updateFartyClawScore', error);
+        console.error('getMyLeaderboardPosition', error);
       }
     }
 
