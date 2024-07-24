@@ -19,6 +19,7 @@ import { Repository } from 'typeorm';
 import { ConfigKeys } from '../common';
 import { FartyClawUsers } from '../farty-claw-user';
 import { InvoiceService } from '../invoice';
+import { ScoreService } from '../score';
 
 import { ClaimUserDto, SaveUserDto } from './dto';
 
@@ -32,6 +33,7 @@ export class FartyClawService {
     @InjectBot() private fartyBot: Telegraf<Context>,
     @Inject(InvoiceService) private invoiceService: InvoiceService,
     @Inject(ConfigService) private readonly configService: ConfigService,
+    @Inject(ScoreService) private readonly scoreService: ScoreService,
     @InjectRepository(FartyClawUsers)
     private fartyClawUsersRepository: Repository<FartyClawUsers>,
   ) {
@@ -104,20 +106,52 @@ export class FartyClawService {
     return existingUser;
   }
 
-  async getLeaderboard(date?: string) {
-    this.logger.log('[GET_LEADERBOARD]');
+  async getLeaderboard(sdate?: string, edate?: string) {
+    this.logger.log('[GET_LEADERBOARD]', sdate, edate);
+    const today = new Date();
+    const endDate = new Date(edate);
 
     const { data } = await this.fartyClawGameApi.get(
-      `/getTGBand` + (date ? `?date=${date}` : ''),
+      `/getTGBand` +
+        (sdate ? `?sdate=${sdate}` : '') +
+        (edate ? `&edate=${edate}` : ''),
     );
     const list: ClaimUserDto[] = Array.from(data?.info?.list) || [];
     const sum = data?.info?.SumGold2 || 0;
+    let finalList = list;
 
-    return { list, sum };
+    if (endDate < today) {
+      finalList = await Promise.all(
+        list.map(async (user) => {
+          let claimUser = user;
+
+          try {
+            const score = await this.scoreService.findOne(user.openid, endDate);
+
+            claimUser = {
+              ...user,
+              gold: score?.value ?? user.gold,
+            };
+          } catch (error) {
+            console.error('updateFartyClawScore', error);
+          }
+
+          return claimUser;
+        }),
+      );
+    }
+
+    return { list: finalList, sum };
   }
 
-  async getMyLeaderboardPosition(initData: string, date?: string) {
-    this.logger.log('[GET_USER_RANKING]', initData);
+  async getMyLeaderboardPosition(
+    initData: string,
+    sdate?: string,
+    edate?: string,
+  ) {
+    this.logger.log('[GET_USER_RANKING]', initData, sdate, edate);
+    const today = new Date();
+    const endDate = new Date(edate);
     const { isVerified, user } = await this.verifyUser(initData);
 
     if (!isVerified) {
@@ -125,12 +159,28 @@ export class FartyClawService {
     }
 
     const { data } = await this.fartyClawGameApi.get(
-      `/getTGBand?tgid=${user.id}` + (date ? `&date=${date}` : ''),
+      `/getTGBand?tgid=${user.id}` +
+        (sdate ? `&sdate=${sdate}` : '') +
+        (edate ? `&edate=${edate}` : ''),
     );
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { list, ...rest } = data?.info || {};
+    let finalRest = rest;
 
-    return rest;
+    if (endDate < today) {
+      try {
+        const score = await this.scoreService.findOne(rest.openid, endDate);
+
+        finalRest = {
+          ...rest,
+          gold: score?.value ?? rest.gold,
+        };
+      } catch (error) {
+        console.error('updateFartyClawScore', error);
+      }
+    }
+
+    return finalRest;
   }
 
   async verifyUser(initData: string) {

@@ -93,6 +93,26 @@ export class ScoreService {
     }
   }
 
+  async createFartyClaw(createScoreDtos: SoleCreateScoreDto[]) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const scoresToCreate = createScoreDtos.map(({ hash, ...rest }) => rest);
+    this.logger.log(
+      `[CREATE_SCORE_FARTY_CLAW] ${JSON.stringify(createScoreDtos, null, 2)}`,
+    );
+
+    try {
+      const scores = this.scoresRepository.create(scoresToCreate);
+
+      await this.scoresRepository.save(scores);
+
+      return true;
+    } catch (error) {
+      this.logger.error(`[CREATE_SCORE_FARTY_CLAW] ${error.message}`);
+
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
   async findAll(address: string) {
     this.logger.log(`[GET_SCORES] ${address}`);
 
