@@ -46,13 +46,13 @@ export class ScoreService {
     try {
       let query = this.scoresRepository
         .createQueryBuilder('score')
-        .where('score.userAddress = :userAddress', { userAddress });
+        .where('score.user_address = :userAddress', { userAddress });
 
       if (date) {
-        query = query.andWhere('score.createdAt <= :date', { date });
+        query = query.andWhere('score.created_at <= :date', { date });
       }
 
-      query = query.orderBy('score.createdAt', 'DESC');
+      query = query.orderBy('score.created_at', 'DESC');
 
       return await query.getOne();
     } catch (error) {
