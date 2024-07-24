@@ -32,14 +32,18 @@ export function Leaderboard({ className }: Props) {
   const startTime = new Date('2024-06-04T12:00:00Z');
   const endTime = new Date('2024-07-25T12:00:00Z');
   const sDate = startTime.toISOString().split('T')[0];
-  const eDate = endTime.toISOString().split('T')[0];
   const { data: leaderboard, isPending: isLoading } = useGetLeaderboard(
     sDate,
-    eDate,
+    endTime.toISOString(),
   );
   const { list: users = [], sum = 1 } = leaderboard || {};
   const { data: myRank, isPending: isLoadingMyRank } =
-    useGetMyLeaderboardPosition(WebApp.initData, sDate, eDate);
+    useGetMyLeaderboardPosition(
+      WebApp.initData,
+      String(WebApp.initDataUnsafe.user?.id ?? ''),
+      sDate,
+      endTime.toISOString(),
+    );
   const { connected, tonConnectUI } = useTonConnect();
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState<boolean>(false);

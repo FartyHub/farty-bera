@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Score, ScoresApi, BulkSoleCreateScoreDto } from '@farty-bera/api-lib';
+import { ScoresApi, BulkSoleCreateScoreDto } from '@farty-bera/api-lib';
 import { AxiosError } from 'axios';
 
 import ApiClient from '../api-client';
