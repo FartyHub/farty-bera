@@ -135,7 +135,7 @@ export class FartyClawService {
           let claimUser = user;
 
           try {
-            const score = await this.scoreService.findOne(user.openid, endDate);
+            const score = await this.scoreService.findOne(user.openid);
 
             claimUser = {
               ...user,
@@ -181,7 +181,7 @@ export class FartyClawService {
 
     if (endDate < today) {
       try {
-        const score = await this.scoreService.findOne(tgId, endDate);
+        const score = await this.scoreService.findOne(tgId);
 
         if (!score) {
           this.scoreService.createFartyClaw([
