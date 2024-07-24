@@ -128,15 +128,10 @@ export class FartyClawService {
           try {
             const score = await this.scoreService.findOne(user.openid, endDate);
 
-            if (score) {
-              claimUser = {
-                gold: score.value,
-                head: user.head,
-                nickname: user.nickname,
-                openid: user.openid,
-                username: user.username,
-              };
-            }
+            claimUser = {
+              ...user,
+              gold: score?.value ?? user.gold,
+            };
           } catch (error) {
             console.error('updateFartyClawScore', error);
           }
@@ -155,6 +150,8 @@ export class FartyClawService {
     edate?: string,
   ) {
     this.logger.log('[GET_USER_RANKING]', initData, sdate, edate);
+    const today = new Date();
+    const endDate = new Date(edate);
     const { isVerified, user } = await this.verifyUser(initData);
 
     if (!isVerified) {
@@ -168,8 +165,22 @@ export class FartyClawService {
     );
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { list, ...rest } = data?.info || {};
+    let finalRest = rest;
 
-    return rest;
+    if (endDate < today) {
+      try {
+        const score = await this.scoreService.findOne(rest.openid, endDate);
+
+        finalRest = {
+          ...rest,
+          gold: score?.value ?? rest.gold,
+        };
+      } catch (error) {
+        console.error('updateFartyClawScore', error);
+      }
+    }
+
+    return finalRest;
   }
 
   async verifyUser(initData: string) {
