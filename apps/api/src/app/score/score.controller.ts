@@ -1,9 +1,11 @@
 import { Controller, Post, Body, Req } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { SkipThrottle } from '@nestjs/throttler';
 
 import { AuthenticatedRequest } from '../../types';
+import { ApiKey } from '../common';
 
-import { CreateScoreDto } from './dto/create-score.dto';
+import { BulkSoleCreateScoreDto, CreateScoreDto } from './dto/create-score.dto';
 import { Score } from './entities/score.entity';
 import { ScoreService } from './score.service';
 
@@ -25,5 +27,15 @@ export class ScoreController {
       message,
       signature,
     });
+  }
+
+  @Post('farty-claw')
+  @ApiOkResponse({ isArray: true, type: Score })
+  @ApiKey()
+  @SkipThrottle()
+  createFartyClaw(
+    @Body() { soleCreateScoreDto }: BulkSoleCreateScoreDto,
+  ): Promise<boolean> {
+    return this.scoreService.createFartyClaw(soleCreateScoreDto);
   }
 }

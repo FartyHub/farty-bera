@@ -14,6 +14,7 @@ import { FartyBeraBotUpdate } from './farty-bera-bot';
 import { FartyClawModule } from './farty-claw';
 import { FartyClawUsers } from './farty-claw-user';
 import { Invoice, InvoiceModule, InvoiceService } from './invoice';
+import { Score, ScoreModule } from './score';
 import { TelegramModule } from './telegram';
 
 const defaultDBOptions = {
@@ -43,11 +44,11 @@ console.log('defaultDBOptions: ', defaultDBOptions);
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TypeOrmModule.forFeature([Invoice, FartyClawUsers]),
+    TypeOrmModule.forFeature([Invoice, FartyClawUsers, Score]),
     TypeOrmModule.forRoot({
       ...defaultDBOptions,
       database: process.env.DB_DATABASE,
-      entities: [Invoice, FartyClawUsers],
+      entities: [Invoice, FartyClawUsers, Score],
       type: 'postgres',
     }),
     TelegrafModule.forRootAsync({
@@ -72,6 +73,7 @@ console.log('defaultDBOptions: ', defaultDBOptions);
     TelegramModule,
     FartyClawModule,
     InvoiceModule,
+    ScoreModule,
   ],
   providers: [
     {
