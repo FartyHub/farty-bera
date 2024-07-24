@@ -26,7 +26,7 @@ export const updateFartyClawScore = functions.http(
         (user.rank ?? 0) > MAX_RANK ? 0 : calculateNOTs(user.gold ?? 0, sum),
       ),
       time,
-      userAddress: user.id,
+      userAddress: user.openid,
       value: user.gold,
     }));
 

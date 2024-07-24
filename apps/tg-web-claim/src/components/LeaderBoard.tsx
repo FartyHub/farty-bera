@@ -38,7 +38,12 @@ export function Leaderboard({ className }: Props) {
   );
   const { list: users = [], sum = 1 } = leaderboard || {};
   const { data: myRank, isPending: isLoadingMyRank } =
-    useGetMyLeaderboardPosition(WebApp.initData, sDate, endTime.toISOString());
+    useGetMyLeaderboardPosition(
+      WebApp.initData,
+      String(WebApp.initDataUnsafe.user?.id ?? ''),
+      sDate,
+      endTime.toISOString(),
+    );
   const { connected, tonConnectUI } = useTonConnect();
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState<boolean>(false);

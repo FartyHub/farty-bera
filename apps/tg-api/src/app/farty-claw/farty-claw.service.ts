@@ -155,10 +155,11 @@ export class FartyClawService {
 
   async getMyLeaderboardPosition(
     initData: string,
+    tgId: string,
     sdate?: string,
     edate?: string,
   ) {
-    this.logger.log('[GET_USER_RANKING]', initData, sdate, edate);
+    this.logger.log('[GET_USER_RANKING]', initData, tgId, sdate, edate);
     const today = new Date();
     const endDate = edate ? new Date(edate) : today;
     const eDate = endDate.toISOString().split('T')[0];
@@ -195,7 +196,7 @@ export class FartyClawService {
                   : calculateNOTs(user.gold ?? 0, sum),
               ),
               time: new Date().toISOString(),
-              userAddress: rest.openid,
+              userAddress: tgId,
               value: rest.gold,
             },
           ]);

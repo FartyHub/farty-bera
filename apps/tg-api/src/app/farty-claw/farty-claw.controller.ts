@@ -34,14 +34,17 @@ export class FartyClawController {
       edate,
       initData,
       sdate,
+      tgId,
     }: {
       edate?: string;
       initData: string;
       sdate?: string;
+      tgId: string;
     },
   ) {
     return this.fartyClawService.getMyLeaderboardPosition(
       initData,
+      tgId,
       sdate,
       edate,
     );
