@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
-import axios from 'axios';
-import { TG_API_URL, TG_X_API_KEY } from '../constants';
 import { Score } from '@farty-bera/api-lib';
+import axios from 'axios';
+
+import { TG_API_URL, TG_X_API_KEY } from '../constants';
 
 const TG_API = `${TG_API_URL}/api`;
 
@@ -62,7 +63,7 @@ export async function getScore(userAddress: string): Promise<Score> {
 
     return data;
   } catch (error) {
-    console.error('getLeaderboard', error);
+    console.error('getScore', error);
 
     throw error;
   }
