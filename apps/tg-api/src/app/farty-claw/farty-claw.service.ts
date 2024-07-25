@@ -144,6 +144,7 @@ export class FartyClawService {
               ...user,
               address: fartyClawUser?.address,
               gold: score?.value ?? user.gold,
+              reward: score?.rewards,
             };
           } catch (error) {
             console.error('getLeaderboard', error);
@@ -213,6 +214,7 @@ export class FartyClawService {
           ...rest,
           address: fartyClawUser?.address,
           gold: score?.value ?? rest.gold,
+          reward: score?.rewards,
         };
       } catch (error) {
         console.error('getMyLeaderboardPosition', error);

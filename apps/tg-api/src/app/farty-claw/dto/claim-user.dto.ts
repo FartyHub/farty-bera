@@ -28,4 +28,9 @@ export class ClaimUserDto {
   @IsString()
   @Optional()
   address?: string;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsString()
+  @Optional()
+  reward?: string;
 }
