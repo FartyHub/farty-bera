@@ -136,10 +136,15 @@ export class FartyClawService {
 
           try {
             const score = await this.scoreService.findOne(user.openid);
+            const fartyClawUser = await this.fartyClawUsersRepository.findOne({
+              where: { telegramId: user.openid },
+            });
 
             claimUser = {
               ...user,
+              address: fartyClawUser?.address,
               gold: score?.value ?? user.gold,
+              reward: score?.rewards,
             };
           } catch (error) {
             console.error('getLeaderboard', error);
@@ -149,6 +154,8 @@ export class FartyClawService {
         }),
       );
     }
+
+    finalList.sort((a, b) => b.gold - a.gold);
 
     return { list: finalList, sum };
   }
@@ -182,6 +189,9 @@ export class FartyClawService {
     if (endDate < today) {
       try {
         const score = await this.scoreService.findOne(tgId);
+        const fartyClawUser = await this.fartyClawUsersRepository.findOne({
+          where: { telegramId: user.openid },
+        });
 
         if (!score) {
           this.scoreService.createFartyClaw([
@@ -204,7 +214,9 @@ export class FartyClawService {
 
         finalRest = {
           ...rest,
+          address: fartyClawUser?.address,
           gold: score?.value ?? rest.gold,
+          reward: score?.rewards,
         };
       } catch (error) {
         console.error('getMyLeaderboardPosition', error);

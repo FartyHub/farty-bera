@@ -23,4 +23,14 @@ export class ClaimUserDto {
   @ApiProperty()
   @IsString()
   head: string;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsString()
+  @Optional()
+  address?: string;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsString()
+  @Optional()
+  reward?: string;
 }
