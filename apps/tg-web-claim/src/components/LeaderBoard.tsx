@@ -30,7 +30,7 @@ function calculateNOTs(gold: number, sum: number) {
 
 export function Leaderboard({ className }: Props) {
   const startTime = new Date('2024-06-04T12:00:00Z');
-  const endTime = new Date('2024-07-24T16:00:00Z');
+  const endTime = new Date('2024-07-25T00:00:00Z');
   const sDate = startTime.toISOString().split('T')[0];
   const { data: leaderboard, isPending: isLoading } = useGetLeaderboard(
     sDate,
