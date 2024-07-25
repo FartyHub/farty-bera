@@ -136,9 +136,13 @@ export class FartyClawService {
 
           try {
             const score = await this.scoreService.findOne(user.openid);
+            const fartyClawUser = await this.fartyClawUsersRepository.findOne({
+              where: { telegramId: user.openid },
+            });
 
             claimUser = {
               ...user,
+              address: fartyClawUser?.address,
               gold: score?.value ?? user.gold,
             };
           } catch (error) {
@@ -182,6 +186,9 @@ export class FartyClawService {
     if (endDate < today) {
       try {
         const score = await this.scoreService.findOne(tgId);
+        const fartyClawUser = await this.fartyClawUsersRepository.findOne({
+          where: { telegramId: user.openid },
+        });
 
         if (!score) {
           this.scoreService.createFartyClaw([
@@ -204,6 +211,7 @@ export class FartyClawService {
 
         finalRest = {
           ...rest,
+          address: fartyClawUser?.address,
           gold: score?.value ?? rest.gold,
         };
       } catch (error) {
