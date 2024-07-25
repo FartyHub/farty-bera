@@ -184,46 +184,44 @@ export class FartyClawService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { list, ...rest } = data?.info || {};
     const sum = data?.info?.SumGold2 || 0;
-    let finalRest = rest;
+    // if (endDate < today) {
+    //   try {
+    //     const score = await this.scoreService.findOne(tgId);
+    //     const fartyClawUser = await this.fartyClawUsersRepository.findOne({
+    //       where: { telegramId: user.openid },
+    //     });
 
-    if (endDate < today) {
-      try {
-        const score = await this.scoreService.findOne(tgId);
-        const fartyClawUser = await this.fartyClawUsersRepository.findOne({
-          where: { telegramId: user.openid },
-        });
+    //     if (!score) {
+    //       this.scoreService.createFartyClaw([
+    //         {
+    //           game: Applications.FARTY_CLAW,
+    //           rewards: Intl.NumberFormat('en', {
+    //             maximumFractionDigits: 2,
+    //             notation: 'compact',
+    //           }).format(
+    //             (user.rank ?? 0) > MAX_RANK
+    //               ? 0
+    //               : calculateNOTs(user.gold ?? 0, sum),
+    //           ),
+    //           time: new Date().toISOString(),
+    //           userAddress: tgId,
+    //           value: rest.gold,
+    //         },
+    //       ]);
+    //     }
 
-        if (!score) {
-          this.scoreService.createFartyClaw([
-            {
-              game: Applications.FARTY_CLAW,
-              rewards: Intl.NumberFormat('en', {
-                maximumFractionDigits: 2,
-                notation: 'compact',
-              }).format(
-                (user.rank ?? 0) > MAX_RANK
-                  ? 0
-                  : calculateNOTs(user.gold ?? 0, sum),
-              ),
-              time: new Date().toISOString(),
-              userAddress: tgId,
-              value: rest.gold,
-            },
-          ]);
-        }
+    //     finalRest = {
+    //       ...rest,
+    //       address: fartyClawUser?.address,
+    //       gold: score?.value ?? rest.gold,
+    //       reward: score?.rewards,
+    //     };
+    //   } catch (error) {
+    //     console.error('getMyLeaderboardPosition', error);
+    //   }
+    // }
 
-        finalRest = {
-          ...rest,
-          address: fartyClawUser?.address,
-          gold: score?.value ?? rest.gold,
-          reward: score?.rewards,
-        };
-      } catch (error) {
-        console.error('getMyLeaderboardPosition', error);
-      }
-    }
-
-    return finalRest;
+    return rest;
   }
 
   async verifyUser(initData: string) {
