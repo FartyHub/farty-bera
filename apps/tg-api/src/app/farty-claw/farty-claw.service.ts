@@ -17,6 +17,7 @@ import { Context, Telegraf } from 'telegraf';
 import { Repository } from 'typeorm';
 
 import { Applications, ConfigKeys } from '../common';
+import LeagueJSON from '../common/assets/league-1.json';
 import { FartyClawUsers } from '../farty-claw-user';
 import { InvoiceService } from '../invoice';
 import { ScoreService } from '../score';
@@ -125,11 +126,12 @@ export class FartyClawService {
         (sdate ? `?sdate=${sdate}` : '') +
         (edate ? `&edate=${eDate}` : ''),
     );
-    const list: ClaimUserDto[] = Array.from(data?.info?.list) || [];
-    const sum = data?.info?.SumGold2 || 0;
+    let list: ClaimUserDto[] = Array.from(data?.info?.list) || [];
+    let sum = data?.info?.SumGold2 || 0;
     let finalList = list;
 
     if (endDate < today) {
+      list = LeagueJSON.list as ClaimUserDto[];
       finalList = await Promise.all(
         list.map(async (user) => {
           let claimUser = user;
@@ -153,9 +155,11 @@ export class FartyClawService {
           return claimUser;
         }),
       );
-    }
+      finalList.sort((a, b) => b.gold - a.gold);
 
-    finalList.sort((a, b) => b.gold - a.gold);
+      // eslint-disable-next-line no-magic-numbers
+      sum = finalList.slice(0, 200).reduce((acc, cur) => acc + cur.gold, 0);
+    }
 
     return { list: finalList, sum };
   }
