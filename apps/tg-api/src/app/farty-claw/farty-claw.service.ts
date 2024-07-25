@@ -155,6 +155,8 @@ export class FartyClawService {
       );
     }
 
+    finalList.sort((a, b) => b.gold - a.gold);
+
     return { list: finalList, sum };
   }
 
