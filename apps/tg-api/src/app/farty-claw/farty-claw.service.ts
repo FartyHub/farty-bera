@@ -126,40 +126,40 @@ export class FartyClawService {
         (sdate ? `?sdate=${sdate}` : '') +
         (edate ? `&edate=${eDate}` : ''),
     );
-    let list: ClaimUserDto[] = Array.from(data?.info?.list) || [];
-    let sum = data?.info?.SumGold2 || 0;
-    let finalList = list;
+    const list: ClaimUserDto[] = Array.from(data?.info?.list) || [];
+    const sum = data?.info?.SumGold2 || 0;
+    const finalList = list;
 
-    if (endDate < today) {
-      list = LeagueJSON.list as ClaimUserDto[];
-      finalList = await Promise.all(
-        list.map(async (user) => {
-          let claimUser = user;
+    // if (endDate < today) {
+    //   list = LeagueJSON.list as ClaimUserDto[];
+    //   finalList = await Promise.all(
+    //     list.map(async (user) => {
+    //       let claimUser = user;
 
-          try {
-            const score = await this.scoreService.findOne(user.openid);
-            const fartyClawUser = await this.fartyClawUsersRepository.findOne({
-              where: { telegramId: user.openid },
-            });
+    //       try {
+    //         const score = await this.scoreService.findOne(user.openid);
+    //         const fartyClawUser = await this.fartyClawUsersRepository.findOne({
+    //           where: { telegramId: user.openid },
+    //         });
 
-            claimUser = {
-              ...user,
-              address: fartyClawUser?.address,
-              gold: score?.value ?? user.gold,
-              reward: score?.rewards,
-            };
-          } catch (error) {
-            console.error('getLeaderboard', error);
-          }
+    //         claimUser = {
+    //           ...user,
+    //           address: fartyClawUser?.address,
+    //           gold: score?.value ?? user.gold,
+    //           reward: score?.rewards,
+    //         };
+    //       } catch (error) {
+    //         console.error('getLeaderboard', error);
+    //       }
 
-          return claimUser;
-        }),
-      );
-      finalList.sort((a, b) => b.gold - a.gold);
+    //       return claimUser;
+    //     }),
+    //   );
+    //   finalList.sort((a, b) => b.gold - a.gold);
 
-      // eslint-disable-next-line no-magic-numbers
-      sum = finalList.slice(0, 200).reduce((acc, cur) => acc + cur.gold, 0);
-    }
+    //   // eslint-disable-next-line no-magic-numbers
+    //   sum = finalList.slice(0, 200).reduce((acc, cur) => acc + cur.gold, 0);
+    // }
 
     return { list: finalList, sum };
   }
