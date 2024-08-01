@@ -13,6 +13,7 @@ steps:
       - 'VITE_IS_MAINNET=${_VITE_IS_MAINNET}'
       - 'VITE_TG_API_URL=${_VITE_TG_API_URL}'
       - 'VITE_X_API_KEY=${_VITE_X_API_KEY}'
+      - 'VITE_IP_INFO_TOKEN=${_VITE_IP_INFO_TOKEN}'
 
   - name: 'gcr.io/cloud-builders/npm'
     args: ['run', 'create-env', 'dist/apps/tg-web/.env.local']
@@ -23,6 +24,7 @@ steps:
       - 'VITE_IS_MAINNET=${_VITE_IS_MAINNET}'
       - 'VITE_TG_API_URL=${_VITE_TG_API_URL}'
       - 'VITE_X_API_KEY=${_VITE_X_API_KEY}'
+      - 'VITE_IP_INFO_TOKEN=${_VITE_IP_INFO_TOKEN}'
 
   - name: 'gcr.io/cloud-builders/gcloud'
     id: COPY-STUFF

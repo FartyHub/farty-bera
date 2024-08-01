@@ -33,7 +33,8 @@
     "update-sources": "curl http://localhost:3000/api-docs-json > api-docs.json && npx nx run api-lib:generate-sources --skip-nx-cache",
     "update-cors-farty": "gcloud config configurations activate farty && gcloud storage buckets update gs://farty-bera-build --cors-file=cors-config.json",
     "update-cors-tg": "gcloud config configurations activate farty && gcloud storage buckets update gs://tg-mini-app-build --cors-file=cors-config.json",
-    "update-cors": "npm run update-cors-farty && npm run update-cors-tg"
+    "update-cors-tg-eu": "gcloud config configurations activate farty && gcloud storage buckets update gs://tg-mini-app-build-eu --cors-file=cors-config.json",
+    "update-cors": "npm run update-cors-farty && npm run update-cors-tg && npm run update-cors-tg-eu"
   },
   "private": true,
   "dependencies": {
@@ -69,6 +70,7 @@
     "nanoid": "^5.0.7",
     "nestjs-telegraf": "^2.7.0",
     "next": "14.0.4",
+    "node-ipinfo": "^3.5.1",
     "pg": "^8.11.5",
     "react": "18.2.0",
     "react-device-detect": "^2.2.3",

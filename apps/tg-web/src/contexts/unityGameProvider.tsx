@@ -2,6 +2,8 @@
 import React, { ReactNode, createContext, useContext, useMemo } from 'react';
 import { useUnityContext } from 'react-unity-webgl';
 
+import { useIPFunctions } from '../hooks';
+
 const UnityGameContext = createContext<{
   addEventListener: (eventName: string, callback: (data: any) => void) => void;
   isLoaded: boolean;
@@ -24,6 +26,9 @@ export function useUnityGame() {
 }
 
 export function UnityGameProvider({ children }: { children: ReactNode }) {
+  const { ipInfo } = useIPFunctions();
+  const isInEurope = ipInfo?.continent.code === 'EU';
+  const europeSuffix = isInEurope ? '-eu' : '';
   const {
     addEventListener,
     isLoaded,
@@ -36,12 +41,10 @@ export function UnityGameProvider({ children }: { children: ReactNode }) {
     // frameworkUrl:
     //   'https://storage.googleapis.com/tg-mini-app-build/tg.framework.js',
     // loaderUrl: 'https://storage.googleapis.com/tg-mini-app-build/tg.loader.js',
-    codeUrl: 'https://storage.googleapis.com/tg-mini-app-build/Build.wasm',
-    dataUrl: 'https://storage.googleapis.com/tg-mini-app-build/Build.data',
-    frameworkUrl:
-      'https://storage.googleapis.com/tg-mini-app-build/Build.framework.js',
-    loaderUrl:
-      'https://storage.googleapis.com/tg-mini-app-build/Build.loader.js',
+    codeUrl: `https://storage.googleapis.com/tg-mini-app-build${europeSuffix}/Build.wasm`,
+    dataUrl: `https://storage.googleapis.com/tg-mini-app-build${europeSuffix}/Build.data`,
+    frameworkUrl: `https://storage.googleapis.com/tg-mini-app-build${europeSuffix}/Build.framework.js`,
+    loaderUrl: `https://storage.googleapis.com/tg-mini-app-build${europeSuffix}/Build.loader.js`,
     // codeUrl: 'Build/Build.wasm',
     // dataUrl: 'Build/Build.data',
     // frameworkUrl: 'Build/Build.framework.js',
