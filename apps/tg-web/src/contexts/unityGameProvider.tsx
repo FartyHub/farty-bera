@@ -26,8 +26,8 @@ export function useUnityGame() {
 }
 
 export function UnityGameProvider({ children }: { children: ReactNode }) {
-  const { ipInfo } = useIPFunctions();
-  const isInEurope = ipInfo?.continent.code === 'EU';
+  const { region = '' } = useIPFunctions();
+  const isInEurope = region.toUpperCase() === 'EU';
   const europeSuffix = isInEurope ? '-eu' : '';
   const {
     addEventListener,
