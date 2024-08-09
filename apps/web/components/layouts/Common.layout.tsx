@@ -7,10 +7,9 @@ import { Footer } from '../elements';
 type Props = {
   children: ReactNode;
   className?: string;
-  isTelegram?: boolean;
 };
 
-export function CommonLayout({ children, className, isTelegram }: Props) {
+export function CommonLayout({ children, className }: Props) {
   const { isTouch } = useTouchDevice();
 
   return (
@@ -29,15 +28,7 @@ export function CommonLayout({ children, className, isTelegram }: Props) {
         <div className="grid grid-rows-6 grid-cols-2 md:grid-flow-col md:grid-cols-6 size-full gap-1 relative p-5 items-baseline">
           {children}
         </div>
-        <img
-          alt="mascot"
-          className={clsx(
-            'absolute right-0 h-[30vh] z-0',
-            isTouch ? 'bottom-12' : 'bottom-10',
-          )}
-          src="https://storage.googleapis.com/farty-bera-build/mascot.gif"
-        />
-        {!isTelegram && <Footer />}
+        {!isTouch && <Footer />}
       </div>
     </div>
   );

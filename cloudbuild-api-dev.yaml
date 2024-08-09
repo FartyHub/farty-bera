@@ -5,7 +5,7 @@ steps:
 
   - name: node:$_NODE_VERSION
     entrypoint: npm
-    args: ['run', 'build:tg-api']
+    args: ['run', 'build:api']
     env:
       - 'ENVIRONMENT=${_ENVIRONMENT}'
       - 'DB_HOST=${_DB_HOST}'
@@ -20,15 +20,9 @@ steps:
       - 'WEB_URL=${_WEB_URL}'
       - 'JWT_SESSION_EXPIRES_IN=${_JWT_SESSION_EXPIRES_IN}'
       - 'JWT_SECRET=${_JWT_SECRET}'
-      - 'MAIN_IMAGE_URL=${_MAIN_IMAGE_URL}'
-      - 'COMMUNITY_URL=${_COMMUNITY_URL}'
-      - 'X_URL=${_X_URL}'
-      - 'FARTY_CLAW_API_URL=${_FARTY_CLAW_API_URL}'
-      - 'CLAIM_WEB_URL=${_CLAIM_WEB_URL}'
-      - 'CLAIM_IMAGE_URL=${_CLAIM_IMAGE_URL}'
 
   - name: 'gcr.io/cloud-builders/npm'
-    args: ['run', 'create-env', 'dist/apps/tg-api/.env']
+    args: ['run', 'create-env', 'dist/apps/api/.env']
     env:
       - 'ENVIRONMENT=${_ENVIRONMENT}'
       - 'DB_HOST=${_DB_HOST}'
@@ -43,12 +37,6 @@ steps:
       - 'WEB_URL=${_WEB_URL}'
       - 'JWT_SESSION_EXPIRES_IN=${_JWT_SESSION_EXPIRES_IN}'
       - 'JWT_SECRET=${_JWT_SECRET}'
-      - 'MAIN_IMAGE_URL=${_MAIN_IMAGE_URL}'
-      - 'COMMUNITY_URL=${_COMMUNITY_URL}'
-      - 'X_URL=${_X_URL}'
-      - 'FARTY_CLAW_API_URL=${_FARTY_CLAW_API_URL}'
-      - 'CLAIM_WEB_URL=${_CLAIM_WEB_URL}'
-      - 'CLAIM_IMAGE_URL=${_CLAIM_IMAGE_URL}'
 
   - name: 'gcr.io/cloud-builders/gcloud'
     id: COPY-STUFF
@@ -57,23 +45,23 @@ steps:
       - '-e'
       - '-c'
       - |
-        cp apps/tg-api/app-dev.yaml dist/apps/tg-api/app.yaml
+        cp apps/api/app-dev.yaml dist/apps/api/app.yaml
 
   - name: node:$_NODE_VERSION
     entrypoint: npm
     args: ['install', '--package-lock-only']
-    dir: 'dist/apps/tg-api'
+    dir: 'dist/apps/api'
 
   - name: 'gcr.io/cloud-builders/gcloud'
     args: ['app', 'deploy', 'app.yaml', '--no-cache']
-    dir: 'dist/apps/tg-api'
+    dir: 'dist/apps/api'
 
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: bash
     args:
       - -c
       - |
-        gcloud app versions list --format="value(version.id)" --sort-by="~version.createTime" --service="tg-api-dev" | tail -n +40 | xargs -r gcloud app versions delete --quiet
+        gcloud app versions list --format="value(version.id)" --sort-by="~version.createTime" --service="api-dev" | tail -n +40 | xargs -r gcloud app versions delete --quiet
 
 timeout: 1800s
 options:

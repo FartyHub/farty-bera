@@ -7,16 +7,11 @@ import { MouseEvent, useCallback, useEffect, useState } from 'react';
 import { Unity } from 'react-unity-webgl';
 import { useAccount } from 'wagmi';
 
-import { SendTelegramGameScoreDto, User } from '@farty-bera/api-lib';
+import { User } from '@farty-bera/api-lib';
 
-import { ApplicationData, Applications, X_URL } from '../../constants';
+import { ApplicationData, Applications } from '../../constants';
 import { useApplications, useFartyBera, useUser } from '../../contexts';
-import {
-  useCreateScore,
-  useSendGameScore,
-  useSign,
-  useTouchDevice,
-} from '../../hooks';
+import { useCreateScore, useSign, useTouchDevice } from '../../hooks';
 import { hashSHA256, truncateMiddle } from '../../utils';
 import { Button, Spinner } from '../atoms';
 import { Window } from '../elements';
@@ -25,11 +20,10 @@ import { ConnectWindow } from './ConnectWindow';
 import { InviteCodeWindow } from './InviteCodeWindow';
 
 type Props = {
-  isTelegram: boolean;
-  telegramMessageContext: SendTelegramGameScoreDto | null;
+  // no props
 };
 
-export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
+export function FartyBeraGame(_props: Props) {
   const {
     addEventListener,
     isLoaded,
@@ -45,42 +39,31 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
   const { mutate: addScore } = useCreateScore({
     onSuccess: () => fetchUser(),
   });
-  const { mutate: sendGameScore } = useSendGameScore({
-    onSuccess: () => fetchUser(),
-  });
   const { isTouch } = useTouchDevice();
   const application =
     applications.find((app) => app.id === Applications.FARTY_BERA) ||
     ApplicationData[Applications.FARTY_BERA];
 
   const [isInvited, setIsInvited] = useState<boolean>(!!user.usedInviteCode);
-  const hasNoAccess =
-    !isTelegram && (!isConnected || !isInvited || !user.usedInviteCode);
+  const hasNoAccess = !isConnected || !isInvited || !user.usedInviteCode;
 
   const handleSetScore = useCallback(
     async (newScore: number, time: string) => {
-      if (isTelegram && telegramMessageContext) {
-        sendGameScore({
-          ...telegramMessageContext,
-          score: newScore,
-        });
-      } else {
-        const res = await handleSignMessage(newScore.toString());
-        const hash = hashSHA256(newScore.toString(), res?.key ?? '');
+      const res = await handleSignMessage(newScore.toString());
+      const hash = hashSHA256(newScore.toString(), res?.key ?? '');
 
-        addScore({
-          game: Applications.FARTY_BERA,
-          hash,
-          key: res?.key ?? '',
-          message: res?.message ?? '',
-          signature: res?.signature ?? '',
-          time,
-          userAddress: address,
-          value: newScore,
-        });
-      }
+      addScore({
+        game: Applications.FARTY_BERA,
+        hash,
+        key: res?.key ?? '',
+        message: res?.message ?? '',
+        signature: res?.signature ?? '',
+        time,
+        userAddress: address,
+        value: newScore,
+      });
     },
-    [user, isTelegram, telegramMessageContext, address],
+    [user, address],
   );
 
   useEffect(() => {
@@ -120,20 +103,6 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
       (app) => app.id === Applications.INVITE_CODE,
     );
     const maxIndex = Math.max(...applications.map((app) => app.zIndex));
-
-    if (isTelegram && !hasFartyBera) {
-      setApplications([
-        ...applications,
-        {
-          ...ApplicationData[Applications.FARTY_BERA],
-          fullScreen: true,
-          system: true,
-          zIndex: maxIndex + 1,
-        },
-      ]);
-    } else if (isTelegram) {
-      return;
-    }
 
     if (!isConnected && hasFartyBera && !hasConnectWallet) {
       setApplications([
@@ -175,7 +144,6 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
     isConnected,
     user.address,
     user.usedInviteCode,
-    isTelegram,
   ]);
 
   async function handleCloseWindow(event?: MouseEvent<HTMLButtonElement>) {
@@ -185,7 +153,8 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
         .filter(
           (app) =>
             app.id !== Applications.CONNECT_WALLET &&
-            app.id !== Applications.INVITE_CODE,
+            app.id !== Applications.INVITE_CODE &&
+            app.id !== Applications.FLAPPY_BERA_LEADERBOARD,
         )
         .map((app) => {
           if (app.id === Applications.FARTY_BERA) {
@@ -207,43 +176,23 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
     );
   }
 
-  async function handleShareTGScore() {
-    (window as any).TelegramGameProxy.shareScore();
-  }
-
-  async function handleShareHighScore(isTwitter?: boolean) {
-    const shareUrl = `${window.location.origin}`;
-    // eslint-disable-next-line sonarjs/no-nested-template-literals
-    const shareText = `I am so farty! I just hit a new high score of ${user.fartyHighScore} in the Farty Bera game ${isTwitter ? '@fartybera ' : `[@fartybera](${X_URL})`}. Bet you can't beat that!${isTwitter ? '%0a' : '\n'}${shareUrl}`;
-
-    if (isTwitter) {
-      window.open(
-        `https://twitter.com/intent/post?text=${shareText}`,
-        '_blank',
-      );
-    } else {
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(shareText);
-        // eslint-disable-next-line no-alert
-        alert('Share message copied to clipboard!');
-      }
-
-      if (isTouch) {
-        window.open(
-          'discord://discordapp.com/channels/1227137926849363978/1227137926849363981',
-        );
-      } else {
-        window.open(
-          'https://discord.com/channels/1227137926849363978/1227137926849363981',
-          '_blank',
-        );
-      }
-    }
-  }
-
   function handleConnectWallet(event?: MouseEvent<HTMLButtonElement>) {
     event?.stopPropagation();
     open();
+  }
+
+  function handleOpenFlappyBeraLeaderboard(
+    event?: MouseEvent<HTMLButtonElement>,
+  ) {
+    event?.stopPropagation();
+    const maxIndex = Math.max(...applications.map((app) => app.zIndex));
+    setApplications([
+      ...applications,
+      {
+        ...ApplicationData[Applications.FLAPPY_BERA_LEADERBOARD],
+        zIndex: maxIndex + 1,
+      },
+    ]);
   }
 
   return (
@@ -288,15 +237,8 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
               </div>
             </div>
           )}
-          {isTelegram ? (
+          {isTouch ? (
             <div className="flex flex-1 justify-center gap-2">
-              <Button
-                className="px-2"
-                type="primary"
-                onClick={handleShareTGScore}
-              >
-                Share Score
-              </Button>
               <Button
                 className="flex px-5 py-2 justify-center"
                 type="primary"
@@ -313,29 +255,18 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
                 </span>
                 <span className="font-normal">{user.fartyHighScore ?? 0}</span>
               </div>
-              <div className="flex items-stretch gap-2 md:mr-2">
-                <Button
-                  className="px-1"
-                  type="primary"
-                  onClick={() => handleShareHighScore(true)}
-                >
-                  <div className="flex md:flex-row items-center gap-1 flex-nowrap">
-                    <span className="whitespace-nowrap">Share on</span>
-                    <img
-                      alt="x icon"
-                      className="size-4"
-                      src="images/x-icon.svg"
-                    />
-                  </div>
-                </Button>
-                <Button
-                  className="px-1"
-                  type="primary"
-                  onClick={() => handleShareHighScore()}
-                >
-                  Share on Discord
-                </Button>
-              </div>
+              <Button
+                className="px-2 flex gap-[5px]"
+                type="primary"
+                onClick={handleOpenFlappyBeraLeaderboard}
+              >
+                <img
+                  alt={application.id}
+                  className="size-6"
+                  src="/images/crown.png"
+                />
+                Leaderboard
+              </Button>
             </div>
           )}
         </div>

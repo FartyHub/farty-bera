@@ -1,6 +1,5 @@
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
-import { useEffect } from 'react';
 
 import { SendTelegramGameScoreDto } from '@farty-bera/api-lib';
 
@@ -9,11 +8,16 @@ import {
   DesktopApp,
   FartyBeraGame,
   GameExplorerWip,
-  Leaderboard,
+  FlappyBeraLeaderboard,
+  LeaderboardWip,
   StatsWindow,
 } from '../components';
-import { ApplicationData, UNDER_DEVELOPMENT } from '../constants';
-import { useTouchDevice } from '../hooks';
+import {
+  ApplicationData,
+  NOT_IN_DESKTOP,
+  UNDER_DEVELOPMENT,
+} from '../constants';
+import { FartyBeraProvider } from '../contexts';
 import { getUser } from '../services';
 
 const apps = Array.from(Object.values(ApplicationData));
@@ -43,17 +47,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 }
 
 export default function Index({
-  isTelegram,
-  telegramMessageContext,
   user,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const { setIsTouch } = useTouchDevice();
-
-  useEffect(() => {
-    setIsTouch(isTelegram);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isTelegram]);
-
   return (
     <>
       <Head>
@@ -85,18 +80,23 @@ export default function Index({
           </>
         )}
       </Head>
-      <CommonLayout className="gap-4" isTelegram={isTelegram}>
-        <FartyBeraGame
-          isTelegram={isTelegram}
-          telegramMessageContext={telegramMessageContext}
-        />
+      <CommonLayout className="gap-4">
+        <FartyBeraProvider>
+          <FartyBeraGame />
+        </FartyBeraProvider>
         <StatsWindow />
-        <Leaderboard />
+        <FlappyBeraLeaderboard />
+        <LeaderboardWip />
         <GameExplorerWip />
-        {!isTelegram &&
-          apps
-            .filter((app) => !app.system || UNDER_DEVELOPMENT.includes(app.id))
-            .map((app) => <DesktopApp key={app.name} application={app} />)}
+        {apps
+          .filter(
+            (app) =>
+              (!app.system || UNDER_DEVELOPMENT.includes(app.id)) &&
+              !NOT_IN_DESKTOP.includes(app.id),
+          )
+          .map((app) => (
+            <DesktopApp key={app.name} application={app} />
+          ))}
       </CommonLayout>
     </>
   );

@@ -4,16 +4,20 @@ import { Application } from '../types';
 export enum Applications {
   CONNECT_WALLET = 'Connect Wallet',
   FARTY_BERA = 'Farty Bera',
+  FLAPPY_BERA_LEADERBOARD = 'Flappy Bera Leaderboard',
   GAME_EXPLORER = 'Game Explorer',
   INVITE_CODE = 'Invite Code',
   LEADERBOARD = 'Leaderboard',
   STATS = 'Stats',
+  TASKS = 'Tasks',
 }
 
 export const UNDER_DEVELOPMENT = [
   Applications.LEADERBOARD,
   Applications.GAME_EXPLORER,
 ];
+
+export const NOT_IN_DESKTOP = [Applications.FLAPPY_BERA_LEADERBOARD];
 
 export const ApplicationData: {
   [key in Applications]: Application;
@@ -31,6 +35,19 @@ export const ApplicationData: {
     title: 'BM, Ser',
     zIndex: 1,
   },
+  [Applications.TASKS]: {
+    creator: 'Earthspirit',
+    desktopIconUrl: '',
+    disabled: false,
+    fullScreen: false,
+    iconUrl: '',
+    id: Applications.TASKS,
+    minimized: false,
+    name: 'Tasks',
+    system: true,
+    title: 'Tasks',
+    zIndex: 1,
+  },
   [Applications.FARTY_BERA]: {
     creator: 'Earthspirit',
     desktopIconUrl: '/images/farty-bera-desktop-icon.png',
@@ -43,6 +60,17 @@ export const ApplicationData: {
     title: 'Farty Bera',
     zIndex: 2,
   },
+  [Applications.FLAPPY_BERA_LEADERBOARD]: {
+    desktopIconUrl: '/images/leaderboard-desktop-icon.png',
+    disabled: false,
+    fullScreen: false,
+    iconUrl: '/images/leaderboard-icon.svg',
+    id: Applications.FLAPPY_BERA_LEADERBOARD,
+    minimized: false,
+    name: Applications.FLAPPY_BERA_LEADERBOARD,
+    title: Applications.FLAPPY_BERA_LEADERBOARD,
+    zIndex: 3,
+  },
   [Applications.LEADERBOARD]: {
     desktopIconUrl: '/images/leaderboard-desktop-icon.png',
     disabled: false,
@@ -50,9 +78,10 @@ export const ApplicationData: {
     iconUrl: '/images/leaderboard-icon.svg',
     id: Applications.LEADERBOARD,
     minimized: false,
-    name: 'Leaderboard',
-    title: 'Leaderboard',
-    zIndex: 3,
+    name: 'Leaderboard (Coming Soon)',
+    system: true,
+    title: 'Under Construction',
+    zIndex: 4,
   },
   [Applications.GAME_EXPLORER]: {
     desktopIconUrl: '/images/explorer-desktop-icon.png',
