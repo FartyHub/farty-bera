@@ -30,6 +30,7 @@ export function FartyBeraGame(_props: Props) {
     removeEventListener,
     sendMessage,
     unityProvider,
+    unload,
   } = useFartyBera();
   const { open } = useWeb3Modal();
   const { applications, setApplications } = useApplications();
@@ -167,6 +168,7 @@ export function FartyBeraGame(_props: Props) {
           return app;
         }),
     );
+    await unload();
   }
 
   async function handleSuccessInvite() {

@@ -7,10 +7,10 @@ import {
   getUserRanking,
 } from '../../services';
 
-const USER_QUERY = 'USER';
-const USER_INVITED_USERS_COUNT_QUERY = 'USER_INVITED_USERS_COUNT';
-const USER_RANK_QUERY = 'USER_RANK';
-const TOP_RANKS_QUERY = 'TOP_RANKS';
+export const USER_QUERY = 'USER';
+export const USER_INVITED_USERS_COUNT_QUERY = 'USER_INVITED_USERS_COUNT';
+export const USER_RANK_QUERY = 'USER_RANK';
+export const TOP_RANKS_QUERY = 'TOP_RANKS';
 
 export function useUserQuery(address: string) {
   return useQuery({

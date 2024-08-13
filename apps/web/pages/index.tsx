@@ -1,8 +1,6 @@
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
 
-import { SendTelegramGameScoreDto } from '@farty-bera/api-lib';
-
 import {
   CommonLayout,
   DesktopApp,
@@ -11,36 +9,32 @@ import {
   FlappyBeraLeaderboard,
   LeaderboardWip,
   StatsWindow,
+  TasksWindow,
+  BeraDropGame,
+  BeraSlashGame,
+  BeraTowerGame,
 } from '../components';
 import {
   ApplicationData,
   NOT_IN_DESKTOP,
   UNDER_DEVELOPMENT,
 } from '../constants';
-import { FartyBeraProvider } from '../contexts';
+import {
+  BeraDropProvider,
+  BeraSlashProvider,
+  BeraTowerProvider,
+  FartyBeraProvider,
+} from '../contexts';
 import { getUser } from '../services';
 
 const apps = Array.from(Object.values(ApplicationData));
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const id = context.query?.id as string;
-  const telegramMessageContext: SendTelegramGameScoreDto = {
-    chatId: Number(context.query?.chatId ?? '0'),
-    editMessage: context.query?.editMessage === 'true',
-    force: context.query?.force === 'true',
-    inlineMessageId: String(context.query?.inlineMessageId ?? ''),
-    messageId: Number(context.query?.messageId ?? '0'),
-    score: Number(context.query?.score ?? '0'),
-    userId: Number(context.query?.userId ?? '0'),
-  };
-  const botId = context.query?.botId as string;
   const user = await getUser(id, false);
-  const isTelegram = process.env.NEXT_PUBLIC_BOT_ID === botId;
 
   return {
     props: {
-      isTelegram,
-      telegramMessageContext: isTelegram ? telegramMessageContext : null,
       user: user || null,
     },
   };
@@ -84,10 +78,20 @@ export default function Index({
         <FartyBeraProvider>
           <FartyBeraGame />
         </FartyBeraProvider>
+        <BeraDropProvider>
+          <BeraDropGame />
+        </BeraDropProvider>
+        <BeraSlashProvider>
+          <BeraSlashGame />
+        </BeraSlashProvider>
+        <BeraTowerProvider>
+          <BeraTowerGame />
+        </BeraTowerProvider>
         <StatsWindow />
         <FlappyBeraLeaderboard />
         <LeaderboardWip />
         <GameExplorerWip />
+        <TasksWindow />
         {apps
           .filter(
             (app) =>

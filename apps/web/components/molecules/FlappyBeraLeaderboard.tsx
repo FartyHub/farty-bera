@@ -106,22 +106,8 @@ export function FlappyBeraLeaderboard() {
       render: (data) => data.fartyGamesPlayed,
     },
     {
-      header: 'Fart Date',
-      key: 'fartDate',
-      render: (data) => format(data.createdAt, DateFormats.FULL_DATE),
-    },
-    {
-      header: (
-        <div className="flex gap-1 text-xs items-center">
-          <img
-            alt="honey"
-            className="size-[15px]"
-            src="/images/honey-icon.svg"
-          />
-          <span className="font-bold">Score</span>
-        </div>
-      ),
-      key: 'honeyScore',
+      header: 'Highest Score',
+      key: 'fartyHighScore',
     },
   ];
 
@@ -253,7 +239,14 @@ export function FlappyBeraLeaderboard() {
               type="primary"
               onClick={() => handleShareHighScore()}
             >
-              Share on Discord
+              <div className="flex md:flex-row items-center gap-1 flex-nowrap">
+                <img
+                  alt="discord icon"
+                  className="size-4"
+                  src="images/discord-icon.svg"
+                />
+                <span className="whitespace-nowrap">Share on Discord</span>
+              </div>
             </Button>
           </div>
         </div>

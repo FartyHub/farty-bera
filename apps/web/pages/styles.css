@@ -35,6 +35,14 @@
     border: 2px outset #ffffff;
   }
 
+  .border-outset-gray {
+    border: 2px outset #808080;
+  }
+
+  .border-outset-gray-100 {
+    border: 2px outset #dfdfdf;
+  }
+
   .border-ridge {
     border: 2px ridge #ffffff;
   }

@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+'use client';
 import React, { ReactNode, createContext, useContext, useMemo } from 'react';
 import { useUnityContext } from 'react-unity-webgl';
 
-const FartyBeraContext = createContext<{
+const BeraDropProviderContext = createContext<{
   addEventListener: (eventName: string, callback: (data: any) => void) => void;
   isLoaded: boolean;
   removeEventListener: (
@@ -21,11 +21,11 @@ const FartyBeraContext = createContext<{
   unload: async () => {},
 });
 
-export function useFartyBera() {
-  return useContext(FartyBeraContext);
+export function useBeraDrop() {
+  return useContext(BeraDropProviderContext);
 }
 
-export function FartyBeraProvider({ children }: { children: ReactNode }) {
+export function BeraDropProvider({ children }: { children: ReactNode }) {
   const {
     addEventListener,
     isLoaded,
@@ -34,15 +34,15 @@ export function FartyBeraProvider({ children }: { children: ReactNode }) {
     unityProvider,
     unload,
   } = useUnityContext({
-    codeUrl: 'https://storage.googleapis.com/farty-bera-build/web.wasm',
-    dataUrl: 'https://storage.googleapis.com/farty-bera-build/web.data',
+    codeUrl: 'https://storage.googleapis.com/farty-bera-build/bd.wasm',
+    dataUrl: 'https://storage.googleapis.com/farty-bera-build/bd.data',
     frameworkUrl:
-      'https://storage.googleapis.com/farty-bera-build/web.framework.js',
-    loaderUrl: 'https://storage.googleapis.com/farty-bera-build/web.loader.js',
-    // codeUrl: 'build/web.wasm',
-    // dataUrl: 'build/web.data',
-    // frameworkUrl: 'build/web.framework.js',
-    // loaderUrl: 'build/web.loader.js',
+      'https://storage.googleapis.com/farty-bera-build/bd.framework.js',
+    loaderUrl: 'https://storage.googleapis.com/farty-bera-build/bd.loader.js',
+    // codeUrl: 'build_/bd.wasm.br',
+    // dataUrl: 'build_/bd.data.br',
+    // frameworkUrl: 'build_/bd.framework.js.br',
+    // loaderUrl: 'build_/bd.loader.js',
   });
 
   const values = useMemo(
@@ -65,8 +65,8 @@ export function FartyBeraProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <FartyBeraContext.Provider value={values}>
+    <BeraDropProviderContext.Provider value={values}>
       {children}
-    </FartyBeraContext.Provider>
+    </BeraDropProviderContext.Provider>
   );
 }

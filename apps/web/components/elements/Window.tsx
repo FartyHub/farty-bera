@@ -11,6 +11,7 @@ type Props = {
   center?: boolean;
   children: ReactNode;
   className?: string;
+  containerClassName?: string;
   onClose?: () => Promise<void>;
 };
 
@@ -19,6 +20,7 @@ export function Window({
   center,
   children,
   className,
+  containerClassName,
   onClose,
 }: Props) {
   const {
@@ -124,7 +126,7 @@ export function Window({
           </div>
         )}
       </div>
-      <div className="size-full">{children}</div>
+      <div className={clsx(containerClassName, 'size-full')}>{children}</div>
     </div>
   );
 }
