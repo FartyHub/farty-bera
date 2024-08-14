@@ -156,7 +156,7 @@ export function UnityGame(_props: Props) {
 
   async function handleShareGame() {
     WebApp.openTelegramLink(
-      `https://t.me/share/url?url=t.me%2F${import.meta.env.VITE_BOT_USERNAME}%2F${import.meta.env.VITE_WEB_SHORTNAME}`,
+      `https://t.me/share/url?url=t.me%2F${import.meta.env.VITE_BOT_USERNAME}%2F${import.meta.env.VITE_WEB_SHORTNAME}%3Fstartapp%3D${WebApp.initDataUnsafe.user?.id ?? ''}`,
     );
 
     setTimeout(
@@ -263,6 +263,7 @@ export function UnityGame(_props: Props) {
         'GetUserInfo',
         JSON.stringify({
           firstName: WebApp.initDataUnsafe.user?.first_name ?? '',
+          fromId: WebApp.initDataUnsafe.start_param ?? '',
           nickname: WebApp.initDataUnsafe.user?.username ?? '',
           photoUrl:
             WebApp.initDataUnsafe.user?.photo_url ??
