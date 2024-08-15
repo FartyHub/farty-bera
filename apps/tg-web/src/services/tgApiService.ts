@@ -46,7 +46,7 @@ export async function saveUser(initData: string) {
 export async function getFartyDenChatMember(initData: string) {
   try {
     const { data } = await tgApiClient.get(
-      `/chat-member/farty-den/?initData=${initData}`,
+      `/farty-claw/chat-member/farty-den/?initData=${encodeURIComponent(initData)}`,
     );
 
     return data;
@@ -58,7 +58,7 @@ export async function getFartyDenChatMember(initData: string) {
 export async function getFartyChannelChatMember(initData: string) {
   try {
     const { data } = await tgApiClient.get(
-      `/chat-member/farty-channel/?initData=${initData}`,
+      `/farty-claw/chat-member/farty-channel/?initData=${encodeURIComponent(initData)}`,
     );
 
     return data;
