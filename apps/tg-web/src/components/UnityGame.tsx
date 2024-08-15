@@ -11,7 +11,13 @@ import { Address, Cell, SendMode, beginCell, toNano } from 'ton-core';
 import * as uuid from 'uuid';
 
 import { useUnityGame } from '../contexts';
-import { useGetNewInvoice, useTonConnect } from '../hooks';
+import {
+  useGetFartyChannelChatMember,
+  useGetFartyDenChatMember,
+  useGetNewInvoice,
+  useSaveUser,
+  useTonConnect,
+} from '../hooks';
 import { getTransactions } from '../services';
 
 import { Spinner } from './Spinner';
@@ -29,6 +35,13 @@ export function UnityGame(_props: Props) {
     sendMessage,
     unityProvider,
   } = useUnityGame();
+  const { mutate: saveUser } = useSaveUser();
+  const { data: fartyChannelChatMember } = useGetFartyChannelChatMember(
+    WebApp.initData,
+  );
+  const { data: fartyDenChatMember } = useGetFartyDenChatMember(
+    WebApp.initData,
+  );
   const [senderArgs, setSenderArgs] = useState<{
     propId: string;
     sendMode: SendMode;
@@ -239,12 +252,53 @@ export function UnityGame(_props: Props) {
     getNewInvoice(value);
   }
 
+  async function handleSocialTask(taskId: string) {
+    switch (taskId) {
+      case '1':
+        WebApp.openLink('https://twitter.com/fartybera');
+
+        setTimeout(
+          () => sendMessage('UnityWebReceiver', 'TaskCallBack', 1),
+          // eslint-disable-next-line no-magic-numbers
+          1000,
+        );
+        break;
+      case '2':
+        console.log(fartyDenChatMember);
+        setTimeout(
+          () =>
+            sendMessage(
+              'UnityWebReceiver',
+              'TaskCallBack',
+              fartyDenChatMember?.status === 'member' ? 1 : 0,
+            ),
+          // eslint-disable-next-line no-magic-numbers
+          1000,
+        );
+        break;
+      case '3':
+        console.log(fartyChannelChatMember);
+        setTimeout(
+          () =>
+            sendMessage(
+              'UnityWebReceiver',
+              'TaskCallBack',
+              fartyChannelChatMember?.status === 'member' ? 1 : 0,
+            ),
+          // eslint-disable-next-line no-magic-numbers
+          1000,
+        );
+        break;
+    }
+  }
+
   useEffect(() => {
     addEventListener('ShareGame', handleShareGame);
     // @ts-ignore
     addEventListener('PaymentRequest', handlePayment);
     // @ts-ignore
     addEventListener('PaymentRequestStars', handleStarsPayment);
+    addEventListener('TaskRequest', handleSocialTask);
 
     return () => {
       removeEventListener('ShareGame', handleShareGame);
@@ -252,11 +306,19 @@ export function UnityGame(_props: Props) {
       removeEventListener('PaymentRequest', handlePayment);
       // @ts-ignore
       removeEventListener('PaymentRequestStars', handleStarsPayment);
+      removeEventListener('TaskRequest', handleSocialTask);
     };
-  }, [addEventListener, removeEventListener, handleShareGame, handlePayment]);
+  }, [
+    addEventListener,
+    removeEventListener,
+    handleShareGame,
+    handlePayment,
+    handleSocialTask,
+  ]);
 
   useEffect(() => {
     if (isLoaded) {
+      saveUser(WebApp.initData);
       // WebApp.showAlert(JSON.stringify(WebApp.initDataUnsafe.user));
       sendMessage(
         'UnityWebReceiver',

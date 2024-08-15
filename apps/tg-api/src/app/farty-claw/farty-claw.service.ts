@@ -251,4 +251,33 @@ export class FartyClawService {
 
     return { isVerified: key === hash, user };
   }
+
+  async getChatMember(initData: string, chatId: string) {
+    this.logger.log('[GET_CHAT_MEMBER]', chatId, initData);
+    const { isVerified, user } = await this.verifyUser(initData);
+
+    if (!isVerified) {
+      throw new UnauthorizedException('User is not verified');
+    }
+
+    return this.fartyBot.telegram.getChatMember(chatId, Number(user.id));
+  }
+
+  async getFartyDenMember(initData: string) {
+    this.logger.log('[GET_FARTY_DEN_MEMBER]', initData);
+
+    return this.getChatMember(
+      initData,
+      this.configService.get<string>(ConfigKeys.FartyDenId),
+    );
+  }
+
+  async getFartyChannelMember(initData: string) {
+    this.logger.log('[GET_FARTY_CHANNEL_MEMBER]', initData);
+
+    return this.getChatMember(
+      initData,
+      this.configService.get<string>(ConfigKeys.FartyChannelId),
+    );
+  }
 }

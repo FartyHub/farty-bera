@@ -49,6 +49,8 @@ steps:
       - 'FARTY_CLAW_API_URL=${_FARTY_CLAW_API_URL}'
       - 'CLAIM_WEB_URL=${_CLAIM_WEB_URL}'
       - 'CLAIM_IMAGE_URL=${_CLAIM_IMAGE_URL}'
+      - 'FARTY_DEN_ID=${_FARTY_DEN_ID}'
+      - 'FARTY_CHANNEL_ID=${_FARTY_CHANNEL_ID}'
 
   - name: 'gcr.io/cloud-builders/gcloud'
     id: COPY-STUFF

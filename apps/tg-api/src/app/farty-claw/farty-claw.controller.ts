@@ -19,6 +19,16 @@ export class FartyClawController {
     return this.fartyClawService.getInvoiceLink(+amount);
   }
 
+  @Get('chat-member/farty-den')
+  getFartyDenChatMember(@Query('initData') initData: string) {
+    return this.fartyClawService.getFartyDenMember(initData);
+  }
+
+  @Get('chat-member/farty-channel')
+  getFartyChannelChatMember(@Query('initData') initData: string) {
+    return this.fartyClawService.getFartyChannelMember(initData);
+  }
+
   @Get('leaderboard')
   getLeaderboard(
     @Query('sdate') sdate?: string,
