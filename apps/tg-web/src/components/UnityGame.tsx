@@ -265,29 +265,29 @@ export function UnityGame(_props: Props) {
         break;
       case '2':
         console.log(fartyDenChatMember);
-        setTimeout(
-          () =>
-            sendMessage(
-              'UnityWebReceiver',
-              'TaskCallBack',
-              fartyDenChatMember?.status === 'member' ? 1 : 0,
-            ),
-          // eslint-disable-next-line no-magic-numbers
-          1000,
-        );
+        if (fartyDenChatMember?.status === 'member') {
+          setTimeout(
+            () => sendMessage('UnityWebReceiver', 'TaskCallBack', 1),
+            // eslint-disable-next-line no-magic-numbers
+            500,
+          );
+        } else {
+          sendMessage('UnityWebReceiver', 'TaskCallBack', 0);
+          WebApp.openTelegramLink('https://t.me/+572PnbuackhkMTE9');
+        }
         break;
       case '3':
         console.log(fartyChannelChatMember);
-        setTimeout(
-          () =>
-            sendMessage(
-              'UnityWebReceiver',
-              'TaskCallBack',
-              fartyChannelChatMember?.status === 'member' ? 1 : 0,
-            ),
-          // eslint-disable-next-line no-magic-numbers
-          1000,
-        );
+        if (fartyChannelChatMember?.status === 'member') {
+          setTimeout(
+            () => sendMessage('UnityWebReceiver', 'TaskCallBack', 1),
+            // eslint-disable-next-line no-magic-numbers
+            500,
+          );
+        } else {
+          sendMessage('UnityWebReceiver', 'TaskCallBack', 0);
+          WebApp.openTelegramLink('https://t.me/+Ndgsd6EIIARhYTE1');
+        }
         break;
     }
   }
