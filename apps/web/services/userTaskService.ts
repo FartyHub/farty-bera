@@ -28,6 +28,7 @@ export async function createUserTask(
 
     return response.data;
   } catch (error) {
+    console.error(error);
     throw new Error(((error as AxiosError)?.response?.data as any)?.message);
   }
 }

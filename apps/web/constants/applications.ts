@@ -13,6 +13,7 @@ export enum Applications {
   LEADERBOARD = 'Leaderboard',
   STATS = 'Stats',
   TASKS = 'Tasks',
+  TASK_NOT_ELIGIBLE = 'Not eligible for the task',
 }
 
 export const UNDER_DEVELOPMENT = [
@@ -96,6 +97,18 @@ export const ApplicationData: {
     name: 'Game Explorer (Coming Soon)',
     system: true,
     title: 'Under Construction',
+    zIndex: 4,
+  },
+  [Applications.TASK_NOT_ELIGIBLE]: {
+    desktopIconUrl: '/images/explorer-desktop-icon.png',
+    disabled: false,
+    fullScreen: false,
+    iconUrl: '/images/explorer-icon.svg',
+    id: Applications.TASK_NOT_ELIGIBLE,
+    minimized: false,
+    name: Applications.TASK_NOT_ELIGIBLE,
+    system: true,
+    title: Applications.TASK_NOT_ELIGIBLE,
     zIndex: 4,
   },
   [Applications.CONNECT_WALLET]: {

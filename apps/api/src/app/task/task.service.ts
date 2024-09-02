@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { User } from '../user';
+import { UserTask } from '../user-task/entities/user-task.entity';
 
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
@@ -15,6 +16,8 @@ export class TaskService {
   constructor(
     @InjectRepository(Task)
     private tasksRepository: Repository<Task>,
+    @InjectRepository(UserTask)
+    private userTaskRepository: Repository<UserTask>,
   ) {}
 
   create(createTaskDto: CreateTaskDto, user: User) {
@@ -27,12 +30,29 @@ export class TaskService {
     return this.tasksRepository.save(createTaskDto);
   }
 
-  findAll() {
+  async findAll(user?: User) {
     this.logger.log(`[FIND_ALL]`);
 
-    return this.tasksRepository.find({
+    const tasks = await this.tasksRepository.find({
       order: { createdAt: 'ASC' },
     });
+
+    const promises = tasks.map(async (task) => {
+      const userTask = await this.userTaskRepository
+        .createQueryBuilder('userTask')
+        .leftJoinAndSelect('userTask.user', 'user')
+        .leftJoinAndSelect('userTask.task', 'task')
+        .where('user.id = :userId', { userId: user.id })
+        .andWhere('task.id = :taskId', { taskId: task.id })
+        .getOne();
+
+      return {
+        ...task,
+        isDone: !!userTask,
+      };
+    });
+
+    return Promise.all(promises);
   }
 
   findOne(id: string) {

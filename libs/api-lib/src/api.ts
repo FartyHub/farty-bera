@@ -191,6 +191,67 @@ export interface CreateUserTaskDto {
      * @memberof CreateUserTaskDto
      */
     'deletedAt'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateUserTaskDto
+     */
+    'oauth_token'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateUserTaskDto
+     */
+    'oauth_verifier'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateUserTaskDto
+     */
+    'oauth_token_secret'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateUserTaskDto
+     */
+    'discordToken'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface OAuthResponseDto
+ */
+export interface OAuthResponseDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof OAuthResponseDto
+     */
+    'url': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof OAuthResponseDto
+     */
+    'oauth_token': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof OAuthResponseDto
+     */
+    'oauth_token_secret': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof OAuthResponseDto
+     */
+    'oauth_callback_confirmed': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof OAuthResponseDto
+     */
+    'oauth_verifier'?: string;
 }
 /**
  * 
@@ -428,6 +489,12 @@ export interface Task {
      * @memberof Task
      */
     'value': number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Task
+     */
+    'isDone'?: boolean;
 }
 /**
  * 
@@ -513,6 +580,18 @@ export interface UpdateUserDto {
      * @memberof UpdateUserDto
      */
     'displayName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateUserDto
+     */
+    'twitterId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateUserDto
+     */
+    'discordId'?: string;
 }
 /**
  * 
@@ -598,6 +677,18 @@ export interface User {
      * @memberof User
      */
     'displayName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    'twitterId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    'discordId'?: string;
 }
 /**
  * 
@@ -629,6 +720,12 @@ export interface UserTask {
      * @memberof UserTask
      */
     'deletedAt': string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof UserTask
+     */
+    'value': number;
 }
 
 /**
@@ -1270,6 +1367,103 @@ export class TasksApi extends BaseAPI {
      */
     public taskControllerFindOne(id: string, options?: RawAxiosRequestConfig) {
         return TasksApiFp(this.configuration).taskControllerFindOne(id, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * TwitterApi - axios parameter creator
+ * @export
+ */
+export const TwitterApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        twitterControllerGetOAuthLink: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/twitter/oauth-link`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * TwitterApi - functional programming interface
+ * @export
+ */
+export const TwitterApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = TwitterApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async twitterControllerGetOAuthLink(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OAuthResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.twitterControllerGetOAuthLink(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TwitterApi.twitterControllerGetOAuthLink']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * TwitterApi - factory interface
+ * @export
+ */
+export const TwitterApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = TwitterApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        twitterControllerGetOAuthLink(options?: any): AxiosPromise<OAuthResponseDto> {
+            return localVarFp.twitterControllerGetOAuthLink(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * TwitterApi - object-oriented interface
+ * @export
+ * @class TwitterApi
+ * @extends {BaseAPI}
+ */
+export class TwitterApi extends BaseAPI {
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TwitterApi
+     */
+    public twitterControllerGetOAuthLink(options?: RawAxiosRequestConfig) {
+        return TwitterApiFp(this.configuration).twitterControllerGetOAuthLink(options).then((request) => request(this.axios, this.basePath));
     }
 }
 

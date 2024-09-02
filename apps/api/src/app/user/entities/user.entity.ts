@@ -61,4 +61,16 @@ export class User extends BaseEntity {
     nullable: true,
   })
   usedTasks?: Task[];
+
+  @Column({ nullable: true, type: 'text' })
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  twitterId?: string;
+
+  @Column({ nullable: true, type: 'text' })
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  discordId?: string;
 }

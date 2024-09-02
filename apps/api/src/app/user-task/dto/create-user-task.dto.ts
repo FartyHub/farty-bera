@@ -10,4 +10,32 @@ export class CreateUserTaskDto {
   @IsDate()
   @IsOptional()
   deletedAt?: Date;
+
+  @ApiPropertyOptional({
+    nullable: true,
+  })
+  @IsString()
+  @IsOptional()
+  oauth_token?: string | null;
+
+  @ApiPropertyOptional({
+    nullable: true,
+  })
+  @IsString()
+  @IsOptional()
+  oauth_verifier?: string | null;
+
+  @ApiPropertyOptional({
+    nullable: true,
+  })
+  @IsString()
+  @IsOptional()
+  oauth_token_secret?: string | null;
+
+  @ApiPropertyOptional({
+    nullable: true,
+  })
+  @IsString()
+  @IsOptional()
+  discordToken?: string | null;
 }

@@ -11,6 +11,7 @@ steps:
       - 'NEXT_PUBLIC_API_BASE_URL=${_NEXT_PUBLIC_API_BASE_URL}'
       - 'NEXT_PUBLIC_X_API_KEY=${_NEXT_PUBLIC_X_API_KEY}'
       - 'NEXT_PUBLIC_BOT_ID=${_NEXT_PUBLIC_BOT_ID}'
+      - 'NEXT_PUBLIC_DISCORD_AUTH_URL=${_NEXT_PUBLIC_DISCORD_AUTH_URL}'
 
   - name: 'gcr.io/cloud-builders/npm'
     args: ['run', 'create-env', 'dist/apps/web/.env.local']
@@ -19,6 +20,7 @@ steps:
       - 'NEXT_PUBLIC_API_BASE_URL=${_NEXT_PUBLIC_API_BASE_URL}'
       - 'NEXT_PUBLIC_X_API_KEY=${_NEXT_PUBLIC_X_API_KEY}'
       - 'NEXT_PUBLIC_BOT_ID=${_NEXT_PUBLIC_BOT_ID}'
+      - 'NEXT_PUBLIC_DISCORD_AUTH_URL=${_NEXT_PUBLIC_DISCORD_AUTH_URL}'
 
   - name: 'gcr.io/cloud-builders/gcloud'
     id: COPY-STUFF

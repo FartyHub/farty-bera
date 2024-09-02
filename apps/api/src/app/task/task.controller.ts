@@ -1,5 +1,7 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Req } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+
+import { AuthenticatedRequest } from '../../types';
 
 import { Task } from './entities/task.entity';
 import { TaskService } from './task.service';
@@ -11,8 +13,8 @@ export class TaskController {
 
   @Get()
   @ApiOkResponse({ isArray: true, type: Task })
-  findAll() {
-    return this.taskService.findAll();
+  findAll(@Req() req: AuthenticatedRequest) {
+    return this.taskService.findAll(req.user);
   }
 
   @Get(':id')

@@ -45,7 +45,7 @@ export function useSign() {
 
       return {
         key: address,
-        message,
+        message: encodeURIComponent(message),
         signature,
       };
     } catch (error) {
@@ -53,6 +53,12 @@ export function useSign() {
     } finally {
       setLoading(false);
     }
+
+    return {
+      key: '',
+      message: '',
+      signature: '',
+    };
   }
 
   return {

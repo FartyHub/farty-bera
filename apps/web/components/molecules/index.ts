@@ -6,5 +6,6 @@ export * from './GameExplorerWip ';
 export * from './FlappyBeraLeaderboard';
 export * from './LeaderboardWip';
 export * from './StatsWindow';
+export * from './TaskNotEligible';
 export * from './TasksWindow';
 export * from './VideoIntro';

@@ -17,6 +17,7 @@ import { ProjectInvite, ProjectInviteModule } from './project-invite';
 import { Score, ScoreModule } from './score';
 import { TaskModule } from './task/task.module';
 import { TelegramModule } from './telegram';
+import { TwitterModule } from './twitter';
 import { User, UserModule } from './user';
 import { UserTaskModule } from './user-task/user-task.module';
 
@@ -72,6 +73,7 @@ const defaultDBOptions = {
     InviteCodeModule,
     TaskModule,
     UserTaskModule,
+    TwitterModule,
     // TelegramModule,
   ],
   providers: [

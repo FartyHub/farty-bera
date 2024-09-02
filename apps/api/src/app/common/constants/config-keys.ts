@@ -5,8 +5,13 @@ export enum ConfigKeys {
   DBPassword = 'DB_PASSWORD',
   DBPort = 'DB_PORT',
   DBUsername = 'DB_USERNAME',
+  DiscordApiUrl = 'DISCORD_API_URL',
+  DiscordServerId = 'DISCORD_SERVER_ID',
   Env = 'ENVIRONMENT',
   Salt = 'SALT',
   TelegramApiKey = 'TELEGRAM_API_KEY',
+  TwitterBearerToken = 'TWITTER_BEARER_TOKEN',
+  TwitterKey = 'TWITTER_KEY',
+  TwitterSecret = 'TWITTER_SECRET',
   WebUrl = 'WEB_URL',
 }

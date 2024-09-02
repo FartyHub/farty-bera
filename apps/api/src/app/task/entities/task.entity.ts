@@ -1,5 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNumber, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsBoolean,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { Column, Entity, OneToMany } from 'typeorm';
 
 import { BaseEntity } from '../../common';
@@ -38,4 +44,9 @@ export class Task extends BaseEntity {
     nullable: true,
   })
   userTasks?: UserTask[];
+
+  @ApiPropertyOptional()
+  @IsBoolean()
+  @IsOptional()
+  isDone?: boolean;
 }

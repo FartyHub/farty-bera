@@ -20,6 +20,11 @@ steps:
       - 'WEB_URL=${_WEB_URL}'
       - 'JWT_SESSION_EXPIRES_IN=${_JWT_SESSION_EXPIRES_IN}'
       - 'JWT_SECRET=${_JWT_SECRET}'
+      - 'TWITTER_BEARER_TOKEN=${_TWITTER_BEARER_TOKEN}'
+      - 'TWITTER_KEY=${_TWITTER_KEY}'
+      - 'TWITTER_SECRET=${_TWITTER_SECRET}'
+      - 'DISCORD_API_URL=${_DISCORD_API_URL}'
+      - 'DISCORD_SERVER_ID=${_DISCORD_SERVER_ID}'
 
   - name: 'gcr.io/cloud-builders/npm'
     args: ['run', 'create-env', 'dist/apps/api/.env']
@@ -37,6 +42,11 @@ steps:
       - 'WEB_URL=${_WEB_URL}'
       - 'JWT_SESSION_EXPIRES_IN=${_JWT_SESSION_EXPIRES_IN}'
       - 'JWT_SECRET=${_JWT_SECRET}'
+      - 'TWITTER_BEARER_TOKEN=${_TWITTER_BEARER_TOKEN}'
+      - 'TWITTER_KEY=${_TWITTER_KEY}'
+      - 'TWITTER_SECRET=${_TWITTER_SECRET}'
+      - 'DISCORD_API_URL=${_DISCORD_API_URL}'
+      - 'DISCORD_SERVER_ID=${_DISCORD_SERVER_ID}'
 
   - name: 'gcr.io/cloud-builders/gcloud'
     id: COPY-STUFF

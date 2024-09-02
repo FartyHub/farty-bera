@@ -13,6 +13,7 @@ import {
   BeraDropGame,
   BeraSlashGame,
   BeraTowerGame,
+  TaskNotEligible,
 } from '../components';
 import {
   ApplicationData,
@@ -92,6 +93,7 @@ export default function Index({
         <LeaderboardWip />
         <GameExplorerWip />
         <TasksWindow />
+        <TaskNotEligible />
         {apps
           .filter(
             (app) =>
