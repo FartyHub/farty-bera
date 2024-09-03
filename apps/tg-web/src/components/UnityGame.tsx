@@ -253,8 +253,6 @@ export function UnityGame(_props: Props) {
   }
 
   async function handleSocialTask(taskId: string) {
-    console.log('taskId', taskId);
-
     switch (taskId) {
       case '1':
         WebApp.openLink('https://twitter.com/fartybera');
