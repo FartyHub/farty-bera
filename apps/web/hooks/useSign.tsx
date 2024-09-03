@@ -25,7 +25,7 @@ export function useSign() {
   const { signMessageAsync } = useSignMessage();
   const [isLoading, setLoading] = useState<boolean>(true);
 
-  async function handleSignMessage(data: string) {
+  async function handleSignMessage(data: string, encode = true) {
     setLoading(true);
 
     if (!address || !chainId) {
@@ -45,7 +45,7 @@ export function useSign() {
 
       return {
         key: address,
-        message: encodeURIComponent(message),
+        message: encode ? encodeURIComponent(message) : message,
         signature,
       };
     } catch (error) {
