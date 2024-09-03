@@ -15,8 +15,11 @@ import { InviteCodeModule } from './invite-code';
 import { Invoice } from './invoice';
 import { ProjectInvite, ProjectInviteModule } from './project-invite';
 import { Score, ScoreModule } from './score';
+import { TaskModule } from './task/task.module';
 import { TelegramModule } from './telegram';
+import { TwitterModule } from './twitter';
 import { User, UserModule } from './user';
+import { UserTaskModule } from './user-task/user-task.module';
 
 const defaultDBOptions = {
   autoLoadEntities: true,
@@ -68,6 +71,9 @@ const defaultDBOptions = {
     ScoreModule,
     ProjectInviteModule,
     InviteCodeModule,
+    TaskModule,
+    UserTaskModule,
+    TwitterModule,
     // TelegramModule,
   ],
   providers: [

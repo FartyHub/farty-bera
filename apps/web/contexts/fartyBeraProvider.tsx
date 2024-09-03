@@ -11,12 +11,14 @@ const FartyBeraContext = createContext<{
   ) => void;
   sendMessage: (objectName: string, methodName: string, value: any) => void;
   unityProvider: any;
+  unload: () => Promise<void>;
 }>({
   addEventListener: () => {},
   isLoaded: false,
   removeEventListener: () => {},
   sendMessage: () => {},
   unityProvider: {},
+  unload: async () => {},
 });
 
 export function useFartyBera() {
@@ -30,6 +32,7 @@ export function FartyBeraProvider({ children }: { children: ReactNode }) {
     removeEventListener,
     sendMessage,
     unityProvider,
+    unload,
   } = useUnityContext({
     codeUrl: 'https://storage.googleapis.com/farty-bera-build/web.wasm',
     dataUrl: 'https://storage.googleapis.com/farty-bera-build/web.data',
@@ -49,6 +52,7 @@ export function FartyBeraProvider({ children }: { children: ReactNode }) {
       removeEventListener,
       sendMessage,
       unityProvider,
+      unload,
     }),
     [
       addEventListener,
@@ -56,6 +60,7 @@ export function FartyBeraProvider({ children }: { children: ReactNode }) {
       removeEventListener,
       sendMessage,
       unityProvider,
+      unload,
     ],
   );
 

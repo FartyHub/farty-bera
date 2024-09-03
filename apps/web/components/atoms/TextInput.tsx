@@ -48,7 +48,6 @@ export function TextInput({
     }
 
     const valueProp = value as string;
-    console.log('valueProp', e.key);
 
     if (e.key === 'Backspace') {
       if (e.currentTarget?.selectionStart !== e.currentTarget?.selectionEnd) {

@@ -11,7 +11,13 @@ import { Address, Cell, SendMode, beginCell, toNano } from 'ton-core';
 import * as uuid from 'uuid';
 
 import { useUnityGame } from '../contexts';
-import { useGetNewInvoice, useTonConnect } from '../hooks';
+import {
+  useGetFartyChannelChatMember,
+  useGetFartyDenChatMember,
+  useGetNewInvoice,
+  useSaveUser,
+  useTonConnect,
+} from '../hooks';
 import { getTransactions } from '../services';
 
 import { Spinner } from './Spinner';
@@ -29,6 +35,13 @@ export function UnityGame(_props: Props) {
     sendMessage,
     unityProvider,
   } = useUnityGame();
+  const { mutate: saveUser } = useSaveUser();
+  const { data: fartyChannelChatMember } = useGetFartyChannelChatMember(
+    WebApp.initData,
+  );
+  const { data: fartyDenChatMember } = useGetFartyDenChatMember(
+    WebApp.initData,
+  );
   const [senderArgs, setSenderArgs] = useState<{
     propId: string;
     sendMode: SendMode;
@@ -156,7 +169,7 @@ export function UnityGame(_props: Props) {
 
   async function handleShareGame() {
     WebApp.openTelegramLink(
-      `https://t.me/share/url?url=t.me%2F${import.meta.env.VITE_BOT_USERNAME}%2F${import.meta.env.VITE_WEB_SHORTNAME}`,
+      `https://t.me/share/url?url=t.me%2F${import.meta.env.VITE_BOT_USERNAME}%2F${import.meta.env.VITE_WEB_SHORTNAME}%3Fstartapp%3D${WebApp.initDataUnsafe.user?.id ?? ''}`,
     );
 
     setTimeout(
@@ -239,12 +252,80 @@ export function UnityGame(_props: Props) {
     getNewInvoice(value);
   }
 
+  async function handleSocialTask(taskId: string) {
+    switch (taskId) {
+      case '1':
+        WebApp.openLink('https://twitter.com/fartybera');
+
+        setTimeout(
+          () => sendMessage('UnityWebReceiver', 'TaskCallBack', 1),
+          // eslint-disable-next-line no-magic-numbers
+          1000,
+        );
+        break;
+      case '2':
+        console.log(fartyDenChatMember);
+        if (fartyDenChatMember?.status === 'member') {
+          setTimeout(
+            () => sendMessage('UnityWebReceiver', 'TaskCallBack', 1),
+            // eslint-disable-next-line no-magic-numbers
+            500,
+          );
+        } else {
+          sendMessage('UnityWebReceiver', 'TaskCallBack', 0);
+          WebApp.openTelegramLink('https://t.me/+572PnbuackhkMTE9');
+        }
+        break;
+      case '3':
+        console.log(fartyChannelChatMember);
+        if (fartyChannelChatMember?.status === 'member') {
+          setTimeout(
+            () => sendMessage('UnityWebReceiver', 'TaskCallBack', 1),
+            // eslint-disable-next-line no-magic-numbers
+            500,
+          );
+        } else {
+          sendMessage('UnityWebReceiver', 'TaskCallBack', 0);
+          WebApp.openTelegramLink('https://t.me/+Ndgsd6EIIARhYTE1');
+        }
+        break;
+      case '8':
+        WebApp.openLink('https://x.com/KingdomlyApp');
+
+        setTimeout(
+          () => sendMessage('UnityWebReceiver', 'TaskCallBack', 1),
+          // eslint-disable-next-line no-magic-numbers
+          1000,
+        );
+        break;
+      case '9':
+        WebApp.openLink('https://app.beraland.xyz/dl/Ecosystem');
+
+        setTimeout(
+          () => sendMessage('UnityWebReceiver', 'TaskCallBack', 1),
+          // eslint-disable-next-line no-magic-numbers
+          1000,
+        );
+        break;
+      case '10':
+        WebApp.openLink('https://x.com/ramen_finance');
+
+        setTimeout(
+          () => sendMessage('UnityWebReceiver', 'TaskCallBack', 1),
+          // eslint-disable-next-line no-magic-numbers
+          1000,
+        );
+        break;
+    }
+  }
+
   useEffect(() => {
     addEventListener('ShareGame', handleShareGame);
     // @ts-ignore
     addEventListener('PaymentRequest', handlePayment);
     // @ts-ignore
     addEventListener('PaymentRequestStars', handleStarsPayment);
+    addEventListener('TaskRequest', handleSocialTask);
 
     return () => {
       removeEventListener('ShareGame', handleShareGame);
@@ -252,17 +333,26 @@ export function UnityGame(_props: Props) {
       removeEventListener('PaymentRequest', handlePayment);
       // @ts-ignore
       removeEventListener('PaymentRequestStars', handleStarsPayment);
+      removeEventListener('TaskRequest', handleSocialTask);
     };
-  }, [addEventListener, removeEventListener, handleShareGame, handlePayment]);
+  }, [
+    addEventListener,
+    removeEventListener,
+    handleShareGame,
+    handlePayment,
+    handleSocialTask,
+  ]);
 
   useEffect(() => {
     if (isLoaded) {
+      saveUser(WebApp.initData);
       // WebApp.showAlert(JSON.stringify(WebApp.initDataUnsafe.user));
       sendMessage(
         'UnityWebReceiver',
         'GetUserInfo',
         JSON.stringify({
           firstName: WebApp.initDataUnsafe.user?.first_name ?? '',
+          fromId: WebApp.initDataUnsafe.start_param ?? '',
           nickname: WebApp.initDataUnsafe.user?.username ?? '',
           photoUrl:
             WebApp.initDataUnsafe.user?.photo_url ??

@@ -30,8 +30,9 @@ export function Leaderboard() {
   const [name, setName] = useState<string>(user?.displayName ?? '');
   const [isEditingName, setIsEditingName] = useState<boolean>(false);
   const application =
-    applications.find((app) => app.name === Applications.LEADERBOARD) ||
-    ApplicationData[Applications.LEADERBOARD];
+    applications.find(
+      (app) => app.name === Applications.FLAPPY_BERA_LEADERBOARD,
+    ) || ApplicationData[Applications.FLAPPY_BERA_LEADERBOARD];
 
   const { data: invitedUsersCount, isLoading: isGettingInvitedUsersCount } =
     useGetInvitedUsersCount();

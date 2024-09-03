@@ -2,7 +2,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import './styles.css';
-import Script from 'next/script';
 import { useEffect } from 'react';
 import { cookieToInitialState } from 'wagmi';
 
@@ -11,7 +10,6 @@ import { config } from '../config';
 import { ApplicationData, Applications } from '../constants';
 import {
   ApplicationsProvider,
-  FartyBeraProvider,
   UserProvider,
   Web3ModalProvider,
 } from '../contexts';
@@ -62,17 +60,14 @@ function CustomApp({ Component, pageProps }: AppProps) {
             <ApplicationsProvider
               initialState={[ApplicationData[Applications.STATS]]}
             >
-              <FartyBeraProvider>
-                <main>
-                  <VideoIntro />
-                  <Component {...pageProps} />
-                </main>
-              </FartyBeraProvider>
+              <main>
+                <VideoIntro />
+                <Component {...pageProps} />
+              </main>
             </ApplicationsProvider>
           </UserProvider>
         </QueryClientProvider>
       </Web3ModalProvider>
-      <Script src="https://telegram.org/js/games.js" />
     </>
   );
 }

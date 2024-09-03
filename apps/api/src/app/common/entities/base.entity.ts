@@ -38,5 +38,5 @@ export abstract class BaseEntity {
   })
   @ApiProperty({ nullable: true })
   @IsDate()
-  deletedAt: Date;
+  deletedAt?: Date;
 }

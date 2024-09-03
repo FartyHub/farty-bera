@@ -1,6 +1,12 @@
+export * from './BeraDropGame';
+export * from './BeraSlashGame';
+export * from './BeraTowerGame';
 export * from './FartyBeraGame';
 export * from './GameExplorerWip ';
-export * from './Leaderboard';
+export * from './FlappyBeraLeaderboard';
 export * from './LeaderboardWip';
 export * from './StatsWindow';
+export * from './TaskInviteWindow';
+export * from './TaskNotEligible';
+export * from './TasksWindow';
 export * from './VideoIntro';

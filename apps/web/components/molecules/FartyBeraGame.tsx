@@ -7,16 +7,11 @@ import { MouseEvent, useCallback, useEffect, useState } from 'react';
 import { Unity } from 'react-unity-webgl';
 import { useAccount } from 'wagmi';
 
-import { SendTelegramGameScoreDto, User } from '@farty-bera/api-lib';
+import { User } from '@farty-bera/api-lib';
 
 import { ApplicationData, Applications, X_URL } from '../../constants';
 import { useApplications, useFartyBera, useUser } from '../../contexts';
-import {
-  useCreateScore,
-  useSendGameScore,
-  useSign,
-  useTouchDevice,
-} from '../../hooks';
+import { useCreateScore, useSign, useTouchDevice } from '../../hooks';
 import { hashSHA256, truncateMiddle } from '../../utils';
 import { Button, Spinner } from '../atoms';
 import { Window } from '../elements';
@@ -25,11 +20,10 @@ import { ConnectWindow } from './ConnectWindow';
 import { InviteCodeWindow } from './InviteCodeWindow';
 
 type Props = {
-  isTelegram: boolean;
-  telegramMessageContext: SendTelegramGameScoreDto | null;
+  isTelegram?: boolean;
 };
 
-export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
+export function FartyBeraGame({ isTelegram = false }: Props) {
   const {
     addEventListener,
     isLoaded,
@@ -45,9 +39,6 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
   const { mutate: addScore } = useCreateScore({
     onSuccess: () => fetchUser(),
   });
-  const { mutate: sendGameScore } = useSendGameScore({
-    onSuccess: () => fetchUser(),
-  });
   const { isTouch } = useTouchDevice();
   const application =
     applications.find((app) => app.id === Applications.FARTY_BERA) ||
@@ -59,13 +50,13 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
 
   const handleSetScore = useCallback(
     async (newScore: number, time: string) => {
-      if (isTelegram && telegramMessageContext) {
-        sendGameScore({
-          ...telegramMessageContext,
-          score: newScore,
-        });
+      if (isTelegram) {
+        // sendGameScore({
+        //   ...telegramMessageContext,
+        //   score: newScore,
+        // });
       } else {
-        const res = await handleSignMessage(newScore.toString());
+        const res = await handleSignMessage(newScore.toString(), false);
         const hash = hashSHA256(newScore.toString(), res?.key ?? '');
 
         addScore({
@@ -80,7 +71,7 @@ export function FartyBeraGame({ isTelegram, telegramMessageContext }: Props) {
         });
       }
     },
-    [user, isTelegram, telegramMessageContext, address],
+    [user, isTelegram, address],
   );
 
   useEffect(() => {
