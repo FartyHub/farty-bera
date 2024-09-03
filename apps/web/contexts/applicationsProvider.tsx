@@ -39,7 +39,6 @@ export function ApplicationsProvider({
     useState<Application | null>(null);
 
   function handleSetApplications(newApplications: Application[]) {
-    console.log('newApplications', newApplications);
     setApplications(uniqBy(newApplications, 'id'));
   }
 

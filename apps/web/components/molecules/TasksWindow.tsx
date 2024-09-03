@@ -65,6 +65,7 @@ function TaskItem({ idx, onError, refetch, task }: TaskItemProps) {
   const navigation = useRouter();
   const { handleSignMessage } = useSign();
   const { user } = useUser();
+  const { applications, setApplications } = useApplications();
   const { data } = useGetTwitterOAuthLinkQuery(taskData.id === '2');
   const { isPending, mutate: createUserTask } = useCreateUserTask({
     onError: () => {
@@ -137,7 +138,6 @@ function TaskItem({ idx, onError, refetch, task }: TaskItemProps) {
   }, [user?.id]);
 
   async function handleCreateUserTask() {
-    setIsLoading(true);
     let signDto: {
       key: string;
       message: string;
@@ -146,6 +146,7 @@ function TaskItem({ idx, onError, refetch, task }: TaskItemProps) {
 
     switch (taskData.id) {
       case '1':
+        setIsLoading(true);
         signDto = await handleSignMessage(task.id);
         createUserTask({
           createUserTaskDto: {
@@ -155,19 +156,23 @@ function TaskItem({ idx, onError, refetch, task }: TaskItemProps) {
         });
         break;
       case '2':
+        setIsLoading(true);
         Cookies.set('twitterOAuth', JSON.stringify(data));
         window.open(data?.url, '_blank');
         setIsLoading(false);
         break;
       case '3':
+        setIsLoading(true);
         window.open(process.env.NEXT_PUBLIC_DISCORD_AUTH_URL, '_blank');
         setIsLoading(false);
         break;
       case '4':
-        window.open('https://fartybera.com/invite', '_blank');
+        setApplications([
+          ...applications,
+          ApplicationData[Applications.TASK_INVITE],
+        ]);
         break;
       default:
-        window.open('https://berachain.com', '_blank');
         break;
     }
   }

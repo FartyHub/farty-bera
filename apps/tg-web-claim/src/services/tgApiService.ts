@@ -64,7 +64,6 @@ export async function getMyLeaderboardPosition(
       sdate,
       tgId,
     });
-    console.log('data', data);
 
     return {
       ...data,

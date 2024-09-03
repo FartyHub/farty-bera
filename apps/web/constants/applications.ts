@@ -13,6 +13,7 @@ export enum Applications {
   LEADERBOARD = 'Leaderboard',
   STATS = 'Stats',
   TASKS = 'Tasks',
+  TASK_INVITE = 'Invite Friends, Earn Bonus',
   TASK_NOT_ELIGIBLE = 'Not eligible for the task',
 }
 
@@ -21,7 +22,12 @@ export const UNDER_DEVELOPMENT = [
   Applications.GAME_EXPLORER,
 ];
 
-export const NOT_IN_DESKTOP = [Applications.FLAPPY_BERA_LEADERBOARD];
+export const NOT_IN_DESKTOP = [
+  Applications.FLAPPY_BERA_LEADERBOARD,
+  Applications.BERA_DROP,
+  Applications.BERA_SLASH,
+  Applications.BERA_TOWER,
+];
 
 export const ApplicationData: {
   [key in Applications]: Application;
@@ -109,6 +115,17 @@ export const ApplicationData: {
     name: Applications.TASK_NOT_ELIGIBLE,
     system: true,
     title: Applications.TASK_NOT_ELIGIBLE,
+    zIndex: 4,
+  },
+  [Applications.TASK_INVITE]: {
+    desktopIconUrl: '/images/explorer-desktop-icon.png',
+    disabled: false,
+    fullScreen: false,
+    iconUrl: '/images/explorer-icon.svg',
+    id: Applications.TASK_INVITE,
+    minimized: false,
+    name: Applications.TASK_INVITE,
+    title: Applications.TASK_INVITE,
     zIndex: 4,
   },
   [Applications.CONNECT_WALLET]: {

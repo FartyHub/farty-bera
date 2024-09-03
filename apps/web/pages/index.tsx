@@ -79,15 +79,6 @@ export default function Index({
         <FartyBeraProvider>
           <FartyBeraGame />
         </FartyBeraProvider>
-        <BeraDropProvider>
-          <BeraDropGame />
-        </BeraDropProvider>
-        <BeraSlashProvider>
-          <BeraSlashGame />
-        </BeraSlashProvider>
-        <BeraTowerProvider>
-          <BeraTowerGame />
-        </BeraTowerProvider>
         <StatsWindow />
         <FlappyBeraLeaderboard />
         <LeaderboardWip />

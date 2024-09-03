@@ -289,6 +289,33 @@ export function UnityGame(_props: Props) {
           WebApp.openTelegramLink('https://t.me/+Ndgsd6EIIARhYTE1');
         }
         break;
+      case '8':
+        WebApp.openLink('https://x.com/KingdomlyApp');
+
+        setTimeout(
+          () => sendMessage('UnityWebReceiver', 'TaskCallBack', 1),
+          // eslint-disable-next-line no-magic-numbers
+          1000,
+        );
+        break;
+      case '9':
+        WebApp.openLink('https://app.beraland.xyz/dl/Ecosystem');
+
+        setTimeout(
+          () => sendMessage('UnityWebReceiver', 'TaskCallBack', 1),
+          // eslint-disable-next-line no-magic-numbers
+          1000,
+        );
+        break;
+      case '10':
+        WebApp.openLink('https://x.com/ramen_finance');
+
+        setTimeout(
+          () => sendMessage('UnityWebReceiver', 'TaskCallBack', 1),
+          // eslint-disable-next-line no-magic-numbers
+          1000,
+        );
+        break;
     }
   }
 
