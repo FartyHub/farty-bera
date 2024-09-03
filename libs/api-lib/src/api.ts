@@ -176,6 +176,86 @@ export interface CreateUserDto {
 /**
  * 
  * @export
+ * @interface CreateUserTaskDto
+ */
+export interface CreateUserTaskDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateUserTaskDto
+     */
+    'taskId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateUserTaskDto
+     */
+    'deletedAt'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateUserTaskDto
+     */
+    'oauth_token'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateUserTaskDto
+     */
+    'oauth_verifier'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateUserTaskDto
+     */
+    'oauth_token_secret'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateUserTaskDto
+     */
+    'discordToken'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface OAuthResponseDto
+ */
+export interface OAuthResponseDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof OAuthResponseDto
+     */
+    'url': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof OAuthResponseDto
+     */
+    'oauth_token': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof OAuthResponseDto
+     */
+    'oauth_token_secret': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof OAuthResponseDto
+     */
+    'oauth_callback_confirmed': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof OAuthResponseDto
+     */
+    'oauth_verifier'?: string;
+}
+/**
+ * 
+ * @export
  * @interface ProjectInvite
  */
 export interface ProjectInvite {
@@ -288,55 +368,6 @@ export interface Score {
 /**
  * 
  * @export
- * @interface SendTelegramGameScoreDto
- */
-export interface SendTelegramGameScoreDto {
-    /**
-     * 
-     * @type {number}
-     * @memberof SendTelegramGameScoreDto
-     */
-    'userId': number;
-    /**
-     * 
-     * @type {number}
-     * @memberof SendTelegramGameScoreDto
-     */
-    'score': number;
-    /**
-     * 
-     * @type {string}
-     * @memberof SendTelegramGameScoreDto
-     */
-    'inlineMessageId'?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof SendTelegramGameScoreDto
-     */
-    'chatId'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof SendTelegramGameScoreDto
-     */
-    'messageId'?: number;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof SendTelegramGameScoreDto
-     */
-    'editMessage'?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof SendTelegramGameScoreDto
-     */
-    'force'?: boolean;
-}
-/**
- * 
- * @export
  * @interface SignDto
  */
 export interface SignDto {
@@ -404,6 +435,67 @@ export interface SoleCreateScoreDto {
 }
 
 
+/**
+ * 
+ * @export
+ * @interface Task
+ */
+export interface Task {
+    /**
+     * 
+     * @type {string}
+     * @memberof Task
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Task
+     */
+    'createdAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Task
+     */
+    'updatedAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Task
+     */
+    'deletedAt': string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Task
+     */
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Task
+     */
+    'description': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Task
+     */
+    'type': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Task
+     */
+    'value': number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Task
+     */
+    'isDone'?: boolean;
+}
 /**
  * 
  * @export
@@ -475,6 +567,12 @@ export interface UpdateUserDto {
      * @type {number}
      * @memberof UpdateUserDto
      */
+    'tasksScore'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateUserDto
+     */
     'honeyScore'?: number;
     /**
      * 
@@ -482,6 +580,18 @@ export interface UpdateUserDto {
      * @memberof UpdateUserDto
      */
     'displayName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateUserDto
+     */
+    'twitterId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateUserDto
+     */
+    'discordId'?: string;
 }
 /**
  * 
@@ -554,6 +664,12 @@ export interface User {
      * @type {number}
      * @memberof User
      */
+    'tasksScore': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof User
+     */
     'honeyScore': number;
     /**
      * 
@@ -561,6 +677,55 @@ export interface User {
      * @memberof User
      */
     'displayName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    'twitterId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    'discordId'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface UserTask
+ */
+export interface UserTask {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserTask
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserTask
+     */
+    'createdAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserTask
+     */
+    'updatedAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserTask
+     */
+    'deletedAt': string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof UserTask
+     */
+    'value': number;
 }
 
 /**
@@ -1046,21 +1211,280 @@ export class ScoresApi extends BaseAPI {
 
 
 /**
- * TelegramApi - axios parameter creator
+ * TasksApi - axios parameter creator
  * @export
  */
-export const TelegramApiAxiosParamCreator = function (configuration?: Configuration) {
+export const TasksApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
          * 
-         * @param {SendTelegramGameScoreDto} sendTelegramGameScoreDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        telegramControllerSendGameScore: async (sendTelegramGameScoreDto: SendTelegramGameScoreDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'sendTelegramGameScoreDto' is not null or undefined
-            assertParamExists('telegramControllerSendGameScore', 'sendTelegramGameScoreDto', sendTelegramGameScoreDto)
-            const localVarPath = `/api/telegram/send-game-score`;
+        taskControllerFindAll: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/tasks`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        taskControllerFindOne: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('taskControllerFindOne', 'id', id)
+            const localVarPath = `/api/tasks/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * TasksApi - functional programming interface
+ * @export
+ */
+export const TasksApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = TasksApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async taskControllerFindAll(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Task>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.taskControllerFindAll(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TasksApi.taskControllerFindAll']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async taskControllerFindOne(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Task>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.taskControllerFindOne(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TasksApi.taskControllerFindOne']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * TasksApi - factory interface
+ * @export
+ */
+export const TasksApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = TasksApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        taskControllerFindAll(options?: any): AxiosPromise<Array<Task>> {
+            return localVarFp.taskControllerFindAll(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        taskControllerFindOne(id: string, options?: any): AxiosPromise<Task> {
+            return localVarFp.taskControllerFindOne(id, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * TasksApi - object-oriented interface
+ * @export
+ * @class TasksApi
+ * @extends {BaseAPI}
+ */
+export class TasksApi extends BaseAPI {
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TasksApi
+     */
+    public taskControllerFindAll(options?: RawAxiosRequestConfig) {
+        return TasksApiFp(this.configuration).taskControllerFindAll(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TasksApi
+     */
+    public taskControllerFindOne(id: string, options?: RawAxiosRequestConfig) {
+        return TasksApiFp(this.configuration).taskControllerFindOne(id, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * TwitterApi - axios parameter creator
+ * @export
+ */
+export const TwitterApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        twitterControllerGetOAuthLink: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/twitter/oauth-link`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * TwitterApi - functional programming interface
+ * @export
+ */
+export const TwitterApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = TwitterApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async twitterControllerGetOAuthLink(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OAuthResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.twitterControllerGetOAuthLink(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TwitterApi.twitterControllerGetOAuthLink']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * TwitterApi - factory interface
+ * @export
+ */
+export const TwitterApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = TwitterApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        twitterControllerGetOAuthLink(options?: any): AxiosPromise<OAuthResponseDto> {
+            return localVarFp.twitterControllerGetOAuthLink(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * TwitterApi - object-oriented interface
+ * @export
+ * @class TwitterApi
+ * @extends {BaseAPI}
+ */
+export class TwitterApi extends BaseAPI {
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TwitterApi
+     */
+    public twitterControllerGetOAuthLink(options?: RawAxiosRequestConfig) {
+        return TwitterApiFp(this.configuration).twitterControllerGetOAuthLink(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * UserTasksApi - axios parameter creator
+ * @export
+ */
+export const UserTasksApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {CreateUserTaskDto} createUserTaskDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userTaskControllerCreate: async (createUserTaskDto: CreateUserTaskDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createUserTaskDto' is not null or undefined
+            assertParamExists('userTaskControllerCreate', 'createUserTaskDto', createUserTaskDto)
+            const localVarPath = `/api/user-tasks`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1079,7 +1503,107 @@ export const TelegramApiAxiosParamCreator = function (configuration?: Configurat
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(sendTelegramGameScoreDto, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(createUserTaskDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} [userId] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userTaskControllerFindAll: async (userId?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/user-tasks`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (userId !== undefined) {
+                localVarQueryParameter['userId'] = userId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userTaskControllerFindOne: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('userTaskControllerFindOne', 'id', id)
+            const localVarPath = `/api/user-tasks/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userTaskControllerRemove: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('userTaskControllerRemove', 'id', id)
+            const localVarPath = `/api/user-tasks/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1090,62 +1614,158 @@ export const TelegramApiAxiosParamCreator = function (configuration?: Configurat
 };
 
 /**
- * TelegramApi - functional programming interface
+ * UserTasksApi - functional programming interface
  * @export
  */
-export const TelegramApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = TelegramApiAxiosParamCreator(configuration)
+export const UserTasksApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = UserTasksApiAxiosParamCreator(configuration)
     return {
         /**
          * 
-         * @param {SendTelegramGameScoreDto} sendTelegramGameScoreDto 
+         * @param {CreateUserTaskDto} createUserTaskDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async telegramControllerSendGameScore(sendTelegramGameScoreDto: SendTelegramGameScoreDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.telegramControllerSendGameScore(sendTelegramGameScoreDto, options);
+        async userTaskControllerCreate(createUserTaskDto: CreateUserTaskDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserTask>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userTaskControllerCreate(createUserTaskDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['TelegramApi.telegramControllerSendGameScore']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['UserTasksApi.userTaskControllerCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} [userId] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async userTaskControllerFindAll(userId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<UserTask>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userTaskControllerFindAll(userId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UserTasksApi.userTaskControllerFindAll']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async userTaskControllerFindOne(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserTask>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userTaskControllerFindOne(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UserTasksApi.userTaskControllerFindOne']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async userTaskControllerRemove(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserTask>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userTaskControllerRemove(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UserTasksApi.userTaskControllerRemove']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
 };
 
 /**
- * TelegramApi - factory interface
+ * UserTasksApi - factory interface
  * @export
  */
-export const TelegramApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = TelegramApiFp(configuration)
+export const UserTasksApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = UserTasksApiFp(configuration)
     return {
         /**
          * 
-         * @param {SendTelegramGameScoreDto} sendTelegramGameScoreDto 
+         * @param {CreateUserTaskDto} createUserTaskDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        telegramControllerSendGameScore(sendTelegramGameScoreDto: SendTelegramGameScoreDto, options?: any): AxiosPromise<void> {
-            return localVarFp.telegramControllerSendGameScore(sendTelegramGameScoreDto, options).then((request) => request(axios, basePath));
+        userTaskControllerCreate(createUserTaskDto: CreateUserTaskDto, options?: any): AxiosPromise<UserTask> {
+            return localVarFp.userTaskControllerCreate(createUserTaskDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} [userId] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userTaskControllerFindAll(userId?: string, options?: any): AxiosPromise<Array<UserTask>> {
+            return localVarFp.userTaskControllerFindAll(userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userTaskControllerFindOne(id: string, options?: any): AxiosPromise<UserTask> {
+            return localVarFp.userTaskControllerFindOne(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userTaskControllerRemove(id: string, options?: any): AxiosPromise<UserTask> {
+            return localVarFp.userTaskControllerRemove(id, options).then((request) => request(axios, basePath));
         },
     };
 };
 
 /**
- * TelegramApi - object-oriented interface
+ * UserTasksApi - object-oriented interface
  * @export
- * @class TelegramApi
+ * @class UserTasksApi
  * @extends {BaseAPI}
  */
-export class TelegramApi extends BaseAPI {
+export class UserTasksApi extends BaseAPI {
     /**
      * 
-     * @param {SendTelegramGameScoreDto} sendTelegramGameScoreDto 
+     * @param {CreateUserTaskDto} createUserTaskDto 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof TelegramApi
+     * @memberof UserTasksApi
      */
-    public telegramControllerSendGameScore(sendTelegramGameScoreDto: SendTelegramGameScoreDto, options?: RawAxiosRequestConfig) {
-        return TelegramApiFp(this.configuration).telegramControllerSendGameScore(sendTelegramGameScoreDto, options).then((request) => request(this.axios, this.basePath));
+    public userTaskControllerCreate(createUserTaskDto: CreateUserTaskDto, options?: RawAxiosRequestConfig) {
+        return UserTasksApiFp(this.configuration).userTaskControllerCreate(createUserTaskDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} [userId] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserTasksApi
+     */
+    public userTaskControllerFindAll(userId?: string, options?: RawAxiosRequestConfig) {
+        return UserTasksApiFp(this.configuration).userTaskControllerFindAll(userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserTasksApi
+     */
+    public userTaskControllerFindOne(id: string, options?: RawAxiosRequestConfig) {
+        return UserTasksApiFp(this.configuration).userTaskControllerFindOne(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserTasksApi
+     */
+    public userTaskControllerRemove(id: string, options?: RawAxiosRequestConfig) {
+        return UserTasksApiFp(this.configuration).userTaskControllerRemove(id, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

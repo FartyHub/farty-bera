@@ -29,7 +29,6 @@ const SCORE_THRESHOLD = 35;
 function removeInviteCode(user: User) {
   user.inviteCode = undefined;
   user.usedInviteCode = undefined;
-  user.fartyHighScore = undefined;
   user.inviteCodeLimit = undefined;
 
   return user;

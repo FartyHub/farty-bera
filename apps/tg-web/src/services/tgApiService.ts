@@ -28,3 +28,41 @@ export async function getInvoice(amount: string) {
     };
   }
 }
+
+export async function saveUser(initData: string) {
+  try {
+    const { data } = await tgApiClient.post('/farty-claw/user/', {
+      initData,
+    });
+
+    return data;
+  } catch (error) {
+    console.error(error);
+
+    throw error;
+  }
+}
+
+export async function getFartyDenChatMember(initData: string) {
+  try {
+    const { data } = await tgApiClient.get(
+      `/farty-claw/chat-member/farty-den/?initData=${encodeURIComponent(initData)}`,
+    );
+
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function getFartyChannelChatMember(initData: string) {
+  try {
+    const { data } = await tgApiClient.get(
+      `/farty-claw/chat-member/farty-channel/?initData=${encodeURIComponent(initData)}`,
+    );
+
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}

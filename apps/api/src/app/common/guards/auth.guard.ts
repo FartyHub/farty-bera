@@ -13,6 +13,7 @@ import { verify } from 'jsonwebtoken';
 import { Repository } from 'typeorm';
 
 import { AuthenticatedRequest, DecodedAccessToken } from '../../../types';
+import { verifyAuthenticationMessage } from '../../../utils';
 import { User } from '../../user';
 import {
   ACCESS_TOKEN,
@@ -99,6 +100,30 @@ export class JwtGuard implements CanActivate {
         });
 
         request.accessToken = accessToken;
+        request.user = user;
+
+        return true;
+      }
+
+      const key = request.get('key');
+      const message = request.get('message');
+      const signature = request.get('signature');
+
+      if (key && message && signature) {
+        const { address, verified } = await verifyAuthenticationMessage({
+          key,
+          message,
+          signature,
+        });
+
+        if (!verified) {
+          throw new UnauthorizedException('Invalid access token');
+        }
+
+        const user = await this.usersRepository.findOne({
+          where: { address: address },
+        });
+
         request.user = user;
 
         return true;

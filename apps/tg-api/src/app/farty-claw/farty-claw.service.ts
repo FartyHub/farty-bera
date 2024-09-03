@@ -133,27 +133,26 @@ export class FartyClawService {
     if (endDate < today) {
       list = LeagueJSON.list as ClaimUserDto[];
       finalList = await Promise.all(
-        list.map(async (user) => {
-          let claimUser = user;
+        list.map(
+          async (user) =>
+            //       try {
+            //         const score = await this.scoreService.findOne(user.openid);
+            //         const fartyClawUser = await this.fartyClawUsersRepository.findOne({
+            //           where: { telegramId: user.openid },
+            //         });
 
-          try {
-            const score = await this.scoreService.findOne(user.openid);
-            const fartyClawUser = await this.fartyClawUsersRepository.findOne({
-              where: { telegramId: user.openid },
-            });
+            //         claimUser = {
+            //           ...user,
+            //           address: fartyClawUser?.address,
+            //           gold: score?.value ?? user.gold,
+            //           reward: score?.rewards,
+            //         };
+            //       } catch (error) {
+            //         console.error('getLeaderboard', error);
+            //       }
 
-            claimUser = {
-              ...user,
-              address: fartyClawUser?.address,
-              gold: score?.value ?? user.gold,
-              reward: score?.rewards,
-            };
-          } catch (error) {
-            console.error('getLeaderboard', error);
-          }
-
-          return claimUser;
-        }),
+            user,
+        ),
       );
       finalList.sort((a, b) => b.gold - a.gold);
 
@@ -250,5 +249,34 @@ export class FartyClawService {
       .digest('hex');
 
     return { isVerified: key === hash, user };
+  }
+
+  async getChatMember(initData: string, chatId: string) {
+    this.logger.log('[GET_CHAT_MEMBER]', chatId, initData);
+    const { isVerified, user } = await this.verifyUser(initData);
+
+    if (!isVerified) {
+      throw new UnauthorizedException('User is not verified');
+    }
+
+    return this.fartyBot.telegram.getChatMember(chatId, Number(user.id));
+  }
+
+  async getFartyDenMember(initData: string) {
+    this.logger.log('[GET_FARTY_DEN_MEMBER]', initData);
+
+    return this.getChatMember(
+      initData,
+      this.configService.get<string>(ConfigKeys.FartyDenId),
+    );
+  }
+
+  async getFartyChannelMember(initData: string) {
+    this.logger.log('[GET_FARTY_CHANNEL_MEMBER]', initData);
+
+    return this.getChatMember(
+      initData,
+      this.configService.get<string>(ConfigKeys.FartyChannelId),
+    );
   }
 }

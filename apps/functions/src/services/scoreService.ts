@@ -12,8 +12,6 @@ export async function createScore(data: BulkSoleCreateScoreDto) {
 
     return response.data;
   } catch (error) {
-    console.log('createScore', error);
-
     throw new Error(((error as AxiosError)?.response?.data as any)?.message);
   }
 }

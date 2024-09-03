@@ -1,5 +1,6 @@
 import { Request } from 'express';
 
+import { SignDto } from '../app/common';
 import { User } from '../app/user/entities/user.entity';
 
 export type AccessToken = {
@@ -7,7 +8,8 @@ export type AccessToken = {
 };
 
 export type AuthenticatedRequest = Request &
-  AccessToken & {
+  AccessToken &
+  Partial<SignDto> & {
     user: User;
   };
 

@@ -49,6 +49,8 @@ steps:
       - 'FARTY_CLAW_API_URL=${_FARTY_CLAW_API_URL}'
       - 'CLAIM_WEB_URL=${_CLAIM_WEB_URL}'
       - 'CLAIM_IMAGE_URL=${_CLAIM_IMAGE_URL}'
+      - 'FARTY_DEN_ID=${_FARTY_DEN_ID}'
+      - 'FARTY_CHANNEL_ID=${_FARTY_CHANNEL_ID}'
 
   - name: 'gcr.io/cloud-builders/gcloud'
     id: COPY-STUFF
@@ -73,7 +75,7 @@ steps:
     args:
       - -c
       - |
-        gcloud app versions list --format="value(version.id)" --sort-by="~version.createTime" --service="tg-api" | tail -n +40 | xargs -r gcloud app versions delete --quiet
+        gcloud app versions list --format="value(version.id)" --sort-by="~version.createTime" --service="tg-api-dev" | tail -n +40 | xargs -r gcloud app versions delete --quiet
 
 timeout: 1800s
 options:

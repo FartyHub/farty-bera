@@ -2,17 +2,32 @@
 import { Application } from '../types';
 
 export enum Applications {
+  BERA_DROP = 'Bera Drop',
+  BERA_SLASH = 'Bera Slash',
+  BERA_TOWER = 'Bera Tower',
   CONNECT_WALLET = 'Connect Wallet',
   FARTY_BERA = 'Farty Bera',
+  FLAPPY_BERA_LEADERBOARD = 'Flappy Bera Leaderboard',
   GAME_EXPLORER = 'Game Explorer',
   INVITE_CODE = 'Invite Code',
   LEADERBOARD = 'Leaderboard',
   STATS = 'Stats',
+  TASKS = 'Tasks',
+  TASK_INVITE = 'Invite Friends, Earn Bonus',
+  TASK_NOT_ELIGIBLE = 'Not eligible for the task',
 }
 
 export const UNDER_DEVELOPMENT = [
   Applications.LEADERBOARD,
   Applications.GAME_EXPLORER,
+];
+
+export const NOT_IN_DESKTOP = [
+  Applications.FLAPPY_BERA_LEADERBOARD,
+  Applications.TASK_INVITE,
+  Applications.BERA_DROP,
+  Applications.BERA_SLASH,
+  Applications.BERA_TOWER,
 ];
 
 export const ApplicationData: {
@@ -31,6 +46,19 @@ export const ApplicationData: {
     title: 'BM, Ser',
     zIndex: 1,
   },
+  [Applications.TASKS]: {
+    creator: 'Earthspirit',
+    desktopIconUrl: '',
+    disabled: false,
+    fullScreen: false,
+    iconUrl: '',
+    id: Applications.TASKS,
+    minimized: false,
+    name: 'Tasks',
+    system: true,
+    title: 'Tasks',
+    zIndex: 1,
+  },
   [Applications.FARTY_BERA]: {
     creator: 'Earthspirit',
     desktopIconUrl: '/images/farty-bera-desktop-icon.png',
@@ -43,6 +71,17 @@ export const ApplicationData: {
     title: 'Farty Bera',
     zIndex: 2,
   },
+  [Applications.FLAPPY_BERA_LEADERBOARD]: {
+    desktopIconUrl: '/images/leaderboard-desktop-icon.png',
+    disabled: false,
+    fullScreen: false,
+    iconUrl: '/images/leaderboard-icon.svg',
+    id: Applications.FLAPPY_BERA_LEADERBOARD,
+    minimized: false,
+    name: Applications.FLAPPY_BERA_LEADERBOARD,
+    title: Applications.FLAPPY_BERA_LEADERBOARD,
+    zIndex: 3,
+  },
   [Applications.LEADERBOARD]: {
     desktopIconUrl: '/images/leaderboard-desktop-icon.png',
     disabled: false,
@@ -51,8 +90,8 @@ export const ApplicationData: {
     id: Applications.LEADERBOARD,
     minimized: false,
     name: 'Leaderboard',
-    title: 'Leaderboard',
-    zIndex: 3,
+    title: Applications.LEADERBOARD,
+    zIndex: 4,
   },
   [Applications.GAME_EXPLORER]: {
     desktopIconUrl: '/images/explorer-desktop-icon.png',
@@ -64,6 +103,29 @@ export const ApplicationData: {
     name: 'Game Explorer (Coming Soon)',
     system: true,
     title: 'Under Construction',
+    zIndex: 4,
+  },
+  [Applications.TASK_NOT_ELIGIBLE]: {
+    desktopIconUrl: '/images/explorer-desktop-icon.png',
+    disabled: false,
+    fullScreen: false,
+    iconUrl: '/images/explorer-icon.svg',
+    id: Applications.TASK_NOT_ELIGIBLE,
+    minimized: false,
+    name: Applications.TASK_NOT_ELIGIBLE,
+    system: true,
+    title: Applications.TASK_NOT_ELIGIBLE,
+    zIndex: 4,
+  },
+  [Applications.TASK_INVITE]: {
+    desktopIconUrl: '/images/explorer-desktop-icon.png',
+    disabled: false,
+    fullScreen: false,
+    iconUrl: '/images/explorer-icon.svg',
+    id: Applications.TASK_INVITE,
+    minimized: false,
+    name: Applications.TASK_INVITE,
+    title: Applications.TASK_INVITE,
     zIndex: 4,
   },
   [Applications.CONNECT_WALLET]: {
@@ -91,5 +153,41 @@ export const ApplicationData: {
     system: true,
     title: 'BM, Ser',
     zIndex: 6,
+  },
+  [Applications.BERA_DROP]: {
+    creator: 'Earthspirit',
+    desktopIconUrl: '/images/farty-bera-desktop-icon.png',
+    disabled: false,
+    fullScreen: false,
+    iconUrl: '/images/farty-bera-icon.svg',
+    id: Applications.BERA_DROP,
+    minimized: false,
+    name: 'Bera Drop',
+    title: 'Bera Drop',
+    zIndex: 2,
+  },
+  [Applications.BERA_SLASH]: {
+    creator: 'Earthspirit',
+    desktopIconUrl: '/images/farty-bera-desktop-icon.png',
+    disabled: false,
+    fullScreen: false,
+    iconUrl: '/images/farty-bera-icon.svg',
+    id: Applications.BERA_SLASH,
+    minimized: false,
+    name: 'Bera Slash',
+    title: 'Bera Slash',
+    zIndex: 2,
+  },
+  [Applications.BERA_TOWER]: {
+    creator: 'Earthspirit',
+    desktopIconUrl: '/images/farty-bera-desktop-icon.png',
+    disabled: false,
+    fullScreen: false,
+    iconUrl: '/images/farty-bera-icon.svg',
+    id: Applications.BERA_TOWER,
+    minimized: false,
+    name: 'Bera Tower',
+    title: 'Bera Tower',
+    zIndex: 2,
   },
 };
