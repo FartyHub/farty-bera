@@ -2,12 +2,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { CHAIN } from '@tonconnect/ui-react';
+import { mainnet } from '@starknet-react/chains';
+import { argent } from '@starknet-react/core';
 import WebApp from '@twa-dev/sdk';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { Unity } from 'react-unity-webgl';
-import { Address, Cell, SendMode, beginCell, toNano } from 'ton-core';
 import * as uuid from 'uuid';
 
 import { useUnityGame } from '../contexts';
@@ -16,7 +16,7 @@ import {
   useGetFartyDenChatMember,
   useGetNewInvoice,
   useSaveUser,
-  useTonConnect,
+  useStarknet,
 } from '../hooks';
 import { getTransactions } from '../services';
 
@@ -44,7 +44,6 @@ export function UnityGame(_props: Props) {
   );
   const [senderArgs, setSenderArgs] = useState<{
     propId: string;
-    sendMode: SendMode;
     to: string;
     value: string;
   } | null>(null);
@@ -68,7 +67,7 @@ export function UnityGame(_props: Props) {
             );
           }, 1000);
         });
-      } catch (error) {
+      } catch (err) {
         sendMessage(
           'UnityWebReceiver',
           'PaymentCallBack',
@@ -82,90 +81,89 @@ export function UnityGame(_props: Props) {
     },
   });
 
-  async function sendCallback(
-    address: string,
-    body: Cell,
-    count = 1,
-    rejected = 0,
-  ) {
-    const ref = body.beginParse();
-    const strData = ref.loadStringTail();
-    ref.endParse();
-    const rawData = Buffer.from(strData).toString('hex');
-    const propId = strData.split(':')[0];
+  // async function sendCallback(
+  //   address: string,
+  //   body: Cell,
+  //   count = 1,
+  //   rejected = 0,
+  // ) {
+  //   const ref = body.beginParse();
+  //   const strData = ref.loadStringTail();
+  //   ref.endParse();
+  //   const rawData = Buffer.from(strData).toString('hex');
+  //   const propId = strData.split(':')[0];
 
-    try {
-      if ((rejected === 1 && count > RETRY_REJECTED_COUNT) || rejected === 2) {
-        throw new Error('Transaction rejected');
-      }
+  //   try {
+  //     if ((rejected === 1 && count > RETRY_REJECTED_COUNT) || rejected === 2) {
+  //       throw new Error('Transaction rejected');
+  //     }
 
-      const res = await getTransactions(address);
-      const result: any[] = Array.from(res?.transactions ?? []);
+  //     const res = await getTransactions(address);
+  //     const result: any[] = Array.from(res?.transactions ?? []);
 
-      const transaction = result.find((item) =>
-        (item?.in_msg?.raw_body as string)?.includes(rawData),
-      );
+  //     const transaction = result.find((item) =>
+  //       (item?.in_msg?.raw_body as string)?.includes(rawData),
+  //     );
 
-      if (transaction) {
-        sendMessage(
-          'UnityWebReceiver',
-          'PaymentCallBack',
-          JSON.stringify({
-            address,
-            isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
-            propId,
-            tx: String(transaction.hash),
-          }),
-        );
+  //     if (transaction) {
+  //       sendMessage(
+  //         'UnityWebReceiver',
+  //         'PaymentCallBack',
+  //         JSON.stringify({
+  //           address,
+  //           isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
+  //           propId,
+  //           tx: String(transaction.hash),
+  //         }),
+  //       );
 
-        return true;
-      } else {
-        await new Promise((resolve) => setTimeout(resolve, RETRY_INTERVAL));
+  //       return true;
+  //     } else {
+  //       await new Promise((resolve) => setTimeout(resolve, RETRY_INTERVAL));
 
-        return await sendCallback(address, body, count + 1, rejected);
-      }
-    } catch (error) {
-      console.log('[Payment Error]', error);
-      sendMessage(
-        'UnityWebReceiver',
-        'PaymentCallBack',
-        JSON.stringify({
-          address,
-          cancelled: true,
-          isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
-          propId,
-          tx: '',
-        }),
-      );
+  //       return await sendCallback(address, body, count + 1, rejected);
+  //     }
+  //   } catch (err) {
+  //     console.log('[Payment Error]', err);
+  //     sendMessage(
+  //       'UnityWebReceiver',
+  //       'PaymentCallBack',
+  //       JSON.stringify({
+  //         address,
+  //         cancelled: true,
+  //         isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
+  //         propId,
+  //         tx: '',
+  //       }),
+  //     );
 
-      return false;
-    }
-  }
+  //     return false;
+  //   }
+  // }
 
-  const { connected, network, sender, tonConnectUI, wallet } = useTonConnect({
-    sendCallback,
-  });
+  const { connect, connected, disconnect, network, send, wallet } =
+    useStarknet();
 
-  tonConnectUI.onModalStateChange(({ closeReason, status }) => {
-    if (
-      !connected &&
-      status === 'closed' &&
-      closeReason === 'action-cancelled' &&
-      isLoaded
-    ) {
-      sendMessage(
-        'UnityWebReceiver',
-        'PaymentCallBack',
-        JSON.stringify({
-          address: wallet,
-          cancelled: true,
-          isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
-          propId: senderArgs?.propId ?? '',
-          tx: '',
-        }),
-      );
-    }
-  });
+  // tonConnectUI.onModalStateChange(({ closeReason, status }) => {
+  //   if (
+  //     !connected &&
+  //     status === 'closed' &&
+  //     closeReason === 'action-cancelled' &&
+  //     isLoaded
+  //   ) {
+  //     sendMessage(
+  //       'UnityWebReceiver',
+  //       'PaymentCallBack',
+  //       JSON.stringify({
+  //         address: wallet,
+  //         cancelled: true,
+  //         isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
+  //         propId: senderArgs?.propId ?? '',
+  //         tx: '',
+  //       }),
+  //     );
+  //   }
+  // });
 
   async function handleShareGame() {
     WebApp.openTelegramLink(
@@ -181,15 +179,15 @@ export function UnityGame(_props: Props) {
 
   useEffect(
     () => {
-      if (senderArgs && connected && sender) {
+      if (senderArgs && connected) {
         console.log(
           'Connected to: ',
-          network === CHAIN.MAINNET ? 'mainnet' : 'testnet',
+          network === mainnet.id ? 'mainnet' : 'testnet',
         );
 
-        const { propId, sendMode, to, value } = senderArgs;
-        const uid = uuid.v4();
-        const body = beginCell().storeStringTail(`${propId}:${uid}`).endCell();
+        // const { propId, to, value } = senderArgs;
+        // const uid = uuid.v4();
+        // const body = beginCell().storeStringTail(`${propId}:${uid}`).endCell();
         WebApp.showPopup(
           {
             buttons: [
@@ -202,36 +200,44 @@ export function UnityGame(_props: Props) {
             title: 'Important!',
           },
           () => {
-            sender.send({
-              body,
-              sendMode,
-              to: Address.parse(to),
-              value: toNano(value),
-            });
+            // sender.send({
+            //   body,
+            //   sendMode,
+            //   to: Address.parse(to),
+            //   value: toNano(value),
+            // });
             setSenderArgs(null);
           },
         );
       }
     } /* eslint-disable-next-line react-hooks/exhaustive-deps */,
-    [connected, sender, senderArgs],
+    [connected, senderArgs],
   );
 
   async function handlePayment(value: string, propId: string) {
     try {
       if (connected) {
-        await tonConnectUI.disconnect();
+        console.log('Disconnecting from Starknet...');
+        await disconnect();
       }
 
-      tonConnectUI.openModal();
+      console.log('Connecting to Starknet...');
+      await connect();
 
-      setSenderArgs({
-        propId,
-        sendMode: SendMode.PAY_GAS_SEPARATELY,
-        to: import.meta.env.VITE_MASTER_ADDRESS,
-        value,
-      });
-    } catch (error) {
-      console.log(error);
+      console.log('Sending payment...');
+      const res = await send(
+        import.meta.env.VITE_MASTER_ADDRESS ?? '',
+        BigInt(value),
+      );
+      console.log(res);
+
+      // setSenderArgs({
+      //   propId,
+      //   to: import.meta.env.VITE_MASTER_ADDRESS,
+      //   value,
+      // });
+    } catch (err) {
+      console.log(err);
       sendMessage(
         'UnityWebReceiver',
         'PaymentCallBack',
@@ -247,9 +253,10 @@ export function UnityGame(_props: Props) {
   }
 
   async function handleStarsPayment(value: string, propId: string) {
-    setStarsPropId(propId);
+    // setStarsPropId(propId);
 
-    getNewInvoice(value);
+    // getNewInvoice(value);
+    handlePayment(value, propId);
   }
 
   async function handleSocialTask(taskId: string) {
