@@ -2,8 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { mainnet } from '@starknet-react/chains';
-import { argent } from '@starknet-react/core';
+import { DynamicWidget } from '@dynamic-labs/sdk-react-core';
 import WebApp from '@twa-dev/sdk';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
@@ -33,6 +32,7 @@ export function UnityGame(_props: Props) {
     isLoaded,
     removeEventListener,
     sendMessage,
+    setSavedData,
     unityProvider,
   } = useUnityGame();
   const { mutate: saveUser } = useSaveUser();
@@ -141,8 +141,17 @@ export function UnityGame(_props: Props) {
   //   }
   // }
 
-  const { connect, connected, disconnect, network, send, wallet } =
-    useStarknet();
+  const {
+    address,
+    chain,
+    connect,
+    connected,
+    connectors,
+    disconnect,
+    open,
+    sendTransaction,
+    setShowAuthFlow,
+  } = useStarknet();
 
   // tonConnectUI.onModalStateChange(({ closeReason, status }) => {
   //   if (
@@ -180,10 +189,7 @@ export function UnityGame(_props: Props) {
   useEffect(
     () => {
       if (senderArgs && connected) {
-        console.log(
-          'Connected to: ',
-          network === mainnet.id ? 'mainnet' : 'testnet',
-        );
+        console.log('Connected to:', chain);
 
         // const { propId, to, value } = senderArgs;
         // const uid = uuid.v4();
@@ -215,34 +221,96 @@ export function UnityGame(_props: Props) {
   );
 
   async function handlePayment(value: string, propId: string) {
+    // console.log('Disconnecting to Starknet...');
+    // if (connected) {
+    //   await disconnect();
+    // }
+
+    // console.log('Connecting to Starknet...');
+    // await connect(
+    //   {
+    //     chainId:
+    //       import.meta.env.VITE_IS_MAINNET !== 'true'
+    //         ? kakarotSepolia.id
+    //         : mainnet.id,
+    //     connector: connectors[0],
+    //   },
+    //   {
+    //     onError: (err) => {
+    //       console.log(err);
+    //       sendMessage(
+    //         'UnityWebReceiver',
+    //         'PaymentCallBack',
+    //         JSON.stringify({
+    //           address,
+    //           cancelled: true,
+    //           isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
+    //           propId,
+    //           tx: '',
+    //         }),
+    //       );
+    //     },
+    //     onSuccess: async () => {
+    //       console.log('Sending payment...', {
+    //         recipientAddress:
+    //           import.meta.env.VITE_MASTER_ADDRESS_STARKNET ?? '',
+    //         value: BigInt(value),
+    //       });
+    //       const res = await sendTransaction({
+    //         to: import.meta.env.VITE_MASTER_ADDRESS_STARKNET ?? '',
+    //         value: BigInt(value),
+    //       });
+    //       console.log(res);
+    //     },
+    //   },
+    // );
+
+    setSavedData({
+      address,
+      propId,
+      value,
+    });
+
+    console.log('Sending payment...', {
+      recipientAddress: import.meta.env.VITE_MASTER_ADDRESS_STARKNET ?? '',
+      value: BigInt(value),
+    });
+
     try {
-      if (connected) {
-        console.log('Disconnecting from Starknet...');
-        await disconnect();
-      }
-
-      console.log('Connecting to Starknet...');
-      await connect();
-
-      console.log('Sending payment...');
-      const res = await send(
-        import.meta.env.VITE_MASTER_ADDRESS ?? '',
-        BigInt(value),
-      );
+      const res = await open();
+      // const res = await sendTransaction(
+      //   {
+      //     to: import.meta.env.VITE_MASTER_ADDRESS_STARKNET ?? '',
+      //     value: BigInt(value),
+      //   },
+      //   {
+      //     onError: (err) => {
+      //       console.log(err);
+      //       sendMessage(
+      //         'UnityWebReceiver',
+      //         'PaymentCallBack',
+      //         JSON.stringify({
+      //           address,
+      //           cancelled: true,
+      //           isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
+      //           propId,
+      //           tx: '',
+      //         }),
+      //       );
+      //     },
+      //     onSuccess: (data, vars) => {
+      //       console.log('Success', data, vars);
+      //     },
+      //   },
+      // );
       console.log(res);
-
-      // setSenderArgs({
-      //   propId,
-      //   to: import.meta.env.VITE_MASTER_ADDRESS,
-      //   value,
-      // });
     } catch (err) {
       console.log(err);
       sendMessage(
         'UnityWebReceiver',
         'PaymentCallBack',
         JSON.stringify({
-          address: wallet,
+          address,
           cancelled: true,
           isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
           propId,
@@ -250,6 +318,12 @@ export function UnityGame(_props: Props) {
         }),
       );
     }
+
+    // setSenderArgs({
+    //   propId,
+    //   to: import.meta.env.VITE_MASTER_ADDRESS,
+    //   value,
+    // });
   }
 
   async function handleStarsPayment(value: string, propId: string) {
@@ -352,6 +426,11 @@ export function UnityGame(_props: Props) {
 
   useEffect(() => {
     if (isLoaded) {
+      console.log('Connecting to Starknet...');
+      if (!connected) {
+        setShowAuthFlow(true);
+      }
+
       saveUser(WebApp.initData);
       // WebApp.showAlert(JSON.stringify(WebApp.initDataUnsafe.user));
       sendMessage(
@@ -372,18 +451,25 @@ export function UnityGame(_props: Props) {
   }, [isLoaded]);
 
   return (
-    <div className={clsx('flex items-center justify-center h-screen w-screen')}>
-      <Spinner className={clsx(isLoaded ? 'hidden' : 'visible')} />
-      <Unity
-        className={clsx(isLoaded ? 'visible' : 'hidden')}
-        devicePixelRatio={3}
-        style={{
-          height: '100%',
-          width: '100%',
-        }}
-        tabIndex={1}
-        unityProvider={unityProvider}
-      />
+    <div
+      className={clsx(
+        'flex flex-col gap-2 items-center justify-center h-screen w-screen',
+      )}
+    >
+      <Spinner className={clsx(isLoaded && connected ? 'hidden' : 'visible')} />
+      {<DynamicWidget />}
+      {connected && (
+        <Unity
+          className={clsx(isLoaded ? 'visible' : 'hidden')}
+          devicePixelRatio={3}
+          style={{
+            height: '100%',
+            width: '100%',
+          }}
+          tabIndex={1}
+          unityProvider={unityProvider}
+        />
+      )}
     </div>
   );
 }

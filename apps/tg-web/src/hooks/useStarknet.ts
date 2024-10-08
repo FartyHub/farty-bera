@@ -1,38 +1,16 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable no-magic-numbers */
 import {
-  argent,
-  InjectedConnector,
-  RequestResult,
+  useDynamicContext,
+  useUserWallets,
+  useSwitchWallet,
+  useSendBalance,
+} from '@dynamic-labs/sdk-react-core';
+import { useEffect } from 'react';
+import {
   useAccount,
   useConnect,
-  useContract,
   useDisconnect,
-  useNetwork,
   useSendTransaction,
-} from '@starknet-react/core';
-import { useState } from 'react';
-import { Abi } from 'starknet';
-
-const abi = [
-  {
-    inputs: [
-      {
-        name: 'recipient',
-        type: 'core::starknet::contract_address::ContractAddress',
-      },
-      {
-        name: 'amount',
-        type: 'core::integer::u256',
-      },
-    ],
-    name: 'transfer',
-    outputs: [],
-    state_mutability: 'external',
-    type: 'function',
-  },
-] as const satisfies Abi;
-
+} from 'wagmi';
 type Props = {
   sendCallback?: (
     address: string,
@@ -42,90 +20,35 @@ type Props = {
   ) => Promise<boolean>;
 };
 
-export function useStarknet(props?: Props): {
-  connect: () => Promise<void>;
-  connected: boolean;
-  disconnect: () => Promise<void>;
-  error: string;
-  network?: bigint;
-  send(
-    userAddress: string,
-    amount: bigint,
-  ): Promise<RequestResult<'wallet_addInvokeTransaction'>>;
-  wallet: string | null;
-} {
-  const [error, setError] = useState<string>('');
-  const { connectAsync, connectors } = useConnect();
-  const { address, chainId, connector, status } = useAccount();
-  const { disconnectAsync } = useDisconnect();
-  const { chain } = useNetwork();
-  const { contract } = useContract({
-    abi,
-    address: chain.nativeCurrency.address,
-  });
-  const { sendAsync } = useSendTransaction({});
+export function useStarknet(props?: Props) {
+  const userWallets = useUserWallets();
+  const { address, chain, isConnected } = useAccount();
+  const { connectAsync: connect, connectors } = useConnect();
+  const { disconnectAsync: disconnect } = useDisconnect();
+  const { sendTransaction } = useSendTransaction();
+  const { handleLogOut, primaryWallet, setShowAuthFlow, user } =
+    useDynamicContext();
+  const switchWallet = useSwitchWallet();
+  const { open } = useSendBalance();
 
-  async function connect() {
-    console.log('Using', connectors[0].name);
-    await connectAsync({
-      connector: connectors[0],
-    });
-  }
+  useEffect(() => {
+    console.log('userWallets', address, isConnected, chain);
 
-  async function disconnect() {
-    await disconnectAsync();
-  }
-
-  async function send(userAddress: string, amount: bigint) {
-    if (contract) {
-      return sendAsync([contract.populate('transfer', [userAddress, amount])]);
-    } else {
-      throw new Error('Contract not available');
+    if (userWallets[0]?.isAuthenticated && !primaryWallet) {
+      switchWallet(userWallets[0].id);
     }
-  }
+  }, [userWallets, switchWallet, primaryWallet, address, isConnected, chain]);
 
   return {
+    address: userWallets[0]?.address ?? '',
+    chain: userWallets[0]?.chain,
     connect,
-    connected: status === 'connected',
+    connected: userWallets[0]?.isAuthenticated && user?.email,
+    connectors,
     disconnect,
-    error,
-    network: chainId,
-    send,
-    // sender: {
-    //   send: async (args: SenderArguments) => {
-    //     try {
-    //       await tonConnectUI.sendTransaction({
-    //         messages: [
-    //           {
-    //             address: args.to.toString(),
-    //             amount: args.value.toString(),
-    //             payload: args.body?.toBoc().toString('base64'),
-    //           },
-    //         ],
-    //         validUntil: Date.now() + 5 * 60 * 1000, // 5 minutes for user to approve
-    //       });
-    //       await tonConnectUI.disconnect();
-    //       setTimeout(() => {
-    //         props?.sendCallback?.(
-    //           wallet?.account.address ?? '',
-    //           args.body as Cell,
-    //         );
-    //       }, 1000);
-    //     } catch (error: any) {
-    //       console.error(error);
-    //       const onUserReject = String(error).includes('UserRejectsError');
-    //       setTimeout(() => {
-    //         props?.sendCallback?.(
-    //           wallet?.account.address ?? '',
-    //           args.body as Cell,
-    //           0,
-    //           onUserReject ? 1 : 2,
-    //         );
-    //       }, 1000);
-    //       throw error;
-    //     }
-    //   },
-    // },
-    wallet: address ?? '',
+    handleLogOut,
+    open,
+    sendTransaction,
+    setShowAuthFlow,
   };
 }

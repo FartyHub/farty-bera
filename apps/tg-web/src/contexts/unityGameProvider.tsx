@@ -1,8 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { ReactNode, createContext, useContext, useMemo } from 'react';
+import React, {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+} from 'react';
 import { useUnityContext } from 'react-unity-webgl';
 
 import { useIPFunctions } from '../hooks';
+
+type SavedData = {
+  address: string;
+  propId: string;
+  value: string;
+};
 
 const UnityGameContext = createContext<{
   addEventListener: (eventName: string, callback: (data: any) => void) => void;
@@ -11,13 +25,16 @@ const UnityGameContext = createContext<{
     eventName: string,
     callback: (data: any) => void,
   ) => void;
+  savedData?: SavedData;
   sendMessage: (objectName: string, methodName: string, value: any) => void;
+  setSavedData: Dispatch<SetStateAction<SavedData | undefined>>;
   unityProvider: any;
 }>({
   addEventListener: () => {},
   isLoaded: false,
   removeEventListener: () => {},
   sendMessage: () => {},
+  setSavedData: () => {},
   unityProvider: {},
 });
 
@@ -26,6 +43,7 @@ export function useUnityGame() {
 }
 
 export function UnityGameProvider({ children }: { children: ReactNode }) {
+  const [savedData, setSavedData] = useState<SavedData>();
   const { region = '' } = useIPFunctions();
   const isInEurope = region.toUpperCase() === 'EU';
   const europeSuffix = isInEurope ? '-eu' : '';
@@ -57,7 +75,9 @@ export function UnityGameProvider({ children }: { children: ReactNode }) {
       addEventListener,
       isLoaded,
       removeEventListener,
+      savedData,
       sendMessage,
+      setSavedData,
       unityProvider,
     }),
     [
@@ -66,6 +86,8 @@ export function UnityGameProvider({ children }: { children: ReactNode }) {
       removeEventListener,
       sendMessage,
       unityProvider,
+      savedData,
+      setSavedData,
     ],
   );
 
