@@ -14,7 +14,6 @@ steps:
       - 'VITE_TG_API_URL=${_VITE_TG_API_URL}'
       - 'VITE_X_API_KEY=${_VITE_X_API_KEY}'
       - 'VITE_IP_INFO_TOKEN=${_VITE_IP_INFO_TOKEN}'
-      - 'VITE_DYNAMIC_ENV_ID=${_VITE_DYNAMIC_ENV_ID}'
       - 'VITE_MASTER_ADDRESS_STARKNET=${_VITE_MASTER_ADDRESS_STARKNET}'
 
   - name: 'gcr.io/cloud-builders/npm'
@@ -27,7 +26,6 @@ steps:
       - 'VITE_TG_API_URL=${_VITE_TG_API_URL}'
       - 'VITE_X_API_KEY=${_VITE_X_API_KEY}'
       - 'VITE_IP_INFO_TOKEN=${_VITE_IP_INFO_TOKEN}'
-      - 'VITE_DYNAMIC_ENV_ID=${_VITE_DYNAMIC_ENV_ID}'
       - 'VITE_MASTER_ADDRESS_STARKNET=${_VITE_MASTER_ADDRESS_STARKNET}'
 
   - name: 'gcr.io/cloud-builders/gcloud'

@@ -1,76 +1,53 @@
-import { DynamicContextProvider } from '@dynamic-labs/sdk-react-core';
-import { StarknetWalletConnectors } from '@dynamic-labs/starknet';
-import { DynamicWagmiConnector } from '@dynamic-labs/wagmi-connector';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { sepolia, mainnet } from '@starknet-react/chains';
+import { StarknetConfig, publicProvider, voyager } from '@starknet-react/core';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactNode, useState } from 'react';
-import { http } from 'viem';
-import { mainnet, sepolia, kakarotStarknetSepolia } from 'viem/chains';
-import { createConfig, WagmiProvider } from 'wagmi';
-
-import { useUnityGame } from './unityGameProvider';
-
-const config = createConfig({
-  chains: [mainnet, sepolia, kakarotStarknetSepolia],
-  multiInjectedProviderDiscovery: false,
-  transports: {
-    [mainnet.id]: http(),
-    [sepolia.id]: http(),
-    [kakarotStarknetSepolia.id]: http(),
-  },
-});
+import {
+  ArgentMobileConnector,
+  isInArgentMobileAppBrowser,
+} from 'starknetkit/argentMobile';
+import { InjectedConnector } from 'starknetkit/injected';
+import { WebWalletConnector } from 'starknetkit/webwallet';
 
 export function StarknetProvider({ children }: { children: ReactNode }) {
-  const { savedData, sendMessage } = useUnityGame();
   const [queryClient] = useState(
     () =>
       new QueryClient({
         defaultOptions: { queries: { refetchOnWindowFocus: false } },
       }),
   );
+  const connectors = isInArgentMobileAppBrowser()
+    ? [
+        ArgentMobileConnector.init({
+          inAppBrowserOptions: {},
+          options: {
+            dappName: 'Farty Bera',
+            url: 'https://fartybera.xyz',
+          },
+        }),
+      ]
+    : ([
+        new InjectedConnector({ options: { id: 'braavos', name: 'Braavos' } }),
+        new InjectedConnector({ options: { id: 'argentX', name: 'Argent X' } }),
+        new WebWalletConnector({ url: 'https://web.argent.xyz' }),
+        ArgentMobileConnector.init({
+          inAppBrowserOptions: {},
+          options: {
+            dappName: 'Farty Bera',
+            url: 'https://fartybera.xyz',
+          },
+        }),
+      ] as any);
 
   return (
-    <DynamicContextProvider
-      settings={{
-        deepLinkPreference: 'universal',
-        environmentId: import.meta.env.VITE_DYNAMIC_ENV_ID,
-        events: {
-          onAuthFailure: (method, reason) => {
-            console.log('onAuthFailure was called', method, reason);
-            sendMessage(
-              'UnityWebReceiver',
-              'PaymentCallBack',
-              JSON.stringify({
-                ...savedData,
-                cancelled: true,
-                isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
-                tx: '',
-              }),
-            );
-          },
-          onAuthFlowCancel: () => {
-            console.log('Authentication was cancelled');
-            sendMessage(
-              'UnityWebReceiver',
-              'PaymentCallBack',
-              JSON.stringify({
-                ...savedData,
-                cancelled: true,
-                isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
-                tx: '',
-              }),
-            );
-          },
-        },
-        initialAuthenticationMode: 'connect-and-sign',
-        mobileExperience: 'in-app-browser',
-        walletConnectors: [StarknetWalletConnectors],
-      }}
+    <StarknetConfig
+      chains={[mainnet, sepolia]}
+      connectors={connectors}
+      explorer={voyager}
+      provider={publicProvider()}
     >
-      <WagmiProvider config={config}>
-        <QueryClientProvider client={queryClient}>
-          <DynamicWagmiConnector>{children}</DynamicWagmiConnector>
-        </QueryClientProvider>
-      </WagmiProvider>
-    </DynamicContextProvider>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </StarknetConfig>
   );
 }
