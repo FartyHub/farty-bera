@@ -3,6 +3,7 @@ import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
   // Uncomment this if you are using workers.
@@ -19,7 +20,39 @@ export default defineConfig({
 
   cacheDir: '../../node_modules/.vite/apps/tg-web-claim',
 
-  plugins: [react(), nxViteTsPaths(), nodePolyfills()],
+  plugins: [
+    react(),
+    nxViteTsPaths(),
+    nodePolyfills(),
+    VitePWA({
+      devOptions: {
+        enabled: true,
+      },
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
+      manifest: {
+        description: 'Catch a bera in the Farty Arcade',
+        icons: [
+          {
+            sizes: '192x192',
+            src: 'logo-192x192.png',
+            type: 'image/png',
+          },
+          {
+            sizes: '512x512',
+            src: 'logo.png',
+            type: 'image/png',
+          },
+        ],
+        name: 'Farty Claw',
+        short_name: 'FartyClaw',
+        theme_color: '#FFF9F2',
+      },
+      registerType: 'autoUpdate',
+      workbox: {
+        maximumFileSizeToCacheInBytes: 3000000,
+      },
+    }),
+  ],
 
   preview: {
     host: 'localhost',

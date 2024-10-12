@@ -8,7 +8,7 @@ import {
   useGetLeaderboard,
   useGetMyLeaderboardPosition,
   useOutsideAlerter,
-  useTonConnect,
+  useStarknet,
 } from '../hooks';
 import { ClaimUserDto } from '../services/tgApiService';
 import { truncateMiddle } from '../utils';
@@ -44,7 +44,7 @@ export function Leaderboard({ className }: Props) {
       sDate,
       endTime.toISOString(),
     );
-  const { connected, tonConnectUI } = useTonConnect();
+  const { connected, connectWallet, disconnect } = useStarknet();
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dialogRef = useRef(null);
@@ -67,10 +67,10 @@ export function Leaderboard({ className }: Props) {
 
   async function handleConnectWallet() {
     if (connected) {
-      await tonConnectUI.disconnect();
+      await disconnect();
     }
 
-    tonConnectUI.openModal();
+    connectWallet();
   }
 
   const columns: TableColumn<ClaimUserDto>[] = [
