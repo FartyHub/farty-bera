@@ -39,7 +39,7 @@ steps:
       - '-e'
       - '-c'
       - |
-        cp apps/tg-web/app-dev.yaml dist/apps/tg-web/app.yaml
+        cp apps/tg-web/app-dev-bera.yaml dist/apps/tg-web/app.yaml
 
   - name: 'gcr.io/cloud-builders/gcloud'
     args: ['app', 'deploy', 'app.yaml']
