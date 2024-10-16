@@ -30,6 +30,22 @@
     "maxAgeSeconds": 3600
   },
   {
+    "origin": [
+      "https://tg-web-dev-bera-dot-farty-bera-420304.ue.r.appspot.com"
+    ],
+    "method": ["GET"],
+    "responseHeader": ["Content-Type"],
+    "maxAgeSeconds": 3600
+  },
+  {
+    "origin": [
+      "https://tg-web-claim-dev-bera-dot-farty-bera-420304.ue.r.appspot.com"
+    ],
+    "method": ["GET"],
+    "responseHeader": ["Content-Type"],
+    "maxAgeSeconds": 3600
+  },
+  {
     "origin": ["https://game-test-dot-farty-bera-420304.ue.r.appspot.com"],
     "method": ["GET"],
     "responseHeader": ["Content-Type"],
@@ -48,7 +64,7 @@
     "maxAgeSeconds": 3600
   },
   {
-    "origin": ["http://192.168.254.142:4200"],
+    "origin": ["http://192.168.254.104:4200"],
     "method": ["GET"],
     "responseHeader": ["Content-Type"],
     "maxAgeSeconds": 3600

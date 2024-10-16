@@ -122,6 +122,7 @@ export function UnityGame(_props: Props) {
           }),
         );
       }
+      setTxHash('');
     } /* eslint-disable-next-line react-hooks/exhaustive-deps */,
     [connected, hash, txData],
   );
@@ -143,7 +144,6 @@ export function UnityGame(_props: Props) {
             }),
           );
           disconnect();
-          setTxHash('');
         },
       });
     } catch (err) {
@@ -159,7 +159,6 @@ export function UnityGame(_props: Props) {
         }),
       );
       await disconnect();
-      setTxHash('');
     }
   }
 
@@ -182,7 +181,6 @@ export function UnityGame(_props: Props) {
 
       if (connected) {
         await disconnect();
-        setTxHash('');
       }
 
       await connectWallet({
@@ -200,23 +198,6 @@ export function UnityGame(_props: Props) {
           );
         },
       });
-
-      // setTimeout(() => {
-      //   if (connected && !txData) {
-      //     sendMessage(
-      //       'UnityWebReceiver',
-      //       'PaymentCallBack',
-      //       JSON.stringify({
-      //         ...savedData,
-      //         cancelled: true,
-      //         isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
-      //         tx: '',
-      //       }),
-      //     );
-      //     disconnect();
-      //   }
-      //   // eslint-disable-next-line no-magic-numbers
-      // }, 600000);
     } catch (err) {
       console.log(err);
       sendMessage(

@@ -30,15 +30,6 @@ export function useBeraChain(_props?: Props) {
     },
   );
 
-  useEffect(
-    () => {
-      if (!isGettingTx && hash) {
-        setTxHash('');
-      }
-    } /* eslint-disable-next-line react-hooks/exhaustive-deps */,
-    [isGettingTx],
-  );
-
   async function connectWallet({
     onError,
   }: {
@@ -48,7 +39,7 @@ export function useBeraChain(_props?: Props) {
       context: unknown,
     ) => void;
   }) {
-    await connectAsync(
+    const res = await connectAsync(
       {
         chainId: berachainTestnetbArtio.id,
         connector: metaMask(),
@@ -57,6 +48,8 @@ export function useBeraChain(_props?: Props) {
         onError,
       },
     );
+
+    console.log(res.accounts);
   }
 
   async function sendBera({
