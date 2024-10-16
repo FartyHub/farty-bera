@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { injected } from '@wagmi/core';
 import { useState } from 'react';
 import { parseEther } from 'viem';
 import {
@@ -9,6 +8,7 @@ import {
   useSendTransaction,
   useWaitForTransactionReceipt,
 } from 'wagmi';
+import { metaMask } from 'wagmi/connectors';
 
 type Props = {
   // no op
@@ -29,7 +29,7 @@ export function useBeraChain(_props?: Props) {
   );
 
   async function connectWallet() {
-    await connectAsync({ connector: injected() });
+    await connectAsync({ connector: metaMask() });
   }
 
   async function sendBera() {
