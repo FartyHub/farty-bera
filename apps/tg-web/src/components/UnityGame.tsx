@@ -111,7 +111,7 @@ export function UnityGame(_props: Props) {
 
   useEffect(
     () => {
-      if (hash && connected && txData?.status === 'success') {
+      if (hash && txData?.status === 'success') {
         sendMessage(
           'UnityWebReceiver',
           'PaymentCallBack',
@@ -124,7 +124,7 @@ export function UnityGame(_props: Props) {
       }
       setTxHash('');
     } /* eslint-disable-next-line react-hooks/exhaustive-deps */,
-    [connected, hash, txData],
+    [hash, txData],
   );
 
   async function handleSendBera() {
