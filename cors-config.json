@@ -54,7 +54,7 @@
     "maxAgeSeconds": 3600
   },
   {
-    "origin": ["https://clever-hornet-mildly.ngrok-free.app"],
+    "origin": ["ram.local"],
     "method": ["GET"],
     "responseHeader": ["Content-Type"],
     "maxAgeSeconds": 3600

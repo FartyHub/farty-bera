@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from 'react';
+import { ConnectErrorType, SendTransactionErrorType } from '@wagmi/core';
+import { useEffect, useState } from 'react';
 import { parseEther } from 'viem';
+import { berachainTestnetbArtio } from 'viem/chains';
 import {
   useAccount,
   useDisconnect,
@@ -28,17 +30,57 @@ export function useBeraChain(_props?: Props) {
     },
   );
 
-  async function connectWallet() {
-    await connectAsync({ connector: metaMask() });
+  useEffect(
+    () => {
+      if (!isGettingTx && hash) {
+        setTxHash('');
+      }
+    } /* eslint-disable-next-line react-hooks/exhaustive-deps */,
+    [isGettingTx],
+  );
+
+  async function connectWallet({
+    onError,
+  }: {
+    onError?: (
+      error: ConnectErrorType,
+      variables: any,
+      context: unknown,
+    ) => void;
+  }) {
+    await connectAsync(
+      {
+        chainId: berachainTestnetbArtio.id,
+        connector: metaMask(),
+      },
+      {
+        onError,
+      },
+    );
   }
 
-  async function sendBera() {
-    const tx = await sendTransactionAsync({
-      account: address as `0x${string}`,
-      to: transferTo as `0x${string}`,
-      value: parseEther(transferAmount),
-    });
-    setTxHash(tx);
+  async function sendBera({
+    onError,
+  }: {
+    onError?: (
+      error: SendTransactionErrorType,
+      variables: any,
+      context: unknown,
+    ) => void;
+  }) {
+    await sendTransactionAsync(
+      {
+        account: address as `0x${string}`,
+        to: transferTo as `0x${string}`,
+        value: parseEther(transferAmount),
+      },
+      {
+        onError,
+        onSuccess: (tx) => {
+          setTxHash(tx);
+        },
+      },
+    );
   }
 
   return {

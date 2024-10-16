@@ -88,7 +88,7 @@ export function UnityGame(_props: Props) {
     transferTo,
     txData,
   } = useBeraChain();
-  console.log('txData', isGettingTx, txData);
+  console.log('txData', hash, connected, txData, isGettingTx);
 
   async function handleShareGame() {
     if (WebApp.initDataUnsafe.user?.username) {
@@ -128,7 +128,24 @@ export function UnityGame(_props: Props) {
 
   async function handleSendBera() {
     try {
-      await sendBera();
+      console.log('Sending Bera...');
+      await sendBera({
+        onError: (err) => {
+          console.log(err);
+          sendMessage(
+            'UnityWebReceiver',
+            'PaymentCallBack',
+            JSON.stringify({
+              ...savedData,
+              cancelled: true,
+              isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
+              tx: '',
+            }),
+          );
+          disconnect();
+          setTxHash('');
+        },
+      });
     } catch (err) {
       console.log('Send error', err);
       sendMessage(
@@ -142,9 +159,8 @@ export function UnityGame(_props: Props) {
         }),
       );
       await disconnect();
+      setTxHash('');
     }
-
-    setTxHash('');
   }
 
   useEffect(() => {
@@ -166,9 +182,41 @@ export function UnityGame(_props: Props) {
 
       if (connected) {
         await disconnect();
+        setTxHash('');
       }
 
-      await connectWallet();
+      await connectWallet({
+        onError: (err) => {
+          console.log(err);
+          sendMessage(
+            'UnityWebReceiver',
+            'PaymentCallBack',
+            JSON.stringify({
+              ...savedData,
+              cancelled: true,
+              isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
+              tx: '',
+            }),
+          );
+        },
+      });
+
+      // setTimeout(() => {
+      //   if (connected && !txData) {
+      //     sendMessage(
+      //       'UnityWebReceiver',
+      //       'PaymentCallBack',
+      //       JSON.stringify({
+      //         ...savedData,
+      //         cancelled: true,
+      //         isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
+      //         tx: '',
+      //       }),
+      //     );
+      //     disconnect();
+      //   }
+      //   // eslint-disable-next-line no-magic-numbers
+      // }, 600000);
     } catch (err) {
       console.log(err);
       sendMessage(
