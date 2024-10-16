@@ -93,8 +93,9 @@
     "typeorm": "^0.3.20",
     "typeorm-naming-strategies": "^4.1.0",
     "uuid": "^9.0.1",
+    "viem": "^2.21.27",
     "vite-plugin-node-polyfills": "^0.22.0",
-    "wagmi": "^2.12.17"
+    "wagmi": "^2.12.18"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",

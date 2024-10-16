@@ -10,11 +10,11 @@ import { Unity } from 'react-unity-webgl';
 
 import { useUnityGame } from '../contexts';
 import {
+  useBeraChain,
   useGetFartyChannelChatMember,
   useGetFartyDenChatMember,
   useGetNewInvoice,
   useSaveUser,
-  useStarknet,
 } from '../hooks';
 
 import { Spinner } from './Spinner';
@@ -74,17 +74,20 @@ export function UnityGame(_props: Props) {
 
   const {
     address,
+    chainId,
     connected,
     connectWallet,
     disconnect,
     hash,
     isGettingTx,
-    sendStrk,
+    sendBera,
     setTransferAmount,
     setTransferTo,
     setTxHash,
+    transferAmount,
+    transferTo,
     txData,
-  } = useStarknet();
+  } = useBeraChain();
   console.log('txData', isGettingTx, txData);
 
   async function handleShareGame() {
@@ -108,7 +111,7 @@ export function UnityGame(_props: Props) {
 
   useEffect(
     () => {
-      if (hash && connected && txData?.statusReceipt === 'success') {
+      if (hash && connected && txData?.status === 'success') {
         sendMessage(
           'UnityWebReceiver',
           'PaymentCallBack',
@@ -123,12 +126,11 @@ export function UnityGame(_props: Props) {
     [connected, hash, txData],
   );
 
-  async function handleSendStrk() {
+  async function handleSendBera() {
     try {
-      const { transaction_hash } = await sendStrk();
-      setTxHash(transaction_hash);
+      await sendBera();
     } catch (err) {
-      console.log(err);
+      console.log('Send error', err);
       sendMessage(
         'UnityWebReceiver',
         'PaymentCallBack',
@@ -141,12 +143,14 @@ export function UnityGame(_props: Props) {
       );
       await disconnect();
     }
+
+    setTxHash('');
   }
 
   useEffect(() => {
-    console.log('Connected:', connected);
+    console.log('Connected:', connected, address, chainId);
     if (connected) {
-      handleSendStrk();
+      handleSendBera();
     }
   }, [connected]);
 
@@ -157,8 +161,8 @@ export function UnityGame(_props: Props) {
         propId,
         value,
       });
-      setTransferAmount(value);
-      setTransferTo(import.meta.env.VITE_MASTER_ADDRESS_STARKNET ?? '');
+      setTransferAmount('0.001');
+      setTransferTo(import.meta.env.VITE_MASTER_ADDRESS_BERA ?? '');
 
       if (connected) {
         await disconnect();
@@ -308,7 +312,7 @@ export function UnityGame(_props: Props) {
   useEffect(() => {
     if (isLoaded) {
       if (connected) {
-        console.log('Disconnecting to Starknet...');
+        console.log('Disconnecting to BeraChain...');
         disconnect();
       }
 

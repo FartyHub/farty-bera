@@ -1,11 +1,11 @@
 import { Leaderboard } from '../components';
-import { StarknetProvider } from '../contexts';
+import { WagmiProvider } from '../contexts';
 
 export function App() {
   return (
-    <StarknetProvider>
+    <WagmiProvider>
       <Leaderboard />
-    </StarknetProvider>
+    </WagmiProvider>
   );
 }
 

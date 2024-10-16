@@ -1,15 +1,15 @@
 import { UnityGame } from '../components';
-import { StarknetProvider, UnityGameProvider } from '../contexts';
+import { WagmiProvider, UnityGameProvider } from '../contexts';
 
 import './app.css';
 
 function App() {
   return (
-    <StarknetProvider>
+    <WagmiProvider>
       <UnityGameProvider>
         <UnityGame />
       </UnityGameProvider>
-    </StarknetProvider>
+    </WagmiProvider>
   );
 }
 

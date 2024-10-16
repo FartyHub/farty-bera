@@ -5,10 +5,10 @@ import { Address } from 'ton-core';
 
 import { useAuth } from '../contexts';
 import {
+  useBeraChain,
   useGetLeaderboard,
   useGetMyLeaderboardPosition,
   useOutsideAlerter,
-  useStarknet,
 } from '../hooks';
 import { ClaimUserDto } from '../services/tgApiService';
 import { truncateMiddle } from '../utils';
@@ -44,7 +44,7 @@ export function Leaderboard({ className }: Props) {
       sDate,
       endTime.toISOString(),
     );
-  const { connected, connectWallet, disconnect } = useStarknet();
+  const { connected, connectWallet, disconnect } = useBeraChain();
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dialogRef = useRef(null);

@@ -1,4 +1,5 @@
 export * from './useAsyncInitialize';
+export * from './useBeraChain';
 export * from './mutations';
 export * from './queries';
 export * from './useOutsideAlerter';

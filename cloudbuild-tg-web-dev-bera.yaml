@@ -1,0 +1,57 @@
+steps:
+  - name: node:$_NODE_VERSION
+    entrypoint: npm
+    args: ['install', '--legacy-peer-deps']
+
+  - name: node:$_NODE_VERSION
+    entrypoint: npx
+    args: ['nx', 'build', 'tg-web', '--prod']
+    env:
+      - 'VITE_BOT_USERNAME=${_VITE_BOT_USERNAME}'
+      - 'VITE_WEB_SHORTNAME=${_VITE_WEB_SHORTNAME}'
+      - 'VITE_MASTER_ADDRESS=${_VITE_MASTER_ADDRESS}'
+      - 'VITE_IS_MAINNET=${_VITE_IS_MAINNET}'
+      - 'VITE_TG_API_URL=${_VITE_TG_API_URL}'
+      - 'VITE_X_API_KEY=${_VITE_X_API_KEY}'
+      - 'VITE_IP_INFO_TOKEN=${_VITE_IP_INFO_TOKEN}'
+      - 'VITE_MASTER_ADDRESS_STARKNET=${_VITE_MASTER_ADDRESS_STARKNET}'
+      - 'VITE_MASTER_ADDRESS_BERA=${_VITE_MASTER_ADDRESS_BERA}'
+      - 'VITE_PUBLIC_PROJECT_ID=${_VITE_PUBLIC_PROJECT_ID}'
+
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['run', 'create-env', 'dist/apps/tg-web/.env.local']
+    env:
+      - 'VITE_BOT_USERNAME=${_VITE_BOT_USERNAME}'
+      - 'VITE_WEB_SHORTNAME=${_VITE_WEB_SHORTNAME}'
+      - 'VITE_MASTER_ADDRESS=${_VITE_MASTER_ADDRESS}'
+      - 'VITE_IS_MAINNET=${_VITE_IS_MAINNET}'
+      - 'VITE_TG_API_URL=${_VITE_TG_API_URL}'
+      - 'VITE_X_API_KEY=${_VITE_X_API_KEY}'
+      - 'VITE_IP_INFO_TOKEN=${_VITE_IP_INFO_TOKEN}'
+      - 'VITE_MASTER_ADDRESS_STARKNET=${_VITE_MASTER_ADDRESS_STARKNET}'
+      - 'VITE_MASTER_ADDRESS_BERA=${_VITE_MASTER_ADDRESS_BERA}'
+      - 'VITE_PUBLIC_PROJECT_ID=${_VITE_PUBLIC_PROJECT_ID}'
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: COPY-STUFF
+    entrypoint: bash
+    args:
+      - '-e'
+      - '-c'
+      - |
+        cp apps/tg-web/app-dev.yaml dist/apps/tg-web/app.yaml
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['app', 'deploy', 'app.yaml']
+    dir: 'dist/apps/tg-web'
+
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        gcloud app versions list --format="value(version.id)" --sort-by="~version.createTime" --service="tg-web-dev-bera" | tail -n +40 | xargs -r gcloud app versions delete --quiet
+
+timeout: 1800s
+options:
+  logging: CLOUD_LOGGING_ONLY
