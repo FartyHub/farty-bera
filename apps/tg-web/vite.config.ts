@@ -44,7 +44,7 @@ export default defineConfig({
           },
         ],
         name: 'Farty Claw',
-        short_name: 'FartyClaw',
+        short_name: 'Farty Claw',
         theme_color: '#FFF9F2',
       },
       registerType: 'autoUpdate',
