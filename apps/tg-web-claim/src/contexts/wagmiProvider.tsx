@@ -10,6 +10,7 @@ import {
   State,
   WagmiProvider as WagmiProviderComponent,
 } from 'wagmi';
+import { metaMask } from 'wagmi/connectors';
 
 export const projectId = import.meta.env.VITE_PUBLIC_PROJECT_ID ?? '';
 
@@ -22,6 +23,7 @@ const metadata = {
 
 export const config = defaultWagmiConfig({
   chains: [berachainTestnetbArtio],
+  connectors: [metaMask()],
   metadata,
   multiInjectedProviderDiscovery: false,
   projectId,
