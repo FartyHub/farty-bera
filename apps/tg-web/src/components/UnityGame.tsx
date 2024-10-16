@@ -111,7 +111,10 @@ export function UnityGame(_props: Props) {
 
   useEffect(
     () => {
-      if (hash && txData?.status === 'success' && !isGettingTx) {
+      console.log(
+        hash && connected && txData?.status === 'success' && !isGettingTx,
+      );
+      if (hash && connected && txData?.status === 'success' && !isGettingTx) {
         sendMessage(
           'UnityWebReceiver',
           'PaymentCallBack',
@@ -123,8 +126,9 @@ export function UnityGame(_props: Props) {
         );
       }
       setTxHash('');
+      disconnect();
     } /* eslint-disable-next-line react-hooks/exhaustive-deps */,
-    [hash, txData, isGettingTx],
+    [hash, connected, txData?.status, isGettingTx],
   );
 
   async function handleSendBera() {

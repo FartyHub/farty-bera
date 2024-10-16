@@ -61,6 +61,7 @@ export function useBeraChain(_props?: Props) {
       context: unknown,
     ) => void;
   }) {
+    console.log('sendBera', address, transferTo, transferAmount);
     await sendTransactionAsync(
       {
         account: address as `0x${string}`,
