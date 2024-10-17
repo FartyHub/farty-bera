@@ -61,7 +61,7 @@ export function useBeraChain(_props?: Props) {
       context: unknown,
     ) => void;
   }) {
-    await sendTransactionAsync(
+    return sendTransactionAsync(
       {
         account: address as `0x${string}`,
         to: transferTo as `0x${string}`,
@@ -69,9 +69,6 @@ export function useBeraChain(_props?: Props) {
       },
       {
         onError,
-        onSuccess: (tx) => {
-          setTxHash(tx);
-        },
       },
     );
   }

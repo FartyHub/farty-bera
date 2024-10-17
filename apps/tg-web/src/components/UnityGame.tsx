@@ -132,7 +132,7 @@ export function UnityGame(_props: Props) {
   async function handleSendBera() {
     try {
       console.log('Sending Bera...');
-      await sendBera({
+      const txHash = await sendBera({
         onError: (err) => {
           console.log(err);
           sendMessage(
@@ -148,6 +148,8 @@ export function UnityGame(_props: Props) {
           disconnect();
         },
       });
+
+      setTxHash(txHash);
     } catch (err) {
       console.log('Send error', err);
       sendMessage(
