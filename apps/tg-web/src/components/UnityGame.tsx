@@ -162,7 +162,6 @@ export function UnityGame(_props: Props) {
           tx: '',
         }),
       );
-      await disconnect();
     }
   }
 
@@ -182,10 +181,6 @@ export function UnityGame(_props: Props) {
       });
       setTransferAmount('0.001');
       setTransferTo(import.meta.env.VITE_MASTER_ADDRESS_BERA ?? '');
-
-      if (connected) {
-        await disconnect();
-      }
 
       await connectWallet({
         onError: (err) => {
@@ -344,11 +339,6 @@ export function UnityGame(_props: Props) {
 
   useEffect(() => {
     if (isLoaded) {
-      if (connected) {
-        console.log('Disconnecting to BeraChain...');
-        disconnect();
-      }
-
       saveUser(WebApp.initData);
       // WebApp.showAlert(JSON.stringify(WebApp.initDataUnsafe.user));
       sendMessage(
