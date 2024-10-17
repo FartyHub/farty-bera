@@ -111,7 +111,7 @@ export function UnityGame(_props: Props) {
 
   useEffect(
     () => {
-      console.log(hash, txData?.status === 'success', !isGettingTx);
+      console.log(hash, txData?.status, !isGettingTx);
       if (hash && txData?.status === 'success' && !isGettingTx) {
         sendMessage(
           'UnityWebReceiver',
@@ -122,9 +122,9 @@ export function UnityGame(_props: Props) {
             tx: hash,
           }),
         );
+        setTxHash('');
+        disconnect();
       }
-      setTxHash('');
-      disconnect();
     } /* eslint-disable-next-line react-hooks/exhaustive-deps */,
     [hash, connected, txData?.status, isGettingTx],
   );
@@ -169,6 +169,17 @@ export function UnityGame(_props: Props) {
     console.log('Connected:', connected, address, chainId);
     if (connected) {
       handleSendBera();
+    } else {
+      sendMessage(
+        'UnityWebReceiver',
+        'PaymentCallBack',
+        JSON.stringify({
+          ...savedData,
+          cancelled: true,
+          isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
+          tx: '',
+        }),
+      );
     }
   }, [connected]);
 
