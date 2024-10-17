@@ -111,10 +111,8 @@ export function UnityGame(_props: Props) {
 
   useEffect(
     () => {
-      console.log(
-        hash && connected && txData?.status === 'success' && !isGettingTx,
-      );
-      if (hash && connected && txData?.status === 'success' && !isGettingTx) {
+      console.log(hash, txData?.status === 'success', !isGettingTx);
+      if (hash && txData?.status === 'success' && !isGettingTx) {
         sendMessage(
           'UnityWebReceiver',
           'PaymentCallBack',
