@@ -38,6 +38,7 @@
   },
   "private": true,
   "dependencies": {
+    "@argent/tma-wallet": "^1.17.0",
     "@argent/x-shared": "^1.32.1",
     "@google-cloud/functions-framework": "^3.4.2",
     "@nestjs/common": "^10.0.2",

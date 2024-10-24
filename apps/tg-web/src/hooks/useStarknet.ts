@@ -1,97 +1,110 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ArgentTMA, SessionAccountInterface } from '@argent/tma-wallet';
 import { STRK_TOKEN_ADDRESS, bigDecimal } from '@argent/x-shared';
+import { useEffect, useState } from 'react';
 import {
-  useAccount,
-  useConnect,
-  useContract,
-  useDisconnect,
-  useSendTransaction,
-  useTransactionReceipt,
-} from '@starknet-react/core';
-import { useState } from 'react';
-import { Abi, constants } from 'starknet';
-import { useStarknetkitConnectModal } from 'starknetkit';
+  GetTransactionReceiptResponse,
+  uint256,
+  validateAndParseAddress,
+} from 'starknet';
 
 type Props = {
   // no op
 };
 
-const abi = [
-  {
-    inputs: [
+const argentTMA = ArgentTMA.init({
+  // "sepolia" | "mainnet" (not supperted yet)
+  appName: 'Farty Claw',
+  // Your Telegram app name
+  appTelegramUrl: `https://t.me/fartyberabot/fartyclaw`,
+  environment: 'sepolia', // Your Telegram app URL
+  sessionParams: {
+    allowedMethods: [
+      // List of contracts/methods allowed to be called by the session key
       {
-        name: 'recipient',
-        type: 'core::starknet::contract_address::ContractAddress',
-      },
-      {
-        name: 'amount',
-        type: 'core::integer::u256',
+        contract: STRK_TOKEN_ADDRESS,
+        selector: 'transfer',
       },
     ],
-    name: 'transfer',
-    outputs: [],
-    state_mutability: 'external',
-    type: 'function',
+    // eslint-disable-next-line prettier/prettier
+    validityDays: 90 // session validity (in days) - default: 90
   },
-] as const satisfies Abi;
+});
 
 export function useStarknet(_props?: Props) {
   const [transferTo, setTransferTo] = useState<string>('');
-  const [transferAmount, setTransferAmount] = useState<string>('1');
+  const [transferAmount, setTransferAmount] = useState<string>('0.001');
   const [hash, setTxHash] = useState<string>('');
-  const { address = '', status } = useAccount();
-  const { connectAsync, connectors } = useConnect();
-  const { disconnectAsync: disconnect } = useDisconnect();
-  const { contract } = useContract({
-    abi,
-    address: STRK_TOKEN_ADDRESS,
-  });
-  const { starknetkitConnectModal } = useStarknetkitConnectModal({
-    connectors: connectors as any,
-  });
-  const { sendAsync: sendStrk } = useSendTransaction({
-    calls:
-      contract && transferTo
-        ? [
-            contract.populate('transfer', [
-              transferTo,
-              // transferAmount
-              Number(bigDecimal.parseEther('1').value),
-            ]),
-          ]
-        : undefined,
-  });
-  const { data: txData, isLoading: isGettingTx } = useTransactionReceipt({
-    hash,
-  });
+  const [txData, setTxData] = useState<GetTransactionReceiptResponse>();
+  const [account, setAccount] = useState<SessionAccountInterface>();
+  const [isConnected, setIsConnected] = useState<boolean>(false);
+
+  useEffect(() => {
+    argentTMA.connect().then((result) => {
+      if (!result) {
+        setIsConnected(false);
+        throw new Error('Not connected');
+      }
+
+      if (account?.getSessionStatus() !== 'VALID') {
+        const { account: acc } = result;
+
+        setAccount(acc);
+        setIsConnected(false);
+      }
+
+      const { account: acc, callbackData } = result;
+      setAccount(acc);
+      setIsConnected(true);
+      console.log('callback data:', callbackData);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (hash && account) {
+      account.getTransactionReceipt(hash).then((data) => {
+        setTxData(data as GetTransactionReceiptResponse);
+      });
+    }
+  }, [account, hash]);
 
   async function connectWallet() {
-    const { connector } = await starknetkitConnectModal();
+    const res = await argentTMA.requestConnection('custom_callback_data');
+    console.log(res);
+  }
 
-    if (!connector) {
-      throw new Error('No connector');
-    }
+  async function disconnect() {
+    await argentTMA.clearSession();
+    setIsConnected(false);
+    setAccount(undefined);
+  }
 
-    await connectAsync({ connector: connector as any });
+  async function sendStrk(address: string, amount: string) {
+    console.log('Send', validateAndParseAddress(address), amount);
+    const txHash = await account?.execute({
+      calldata: [
+        validateAndParseAddress(address),
+        uint256.bnToUint256(Number(amount)),
+      ],
+      contractAddress: STRK_TOKEN_ADDRESS,
+      entrypoint: 'transfer',
+    });
+
+    console.log('txHash', txHash);
+    setTxHash(txHash?.transaction_hash ?? '');
   }
 
   return {
-    address,
-    chainId:
-      import.meta.env.VITE_IS_MAINNET !== 'true'
-        ? constants.NetworkName.SN_SEPOLIA
-        : constants.NetworkName.SN_MAIN,
+    account,
     connectWallet,
-    connected: status === 'connected',
-    connectors,
     disconnect,
     hash,
-    isGettingTx,
+    isConnected,
     sendStrk,
     setTransferAmount,
     setTransferTo,
+    setTxData,
     setTxHash,
-    status,
     txData,
   };
 }

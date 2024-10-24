@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { sepolia, mainnet } from '@starknet-react/chains';
 import { StarknetConfig, publicProvider, voyager } from '@starknet-react/core';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 import {
   ArgentMobileConnector,
   isInArgentMobileAppBrowser,
@@ -11,12 +10,6 @@ import { InjectedConnector } from 'starknetkit/injected';
 import { WebWalletConnector } from 'starknetkit/webwallet';
 
 export function StarknetProvider({ children }: { children: ReactNode }) {
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: { queries: { refetchOnWindowFocus: false } },
-      }),
-  );
   const connectors = isInArgentMobileAppBrowser()
     ? [
         ArgentMobileConnector.init({
@@ -47,7 +40,7 @@ export function StarknetProvider({ children }: { children: ReactNode }) {
       explorer={voyager}
       provider={publicProvider()}
     >
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      {children}
     </StarknetConfig>
   );
 }

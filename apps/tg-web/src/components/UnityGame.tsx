@@ -73,19 +73,19 @@ export function UnityGame(_props: Props) {
   });
 
   const {
-    address,
-    connected,
+    account,
     connectWallet,
     disconnect,
     hash,
-    isGettingTx,
+    isConnected,
     sendStrk,
     setTransferAmount,
     setTransferTo,
+    setTxData,
     setTxHash,
     txData,
   } = useStarknet();
-  console.log('txData', isGettingTx, txData);
+  console.log('txData', hash, isConnected, txData);
 
   async function handleShareGame() {
     if (WebApp.initDataUnsafe.user?.username) {
@@ -108,7 +108,7 @@ export function UnityGame(_props: Props) {
 
   useEffect(
     () => {
-      if (hash && connected && txData?.statusReceipt === 'success') {
+      if (hash && isConnected && txData?.isSuccess()) {
         sendMessage(
           'UnityWebReceiver',
           'PaymentCallBack',
@@ -118,60 +118,41 @@ export function UnityGame(_props: Props) {
             tx: hash,
           }),
         );
+        setTxData(undefined);
+        setTxHash('');
       }
     } /* eslint-disable-next-line react-hooks/exhaustive-deps */,
-    [connected, hash, txData],
+    [isConnected, hash, txData],
   );
-
-  async function handleSendStrk() {
-    try {
-      const { transaction_hash } = await sendStrk();
-      setTxHash(transaction_hash);
-    } catch (err) {
-      console.log(err);
-      sendMessage(
-        'UnityWebReceiver',
-        'PaymentCallBack',
-        JSON.stringify({
-          ...savedData,
-          cancelled: true,
-          isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
-          tx: '',
-        }),
-      );
-      await disconnect();
-    }
-  }
-
-  useEffect(() => {
-    console.log('Connected:', connected);
-    if (connected) {
-      handleSendStrk();
-    }
-  }, [connected]);
 
   async function handlePayment(value: string, propId: string) {
     try {
       setSavedData({
-        address,
+        address: account?.address,
         propId,
         value,
       });
-      setTransferAmount(value);
+      setTransferAmount('1');
       setTransferTo(import.meta.env.VITE_MASTER_ADDRESS_STARKNET ?? '');
 
-      if (connected) {
-        await disconnect();
+      console.log('Payment', isConnected);
+      if (!isConnected) {
+        await connectWallet();
+      } else {
+        await sendStrk(import.meta.env.VITE_MASTER_ADDRESS_STARKNET ?? '', '1');
+      }
+    } catch (err: any) {
+      console.log('connect', err);
+
+      if (err.message === 'Sign session error') {
+        disconnect();
       }
 
-      await connectWallet();
-    } catch (err) {
-      console.log(err);
       sendMessage(
         'UnityWebReceiver',
         'PaymentCallBack',
         JSON.stringify({
-          address,
+          address: account?.address,
           cancelled: true,
           isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
           propId,
@@ -307,9 +288,8 @@ export function UnityGame(_props: Props) {
 
   useEffect(() => {
     if (isLoaded) {
-      if (connected) {
-        console.log('Disconnecting to Starknet...');
-        disconnect();
+      if (!isConnected) {
+        connectWallet();
       }
 
       saveUser(WebApp.initData);

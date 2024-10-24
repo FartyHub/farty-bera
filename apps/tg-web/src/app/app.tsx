@@ -1,15 +1,25 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useState } from 'react';
+
 import { UnityGame } from '../components';
-import { StarknetProvider, UnityGameProvider } from '../contexts';
+import { UnityGameProvider } from '../contexts';
 
 import './app.css';
 
 function App() {
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: { queries: { refetchOnWindowFocus: false } },
+      }),
+  );
+
   return (
-    <StarknetProvider>
+    <QueryClientProvider client={queryClient}>
       <UnityGameProvider>
         <UnityGame />
       </UnityGameProvider>
-    </StarknetProvider>
+    </QueryClientProvider>
   );
 }
 
