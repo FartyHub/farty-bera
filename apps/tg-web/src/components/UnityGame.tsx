@@ -120,6 +120,18 @@ export function UnityGame(_props: Props) {
         );
         setTxData(undefined);
         setTxHash('');
+      } else if (hash && isConnected && txData) {
+        sendMessage(
+          'UnityWebReceiver',
+          'PaymentCallBack',
+          JSON.stringify({
+            address: account?.address,
+            cancelled: true,
+            isTestnet: import.meta.env.VITE_IS_MAINNET !== 'true',
+            propId: savedData?.propId,
+            tx: '',
+          }),
+        );
       }
     } /* eslint-disable-next-line react-hooks/exhaustive-deps */,
     [isConnected, hash, txData],

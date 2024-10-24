@@ -62,7 +62,7 @@ export function useStarknet(_props?: Props) {
 
   useEffect(() => {
     if (hash && account) {
-      account.getTransactionReceipt(hash).then((data) => {
+      account.waitForTransaction(hash).then((data) => {
         setTxData(data as GetTransactionReceiptResponse);
       });
     }
@@ -80,8 +80,7 @@ export function useStarknet(_props?: Props) {
   }
 
   async function sendStrk(address: string, amount: string) {
-    console.log('Send', validateAndParseAddress(address), amount);
-    const txHash = await account?.execute({
+    const fees = await account?.estimateInvokeFee({
       calldata: [
         validateAndParseAddress(address),
         uint256.bnToUint256(Number(amount)),
@@ -89,6 +88,21 @@ export function useStarknet(_props?: Props) {
       contractAddress: STRK_TOKEN_ADDRESS,
       entrypoint: 'transfer',
     });
+    console.log('fees', fees);
+    const txHash = await account?.execute(
+      {
+        calldata: [
+          validateAndParseAddress(address),
+          uint256.bnToUint256(Number(amount)),
+        ],
+        contractAddress: STRK_TOKEN_ADDRESS,
+        entrypoint: 'transfer',
+      },
+      {
+        // eslint-disable-next-line no-magic-numbers
+        maxFee: BigInt(fees?.suggestedMaxFee ?? 0) + 20000000000n,
+      },
+    );
 
     console.log('txHash', txHash);
     setTxHash(txHash?.transaction_hash ?? '');
