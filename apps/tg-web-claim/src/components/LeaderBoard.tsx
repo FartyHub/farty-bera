@@ -66,10 +66,6 @@ export function Leaderboard({ className }: Props) {
   }, [hasEnded]);
 
   async function handleConnectWallet() {
-    if (connected) {
-      await disconnect();
-    }
-
     connectWallet();
   }
 

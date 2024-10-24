@@ -1,11 +1,20 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useState } from 'react';
+
 import { Leaderboard } from '../components';
-import { StarknetProvider } from '../contexts';
 
 export function App() {
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: { queries: { refetchOnWindowFocus: false } },
+      }),
+  );
+
   return (
-    <StarknetProvider>
+    <QueryClientProvider client={queryClient}>
       <Leaderboard />
-    </StarknetProvider>
+    </QueryClientProvider>
   );
 }
 
