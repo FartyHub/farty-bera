@@ -44,7 +44,7 @@ export function Leaderboard({ className }: Props) {
       sDate,
       endTime.toISOString(),
     );
-  const { connected, connectWallet, disconnect } = useStarknet();
+  const { connectWallet } = useStarknet();
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dialogRef = useRef(null);
